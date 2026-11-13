@@ -1,0 +1,480 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+  <!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Real Estate Analytics</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            padding: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f9;
+
+        }
+
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1500px;
+
+            margin: 30px auto;
+
+        }
+
+
+        .header {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0,0,0,0.08);
+
+        }
+
+
+        .header h1 {
+
+            margin: 0 0 10px;
+
+            text-align: center;
+
+        }
+
+
+        .header p {
+
+            text-align: center;
+
+            color: #666;
+
+        }
+
+
+        /* ===================================
+           CITY DROPDOWN
+        =================================== */
+
+        .filter-box {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0,0,0,0.08);
+
+        }
+
+
+        .filter-box label {
+
+            display: block;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .city-select {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 7px;
+
+            font-size: 16px;
+
+            background: white;
+
+            cursor: pointer;
+
+        }
+
+
+        .city-select:focus {
+
+            outline: none;
+
+            border-color: #555;
+
+        }
+
+
+        /* ===================================
+           SELECTED CITY
+        =================================== */
+
+        .selected-city {
+
+            text-align: center;
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0,0,0,0.08);
+
+        }
+
+
+        .selected-city h2 {
+
+            margin: 0;
+
+        }
+
+
+        /* ===================================
+           CHART GRID
+        =================================== */
+
+        .chart-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 25px;
+
+        }
+
+
+        .chart-card {
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0,0,0,0.08);
+
+            overflow: hidden;
+
+        }
+
+
+        .full-width {
+
+            grid-column:
+                1 / -1;
+
+        }
+
+
+        .chart-title {
+
+            text-align: center;
+
+            font-size: 21px;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        /* ===================================
+           RESPONSIVE
+        =================================== */
+
+        @media(max-width: 900px) {
+
+            .chart-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .full-width {
+
+                grid-column:
+                    auto;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ==================================
+         HEADER
+    ================================== -->
+
+    <div class="header">
+
+        <h1>
+            Real Estate Analytics Dashboard
+        </h1>
+
+        <p>
+            City and location wise property analysis
+        </p>
+
+    </div>
+
+
+    <!-- ==================================
+         CITY DROPDOWN
+    ================================== -->
+
+    <div class="filter-box">
+
+        <form
+            method="GET"
+            action=""
+            id="cityForm"
+        >
+
+            <label for="city">
+
+                Select City
+
+            </label>
+
+
+            <select
+                name="city"
+                id="city"
+                class="city-select"
+                onchange="document.getElementById('cityForm').submit();"
+            >
+
+                <option value="">
+                    -- Select City --
+                </option>
+
+
+                {% for city in cities %}
+
+                    <option
+                        value="{{ city }}"
+                        {% if city == selected_city %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ city }}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </form>
+
+    </div>
+
+
+    <!-- ==================================
+         SELECTED CITY
+    ================================== -->
+
+    <div class="selected-city">
+
+        <h2>
+
+            Selected City:
+            {{ selected_city }}
+
+        </h2>
+
+    </div>
+
+
+    <!-- ==================================
+         CITY CHARTS
+    ================================== -->
+
+    <div class="chart-grid">
+
+
+        <!-- CITY BAR -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+
+                Average Price by City
+
+            </div>
+
+            {{ CityBarChart_Div|safe }}
+
+        </div>
+
+
+        <!-- CITY PIE -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+
+                Property Distribution by City
+
+            </div>
+
+            {{ CityPieChart_Div|safe }}
+
+        </div>
+
+
+        <!-- ==================================
+             LOCATION BAR
+        ================================== -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+
+                Location-wise Average Price
+
+            </div>
+
+            {{ LocationBarChart_Div|safe }}
+
+        </div>
+
+
+        <!-- ==================================
+             LOCATION PIE
+        ================================== -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+
+                Location-wise Property Distribution
+
+            </div>
+
+            {{ LocationPieChart_Div|safe }}
+
+        </div>
+
+
+        <!-- ==================================
+             LOCATION LINE
+        ================================== -->
+
+        <div class="chart-card full-width">
+
+            <div class="chart-title">
+
+                Location-wise Price Analysis
+
+            </div>
+
+            {{ LocationLineChart_Div|safe }}
+
+        </div>
+
+
+        <!-- ==================================
+             MAP
+        ================================== -->
+
+        <div class="chart-card full-width">
+
+            <div class="chart-title">
+
+                {{ selected_city }} Property Map
+
+            </div>
+
+
+            {% if MapChart_Div %}
+
+                {{ MapChart_Div|safe }}
+
+            {% else %}
+
+                <p style="text-align:center;">
+
+                    Latitude and longitude data
+                    are not available for this city.
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
+
+
+
+{% endblock %}

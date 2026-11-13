@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index"
+    }
+  ],
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 60,
+      "includeFiles": "{myshop/**,climate/**,mysite/**,deploy/demo.sqlite3,media/world_real_estate_data.xls,media/product_images/**,media/category_images/**}",
+      "excludeFiles": "{**/*.rar,.git/**,.claude/**,media/world_real_estate_data2.xls,product_images/**,category_images/**,**/__pycache__/**}"
+    }
+  }
+}

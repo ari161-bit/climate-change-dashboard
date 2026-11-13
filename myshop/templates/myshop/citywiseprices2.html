@@ -1,0 +1,152 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Average Prices</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- If the CDN is blocked/unreachable in your environment, download chart.umd.min.js,
+         place it in your app's static/ folder, and swap the line above for:
+         <script src="{% static 'myapp/js/chart.umd.min.js' %}"></script> -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .chart-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 420px;
+        }
+        .status-msg {
+            text-align: center;
+            color: #718096;
+            padding: 20px;
+        }
+        .error-msg {
+            text-align: center;
+            color: #e53e3e;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chart-card">
+        <h1>Average Real Estate Prices by City (Rs.)</h1>
+        <div id="statusMsg" class="status-msg">Loading chart data...</div>
+        <div class="chart-wrapper">
+            <canvas id="realEstateChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000/myshop/realEstateData/";
+
+        async function loadChart() {
+            const statusMsg = document.getElementById('statusMsg');
+
+            if (typeof Chart === 'undefined') {
+                statusMsg.textContent = 'Chart.js failed to load from the CDN. Check your internet connection, ad-blocker, or Content-Security-Policy settings, then reload the page.';
+                statusMsg.classList.remove('status-msg');
+                statusMsg.classList.add('error-msg');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+
+                statusMsg.style.display = 'none';
+
+                const ctx = document.getElementById('realEstateChart').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: result.labels,
+                        datasets: result.dataset.map(ds => ({
+                            label: ds.label,
+                            data: ds.data,
+                            backgroundColor: ds.backgroundColor,
+                            borderColor: ds.borderColor,
+                            borderWidth: ds.borderWidth,
+                            borderRadius: 6,
+                            maxBarThickness: 60
+                        }))
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let value = context.parsed.y;
+                                        return context.dataset.label + ': Rs. ' + value.toLocaleString('en-PK', {maximumFractionDigits: 0});
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rs. ' + (value / 1000000).toFixed(0) + 'M';
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Average Price (Rs.)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'City'
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                statusMsg.textContent = 'Failed to load chart data: ' + error.message;
+                statusMsg.classList.remove('status-msg');
+                statusMsg.classList.add('error-msg');
+                console.error('Error fetching real estate data:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadChart);
+    </script>
+
+</body>
+</html>
+{% endblock %}

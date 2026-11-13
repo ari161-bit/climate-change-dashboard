@@ -1,0 +1,189 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location-wise Real Estate Prices</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- If the CDN is blocked/unreachable in your environment, download chart.umd.min.js,
+         place it in your app's static/ folder, and swap the line above for:
+         <script src="{% static 'myapp/js/chart.umd.min.js' %}"></script> -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .chart-card {
+            max-width: 950px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            transition: background 0.15s ease;
+        }
+        .back-link:hover {
+            background: #f0f4f8;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 1.4rem;
+            margin: 0;
+            flex: 1;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 700px;
+        }
+        .status-msg {
+            text-align: center;
+            color: #718096;
+            padding: 20px;
+        }
+        .error-msg {
+            text-align: center;
+            color: #e53e3e;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chart-card">
+        <div class="top-bar">
+            <a href="/myshop/realestatedata/" class="back-link">&larr; Back to Cities</a>
+            <h1 id="chartTitle">Location-wise Average Prices</h1>
+            <span style="width: 90px;"></span>
+        </div>
+        <div id="statusMsg" class="status-msg">Loading chart data...</div>
+        <div class="chart-wrapper">
+            <canvas id="cityChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const CITY = params.get('city') || 'Karachi';
+        const API_URL = "http://127.0.0.1:8000/myshop/realEstateDatabyCity/?city=" + encodeURIComponent(CITY);
+
+        document.getElementById('chartTitle').textContent = 'Average Prices in ' + CITY + ' by Location (Rs.)';
+        document.title = CITY + ' - Location-wise Prices';
+
+        async function loadChart() {
+            const statusMsg = document.getElementById('statusMsg');
+
+            if (typeof Chart === 'undefined') {
+                statusMsg.textContent = 'Chart.js failed to load from the CDN. Check your internet connection, ad-blocker, or Content-Security-Policy settings, then reload the page.';
+                statusMsg.classList.remove('status-msg');
+                statusMsg.classList.add('error-msg');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+
+                if (!result.labels || !result.labels.length) {
+                    statusMsg.textContent = 'No location data found for ' + CITY + '.';
+                    return;
+                }
+
+                statusMsg.style.display = 'none';
+
+                const ctx = document.getElementById('cityChart').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: result.labels,
+                        datasets: result.dataset.map(ds => ({
+                            label: ds.label,
+                            data: ds.data,
+                            backgroundColor: ds.backgroundColor,
+                            borderColor: ds.borderColor,
+                            borderWidth: ds.borderWidth,
+                            borderRadius: 6,
+                            maxBarThickness: 40
+                        }))
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let value = context.parsed.x;
+                                        return context.dataset.label + ': Rs. ' + value.toLocaleString('en-PK', {maximumFractionDigits: 0});
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rs. ' + (value / 1000000).toFixed(1) + 'M';
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Average Price (Rs.)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Location'
+                                },
+                                ticks: {
+                                    autoSkip: false
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                statusMsg.textContent = 'Failed to load chart data: ' + error.message;
+                statusMsg.classList.remove('status-msg');
+                statusMsg.classList.add('error-msg');
+                console.error('Error fetching city location data:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadChart);
+    </script>
+
+</body>
+</html>
+{% endblock %}

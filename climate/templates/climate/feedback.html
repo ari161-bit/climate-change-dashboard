@@ -1,0 +1,36 @@
+{% extends 'climate/base.html' %}
+{% block title %}Feedback &amp; support - EarthScape Climate{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 4px">Feedback &amp; support</h1>
+<p style="color:var(--muted);margin:0 0 20px">Ask a question about the data or methodology, report a problem, or suggest an improvement. The agency team replies here.</p>
+<div style="display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:18px;align-items:start" class="fb">
+  <form class="card" method="post">
+    {% csrf_token %}
+    <h2>New message</h2>
+    <label for="category">Category</label>
+    <select id="category" name="category">{% for value, name in categories %}<option value="{{ value }}">{{ name }}</option>{% endfor %}</select>
+    <label for="subject">Subject</label>
+    <input id="subject" name="subject" maxlength="120" required>
+    <label for="message">Message</label>
+    <textarea id="message" name="message" rows="6" maxlength="2000" required></textarea>
+    <button class="primary" type="submit" style="margin-top:14px">Send</button>
+  </form>
+  <div>
+    <h2 style="margin:0 0 10px;font-size:16px">Your messages</h2>
+    {% for item in items %}
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <strong>{{ item.subject }}</strong>
+        <span class="badge" style="{% if item.status == 'resolved' %}color:var(--green);border-color:var(--green){% endif %}">{{ item.get_status_display }}</span>
+      </div>
+      <div style="color:var(--muted);font-size:12.5px;margin:2px 0 8px">{{ item.get_category_display }} &middot; {{ item.created_at|date:"j M Y, H:i" }}</div>
+      <div style="white-space:pre-wrap">{{ item.message }}</div>
+      {% if item.response %}<div style="margin-top:10px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--panel2);border-radius:6px"><div style="font-size:12px;color:var(--accent);font-weight:600">Agency response</div><div style="white-space:pre-wrap">{{ item.response }}</div></div>{% endif %}
+    </div>
+    {% empty %}
+    <div class="card" style="color:var(--muted)">You haven't sent any messages yet.</div>
+    {% endfor %}
+  </div>
+</div>
+<style>@media(max-width:860px){.fb{grid-template-columns:1fr!important}}</style>
+{% endblock %}

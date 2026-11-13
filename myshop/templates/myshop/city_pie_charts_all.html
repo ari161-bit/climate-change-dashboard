@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City-wise Real Estate Data (Pie Charts)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- If the CDN is blocked/unreachable in your environment, download chart.umd.min.js,
+         place it in your app's static/ folder, and swap the line above for:
+         <script src="{% static 'myapp/js/chart.umd.min.js' %}"></script> -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .page-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 1.6rem;
+            margin-bottom: 30px;
+        }
+        .grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+        }
+        .chart-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 22px;
+        }
+        .card-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 1.05rem;
+            margin: 0 0 16px 0;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 320px;
+        }
+        .status-msg {
+            text-align: center;
+            color: #718096;
+            padding: 20px;
+            font-size: 0.85rem;
+        }
+        .error-msg {
+            text-align: center;
+            color: #e53e3e;
+            padding: 20px;
+            font-size: 0.85rem;
+        }
+        .page-status {
+            text-align: center;
+            color: #718096;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="page-title">Real Estate Price Breakdown by City</h1>
+    <div id="pageStatus" class="page-status">Loading cities...</div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+        const CITY_LIST_URL = "http://127.0.0.1:8000/myshop/realEstateData/";
+        const CITY_DETAIL_URL = "http://127.0.0.1:8000/myshop/realEstateDatabyCity/?city=";
+
+        const PALETTE = [
+            'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)',
+            'rgba(199, 199, 199, 0.7)', 'rgba(83, 200, 137, 0.7)', 'rgba(232, 116, 214, 0.7)',
+            'rgba(120, 150, 255, 0.7)', 'rgba(255, 120, 120, 0.7)', 'rgba(120, 220, 220, 0.7)'
+        ];
+
+        function buildColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) colors.push(PALETTE[i % PALETTE.length]);
+            return colors;
+        }
+
+        function slugify(city) {
+            return city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        }
+
+        function buildCard(city) {
+            const card = document.createElement('div');
+            card.className = 'chart-card';
+            card.innerHTML = `
+                <h2 class="card-title">${city}</h2>
+                <div class="status-msg" id="status-${slugify(city)}">Loading...</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart-${slugify(city)}"></canvas>
+                </div>
+            `;
+            return card;
+        }
+
+        async function renderCityPie(city) {
+            const statusEl = document.getElementById('status-' + slugify(city));
+            try {
+                const response = await fetch(CITY_DETAIL_URL + encodeURIComponent(city));
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+
+                if (!data.labels || !data.labels.length) {
+                    statusEl.textContent = 'No location data found for ' + city + '.';
+                    return;
+                }
+
+                statusEl.style.display = 'none';
+
+                const ds = data.dataset[0];
+                const colors = buildColors(data.labels.length);
+                const ctx = document.getElementById('chart-' + slugify(city)).getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: ds.label,
+                            data: ds.data,
+                            backgroundColor: colors,
+                            borderColor: '#ffffff',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right',
+                                labels: {
+                                    boxWidth: 10,
+                                    font: { size: 9 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let value = context.parsed;
+                                        let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        let pct = ((value / total) * 100).toFixed(1);
+                                        return context.label + ': Rs. ' + value.toLocaleString('en-PK', {maximumFractionDigits: 0}) + ' (' + pct + '%)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                statusEl.textContent = 'Failed to load: ' + error.message;
+                statusEl.classList.remove('status-msg');
+                statusEl.classList.add('error-msg');
+                console.error('Error fetching data for ' + city + ':', error);
+            }
+        }
+
+        async function init() {
+            const pageStatus = document.getElementById('pageStatus');
+            const grid = document.getElementById('grid');
+
+            if (typeof Chart === 'undefined') {
+                pageStatus.textContent = 'Chart.js failed to load from the CDN. Check your internet connection, ad-blocker, or Content-Security-Policy settings, then reload the page.';
+                pageStatus.classList.add('error-msg');
+                return;
+            }
+
+            try {
+                const response = await fetch(CITY_LIST_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                const cities = data.labels;
+
+                if (!cities || !cities.length) {
+                    pageStatus.textContent = 'No cities found.';
+                    return;
+                }
+
+                pageStatus.style.display = 'none';
+
+                cities.forEach(city => grid.appendChild(buildCard(city)));
+
+                // Fetch and render all cities in parallel
+                await Promise.all(cities.map(city => renderCityPie(city)));
+
+            } catch (error) {
+                pageStatus.textContent = 'Failed to load city list: ' + error.message;
+                pageStatus.classList.add('error-msg');
+                console.error('Error fetching city list:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>

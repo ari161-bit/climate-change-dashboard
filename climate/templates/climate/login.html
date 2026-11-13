@@ -1,0 +1,28 @@
+{% extends 'climate/base.html' %}
+{% block title %}Sign in - EarthScape Climate Dashboard{% endblock %}
+{% block content %}
+<div style="max-width:440px;margin:6vh auto 0">
+  <div style="text-align:center;margin-bottom:22px">
+    <div style="font-size:54px">🌍</div>
+    <h1 style="margin:6px 0 4px;font-size:28px">EarthScape Climate Agency</h1>
+    <p style="color:var(--muted);margin:0">Sign in to explore 146 years of global temperature and 68 years of atmospheric CO<sub>2</sub>.</p>
+  </div>
+  <form class="card" method="post" autocomplete="on">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <label for="u" style="margin-top:0">Username</label>
+    <input id="u" name="username" required autofocus autocomplete="username">
+    <label for="p">Password</label>
+    <input id="p" name="password" type="password" required autocomplete="current-password">
+    <button class="primary" type="submit" style="width:100%;margin-top:18px">Sign in</button>
+  </form>
+  <div class="card" style="margin-top:16px;font-size:14px">
+    <strong>Demo accounts</strong>
+    <table style="width:100%;margin-top:8px;border-collapse:collapse;color:var(--muted)">
+      <tr><td><span class="badge admin">Administrator</span></td><td><code>admin_demo</code></td><td><code>Climate#Admin2026</code></td></tr>
+      <tr><td style="padding-top:6px"><span class="badge analyst">Analyst</span></td><td style="padding-top:6px"><code>analyst_demo</code></td><td style="padding-top:6px"><code>Climate#Analyst2026</code></td></tr>
+    </table>
+    <p style="margin:10px 0 0;color:var(--muted);font-size:12.5px">Administrators can also edit alert thresholds and answer feedback.</p>
+  </div>
+</div>
+{% endblock %}

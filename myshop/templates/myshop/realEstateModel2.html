@@ -1,0 +1,72 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Real Estate Analysis</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .chart {
+            width: 100%;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Real Estate Analysis Correlation</h1>
+
+    <div class="chart">
+        {{ LineChart_Div|safe }}
+    </div>
+
+     <h1>Real Estate City Analysis</h1>
+
+    <div class="chart">
+        {{ city_prices|safe }}
+    </div>
+
+      <h1>Real Estate Prediction Analysis</h1>
+
+    <div class="chart">
+        {{ PredChart_Div|safe }}
+    </div>
+
+
+</div>
+
+</body>
+</html>
+
+{% endblock %}

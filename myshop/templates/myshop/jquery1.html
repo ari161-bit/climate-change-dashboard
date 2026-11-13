@@ -1,0 +1,629 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+  
+    <!-- BREADCRUMB AREA START -->
+    <div class="ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image "  data-bs-bg="img/bg/14.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ltn__breadcrumb-inner">
+                        <h1 class="page-title">Property right sidebar</h1>
+                        <div class="ltn__breadcrumb-list">
+                            <ul>
+                                <li><a href="index.html"><span class="ltn__secondary-color"><i class="fas fa-home"></i></span> Home</a></li>
+                                <li>Property right sidebar</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <!-- BREADCRUMB AREA END -->
+    
+    <!-- PRODUCT DETAILS AREA START -->
+    <div class="ltn__product-area ltn__product-gutter mb-120">
+        <div class="container">
+            <div class="row">
+
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- jQuery -->
+
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.min.js">
+    </script>
+
+
+    <!-- Chart.js -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+
+
+<div class="container mt-5">
+
+
+    <h1 class="text-center mb-5">
+
+        Real Estate City & Location Analysis
+
+    </h1>
+
+
+    <!-- CITY BAR CHART -->
+
+    <div class="card shadow mb-5">
+
+        <div class="card-header">
+
+            <h3 class="text-center">
+
+                City Wise Average Price
+
+            </h3>
+
+            <p class="text-center text-muted">
+
+                Click on any city bar to see its locations
+
+            </p>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <canvas
+                id="cityBarChart"
+                height="120">
+            </canvas>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- SELECTED CITY -->
+
+    <div class="text-center mb-3">
+
+        <h3 id="selectedCity">
+
+            Select a city from the bar chart
+
+        </h3>
+
+    </div>
+
+
+
+    <!-- LOCATION PIE CHART -->
+
+    <div
+        class="card shadow"
+        id="locationCard"
+        style="display:none;"
+    >
+
+        <div class="card-header">
+
+            <h3 class="text-center">
+
+                Location Wise Average Price
+
+            </h3>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div
+                style="
+                    width: 70%;
+                    margin: auto;
+                "
+            >
+
+                <canvas
+                    id="locationPieChart">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ERROR MESSAGE -->
+
+    <div
+        id="errorMessage"
+        class="alert alert-danger mt-4"
+        style="display:none;"
+    >
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+$(document).ready(function () {
+
+
+    let cityBarChart = null;
+
+    let locationPieChart = null;
+
+
+
+    // =====================================================
+    // LOAD CITY BAR CHART
+    // =====================================================
+
+    function loadCityBarChart() {
+
+
+        $.ajax({
+
+            url: "{% url 'realEstateGraph' %}",
+
+            type: "GET",
+
+            dataType: "json",
+
+
+            success: function (response) {
+
+
+                if (response.error) {
+
+                    showError(response.error);
+
+                    return;
+
+                }
+
+
+                createCityBarChart(response);
+
+            },
+
+
+            error: function (xhr) {
+
+                showError(
+                    "Unable to load city chart."
+                );
+
+            }
+
+        });
+
+    }
+
+
+
+    // =====================================================
+    // CREATE CITY BAR CHART
+    // =====================================================
+
+    function createCityBarChart(chartData) {
+
+
+        const ctx =
+            document
+            .getElementById('cityBarChart')
+            .getContext('2d');
+
+
+        // Destroy old chart
+
+        if (cityBarChart !== null) {
+
+            cityBarChart.destroy();
+
+        }
+
+
+        cityBarChart = new Chart(ctx, {
+
+            type: 'bar',
+
+
+            data: {
+
+                labels: chartData.labels,
+
+                datasets: [
+
+                    {
+
+                        label:
+                            'City Wise Average Price',
+
+                        data:
+                            chartData.datasets[0].data,
+
+                        borderWidth: 1
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: true,
+
+
+                plugins: {
+
+                    legend: {
+
+                        display: true
+
+                    },
+
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function(context) {
+
+                                return (
+                                    ' Average Price: ' +
+                                    context.raw
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+
+                scales: {
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: 'Cities'
+
+                        }
+
+                    },
+
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: 'Average Price'
+
+                        }
+
+                    }
+
+                },
+
+
+                // ==========================================
+                // CLICK CITY BAR
+                // ==========================================
+
+                onClick: function(event, elements) {
+
+
+                    if (
+                        elements.length > 0
+                    ) {
+
+
+                        // Get clicked bar
+
+                        const index =
+                            elements[0].index;
+
+
+                        // Get city name
+
+                        const city =
+                            this.data.labels[index];
+
+
+                        console.log(
+                            "Selected City:",
+                            city
+                        );
+
+
+                        // Load locations
+
+                        loadLocationPieChart(
+                            city
+                        );
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+
+    // =====================================================
+    // LOAD LOCATION PIE CHART
+    // =====================================================
+
+    function loadLocationPieChart(city) {
+
+
+        $.ajax({
+
+            url:
+                "{% url 'realEstateGraphbycity' %}",
+
+            type: "GET",
+
+
+            data: {
+
+                city: city
+
+            },
+
+
+            dataType: "json",
+
+
+            success: function(response) {
+
+
+                if (response.error) {
+
+                    showError(
+                        response.error
+                    );
+
+                    return;
+
+                }
+
+
+                // Show selected city
+
+                $("#selectedCity").text(
+                    "Locations in " + city
+                );
+
+
+                // Show pie chart card
+
+                $("#locationCard").slideDown();
+
+
+                // Create pie chart
+
+                createLocationPieChart(
+                    response
+                );
+
+            },
+
+
+            error: function(xhr) {
+
+                showError(
+                    "Unable to load location data."
+                );
+
+            }
+
+        });
+
+    }
+
+
+
+    // =====================================================
+    // CREATE LOCATION PIE CHART
+    // =====================================================
+
+    function createLocationPieChart(
+        chartData
+    ) {
+
+
+        const ctx =
+            document
+            .getElementById(
+                'locationPieChart'
+            )
+            .getContext('2d');
+
+
+        // Destroy previous pie chart
+
+        if (
+            locationPieChart !== null
+        ) {
+
+            locationPieChart.destroy();
+
+        }
+
+
+        locationPieChart =
+            new Chart(ctx, {
+
+
+                type: 'pie',
+
+
+                data: {
+
+                    labels:
+                        chartData.labels,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                'Location Wise Average Price',
+
+                            data:
+                                chartData
+                                .datasets[0]
+                                .data,
+
+                            borderWidth: 1
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+
+                    plugins: {
+
+                        legend: {
+
+                            position: 'right'
+
+                        },
+
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function(context) {
+
+                                    let label =
+                                        context.label ||
+                                        '';
+
+                                    let value =
+                                        context.raw;
+
+                                    return (
+                                        label +
+                                        ': ' +
+                                        value
+                                    );
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+    }
+
+
+
+    // =====================================================
+    // ERROR FUNCTION
+    // =====================================================
+
+    function showError(message) {
+
+
+        $("#errorMessage")
+            .text(message)
+            .slideDown();
+
+
+    }
+
+
+
+    // =====================================================
+    // START
+    // =====================================================
+
+    loadCityBarChart();
+
+
+});
+
+
+</script>
+
+
+</div>
+  </div>
+    </div>
+    <!-- PRODUCT DETAILS AREA END -->
+
+    <!-- CALL TO ACTION START (call-to-action-6) -->
+    <div class="ltn__call-to-action-area call-to-action-6 before-bg-bottom" data-bs-bg="img/1.jpg' %}--">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="call-to-action-inner call-to-action-inner-6 ltn__secondary-bg position-relative text-center---">
+                        <div class="coll-to-info text-color-white">
+                            <h1>Looking for a dream home?</h1>
+                            <p>We can help you realize your dream of a new home</p>
+                        </div>
+                        <div class="btn-wrapper">
+                            <a class="btn btn-effect-3 btn-white" href="contact.html">Explore Properties <i class="icon-next"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- CALL TO ACTION END -->
+{% endblock %}

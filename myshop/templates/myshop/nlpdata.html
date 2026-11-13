@@ -1,0 +1,215 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+
+        input {
+            width: 60px;
+            padding: 10px;
+            margin: 5px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: royalblue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkblue;
+        }
+
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8ffe8;
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: royalblue;
+            color: white;
+        }
+    </style>
+  <!-- BREADCRUMB AREA START -->
+    <div class="ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image "  data-bs-bg="{% static 'img/bg/14.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ltn__breadcrumb-inner">
+                        <h1 class="page-title">Natural Language Processing</h1>
+                        <div class="ltn__breadcrumb-list">
+                            <ul>
+                                <li><a href="index.html"><span class="ltn__secondary-color"><i class="fas fa-home"></i></span> Home</a></li>
+                                <li>NLP</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BREADCRUMB AREA END -->
+
+    <!-- ABOUT US AREA START -->
+    <div class="ltn__about-us-area pt-120--- pb-90 mt--30">
+        <div class="container">
+      
+<div class="container mt-5">
+
+
+
+   
+<div class="container">
+
+    <h1>AND Gate Neural Network</h1>
+
+    <!-- User Prediction Form -->
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <h2>Enter Input for Prediction</h2>
+
+        <label>Input 1:</label>
+        <input
+            type="number"
+            name="input1"
+            min="0"
+            max="1"
+            step="1"
+            value="{{ input1|default:'' }}"
+            required
+        >
+
+        <label>Input 2:</label>
+        <input
+            type="number"
+            name="input2"
+            min="0"
+            max="1"
+            step="1"
+            value="{{ input2|default:'' }}"
+            required
+        >
+
+        <button type="submit">Predict</button>
+
+    </form>
+
+
+    <!-- User Prediction Result -->
+    {% if user_prediction is not None %}
+
+        <div class="result">
+
+            {% if user_prediction == "Invalid input" %}
+
+                <strong>Invalid input!</strong>
+                <br>
+                Please enter only 0 or 1.
+
+            {% else %}
+
+                <strong>
+                    Input: {{ input1 }} AND {{ input2 }}
+                </strong>
+
+                <br><br>
+
+                <strong>
+                    Predicted Output: {{ user_prediction }}
+                </strong>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- Bar Chart -->
+    <h2>Model Predictions</h2>
+
+    {{ graph|safe }}
+
+
+    <!-- Prediction Table -->
+    <h2>Training Data and Predictions</h2>
+
+    <table>
+
+        <tr>
+            <th>Input 1</th>
+            <th>Input 2</th>
+            <th>Actual Output</th>
+            <th>Predicted Output</th>
+        </tr>
+
+        {% for inputs, actual, prediction in data %}
+
+        <tr>
+            <td>{{ inputs.0 }}</td>
+            <td>{{ inputs.1 }}</td>
+            <td>{{ actual }}</td>
+            <td>{{ prediction }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+
+</div>
+
+        </div>
+    </div>
+    <!-- ABOUT US AREA END -->
+
+   
+    <!-- CALL TO ACTION END -->
+{% endblock %}

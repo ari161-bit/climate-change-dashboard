@@ -1,0 +1,1149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pakistan Real Estate 3D Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<!-- Highcharts (3D pie + 3D column + donuts) -->
+<script src="{% static 'vendor/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'vendor/highcharts/highcharts-3d.js' %}"></script>
+<script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
+<script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+
+<!-- Google Maps (one live map component per city) -->
+<script>
+    window.__GMAPS_KEY__ = "{{ GOOGLE_MAPS_API_KEY|default:'' }}";
+    window.__gMapsReady = false;
+    function initGoogleMaps() {
+        window.__gMapsReady = true;
+        if (window.__onGMapsReady) window.__onGMapsReady();
+    }
+</script>
+{% if GOOGLE_MAPS_API_KEY %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initGoogleMaps&loading=async" async defer></script>
+{% endif %}
+
+<style>
+    :root{
+        --bg-0:#070a16;
+        --bg-1:#0b1020;
+        --bg-2:#141b34;
+        --card:#12172ecc;
+        --card-solid:#12172e;
+        --card-border:#242c52;
+        --card-border-soft:#1c2344;
+        --text:#eef1ff;
+        --muted:#8b96c3;
+        --muted-dim:#5c6690;
+        --accent-a:#8ab4ff;
+        --accent-b:#c084fc;
+        --accent-c:#ff9ecb;
+        --up:#34d399;
+        --down:#fb7185;
+        --karachi:#ff6b6b;
+        --lahore:#2ecc71;
+        --islamabad:#38bdf8;
+        --rawalpindi:#c084fc;
+        --radius-lg:20px;
+        --radius-md:14px;
+    }
+    *{ box-sizing:border-box; }
+    ::selection{ background:#8ab4ff44; color:#fff; }
+    ::-webkit-scrollbar{ width:10px; height:10px; }
+    ::-webkit-scrollbar-track{ background:var(--bg-1); }
+    ::-webkit-scrollbar-thumb{ background:#2a3562; border-radius:8px; border:2px solid var(--bg-1); }
+    ::-webkit-scrollbar-thumb:hover{ background:#3a4680; }
+
+    body{
+        margin:0;
+        font-family:'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background:
+            radial-gradient(ellipse 900px 500px at 10% -5%, #1c2560 0%, transparent 55%),
+            radial-gradient(ellipse 800px 500px at 95% 0%, #35204f 0%, transparent 50%),
+            radial-gradient(ellipse 1000px 600px at 50% 110%, #0f2748 0%, transparent 55%),
+            linear-gradient(180deg, var(--bg-0), var(--bg-1) 40%, var(--bg-2));
+        background-attachment:fixed;
+        color:var(--text);
+        min-height:100vh;
+        position:relative;
+    }
+    body::before{
+        content:"";
+        position:fixed; inset:0;
+        background-image:
+            linear-gradient(#ffffff08 1px, transparent 1px),
+            linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+        background-size:42px 42px;
+        mask-image:radial-gradient(ellipse 1200px 800px at 50% 0%, #000 0%, transparent 75%);
+        pointer-events:none;
+        z-index:0;
+    }
+
+    .dashboard{ position:relative; z-index:1; max-width:1560px; margin:0 auto; padding:26px 26px 70px; }
+
+    @keyframes fadeUp{ from{ opacity:0; transform:translateY(16px); } to{ opacity:1; transform:translateY(0); } }
+    .anim{ opacity:0; animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) forwards; }
+    .d1{ animation-delay:.02s; } .d2{ animation-delay:.08s; } .d3{ animation-delay:.14s; }
+    .d4{ animation-delay:.2s; } .d5{ animation-delay:.26s; } .d6{ animation-delay:.32s; }
+
+    /* ---------- header ---------- */
+    .dash-header{
+        display:flex; align-items:center; justify-content:space-between;
+        gap:20px; flex-wrap:wrap;
+        padding-bottom:22px; margin-bottom:8px;
+        border-bottom:1px solid var(--card-border-soft);
+    }
+    .brand{ display:flex; align-items:center; gap:14px; }
+    .brand-mark{
+        width:46px; height:46px; border-radius:13px; flex:none;
+        background:linear-gradient(135deg,#4f6bff,#a855f7 60%,#ff6bb0);
+        display:flex; align-items:center; justify-content:center;
+        box-shadow:0 6px 22px #6d4fff55;
+    }
+    .brand-mark svg{ width:24px; height:24px; }
+    .brand h1{
+        font-size:1.32rem; margin:0; font-weight:800; letter-spacing:-.01em;
+        background:linear-gradient(90deg,#eef1ff,#b7c3ff 60%,#e9b7ff);
+        -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .brand p{ margin:2px 0 0; color:var(--muted); font-size:.82rem; }
+
+    .header-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .sync-chip{
+        display:flex; align-items:center; gap:8px;
+        background:#0f1530; border:1px solid var(--card-border);
+        padding:8px 14px; border-radius:999px;
+        font-size:.78rem; color:var(--muted); font-family:'JetBrains Mono',monospace;
+    }
+    .pulse-dot{
+        width:8px; height:8px; border-radius:50%; background:var(--up);
+        box-shadow:0 0 0 0 #34d39966;
+        animation:pulse 1.8s infinite;
+    }
+    @keyframes pulse{
+        0%{ box-shadow:0 0 0 0 #34d39966; }
+        70%{ box-shadow:0 0 0 8px #34d39900; }
+        100%{ box-shadow:0 0 0 0 #34d39900; }
+    }
+    .icon-btn, .back-link{
+        display:flex; align-items:center; gap:7px;
+        color:var(--text); text-decoration:none; font-size:.82rem; font-weight:600;
+        padding:9px 15px; border-radius:11px;
+        border:1px solid var(--card-border);
+        background:#10163000;
+        cursor:pointer;
+        transition:.2s;
+    }
+    .icon-btn:hover, .back-link:hover{ background:#1c2450; border-color:#3a4680; transform:translateY(-1px); }
+    .icon-btn svg{ width:15px; height:15px; }
+    .icon-btn.spinning svg{ animation:spin .7s linear infinite; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+
+    /* ---------- loading overlay ---------- */
+    #loadOverlay{
+        position:fixed; inset:0; z-index:50;
+        background:radial-gradient(ellipse at 50% 40%, #131a38 0%, #070a16 80%);
+        display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+        transition:opacity .5s ease, visibility .5s ease;
+    }
+    #loadOverlay.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+    .ring-spinner{
+        width:58px; height:58px; border-radius:50%;
+        border:3px solid #232c56;
+        border-top-color:var(--accent-a);
+        border-right-color:var(--accent-b);
+        animation:spin 1s linear infinite;
+    }
+    #loadOverlay p{ color:var(--muted); font-size:.88rem; letter-spacing:.02em; }
+
+    /* ---------- sections ---------- */
+    .section-title{
+        display:flex; align-items:center; gap:10px;
+        margin:46px 0 16px; color:#cdd6ff; font-size:1.08rem; font-weight:700;
+    }
+    .section-title .dot{
+        width:9px; height:9px; border-radius:50%;
+        background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
+        box-shadow:0 0 12px var(--accent-a);
+    }
+    .section-title .line{ flex:1; height:1px; background:linear-gradient(90deg,var(--card-border), transparent); }
+    .section-sub{ color:var(--muted); font-weight:500; font-size:.8rem; margin-left:4px; }
+
+    /* ---------- kpi row ---------- */
+    .kpi-row{
+        display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+        gap:16px;
+    }
+    .kpi-card{
+        background:var(--card); border:1px solid var(--card-border);
+        border-radius:var(--radius-md); padding:18px 18px 16px;
+        backdrop-filter:blur(10px);
+        position:relative; overflow:hidden;
+        transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .kpi-card:hover{ transform:translateY(-4px); border-color:#3a4680; box-shadow:0 14px 34px rgba(0,0,0,.35); }
+    .kpi-card .glow{
+        position:absolute; width:120px; height:120px; border-radius:50%;
+        background:var(--accent, var(--accent-a)); opacity:.18; filter:blur(30px);
+        top:-40px; right:-30px; pointer-events:none;
+    }
+    .kpi-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+    .kpi-icon{
+        width:36px; height:36px; border-radius:10px;
+        background:linear-gradient(135deg, var(--accent, var(--accent-a)) 0%, #ffffff22 150%);
+        display:flex; align-items:center; justify-content:center;
+    }
+    .kpi-icon svg{ width:18px; height:18px; color:#0b1020; }
+    .kpi-trend{ font-size:.72rem; font-weight:700; padding:3px 8px; border-radius:999px; }
+    .kpi-trend.up{ color:var(--up); background:#34d39918; }
+    .kpi-trend.down{ color:var(--down); background:#fb718518; }
+    .kpi-value{ font-size:1.55rem; font-weight:800; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
+    .kpi-label{ color:var(--muted); font-size:.78rem; margin-top:4px; }
+
+    /* ---------- generic wide card ---------- */
+    .wide-card{
+        background:var(--card); border:1px solid var(--card-border);
+        border-radius:var(--radius-lg); padding:24px;
+        backdrop-filter:blur(10px);
+        box-shadow:0 10px 34px rgba(0,0,0,.35);
+    }
+    .card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+    .card-head h3{ margin:0; font-size:1rem; font-weight:700; }
+    .card-head .badge{
+        font-size:.7rem; color:var(--muted); background:#0f1530;
+        border:1px solid var(--card-border); padding:4px 10px; border-radius:999px;
+    }
+
+    /* ---------- pies ---------- */
+    .pie-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; }
+    .city-card{
+        background:var(--card); border:1px solid var(--card-border);
+        border-radius:var(--radius-lg); padding:20px 18px 8px;
+        backdrop-filter:blur(10px);
+        box-shadow:0 10px 30px rgba(0,0,0,.35);
+        transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        position:relative; overflow:hidden;
+    }
+    .city-card:hover{ transform:translateY(-6px); box-shadow:0 20px 44px rgba(0,0,0,.5); border-color:#3a4680; }
+    .city-card::before{ content:""; position:absolute; inset:0 0 auto 0; height:3px; background:var(--accent); box-shadow:0 0 14px var(--accent); }
+    .city-card.karachi{ --accent:var(--karachi); } .city-card.lahore{ --accent:var(--lahore); }
+    .city-card.islamabad{ --accent:var(--islamabad); } .city-card.rawalpindi{ --accent:var(--rawalpindi); }
+    .city-card h2{ margin:6px 0 2px; font-size:1.1rem; display:flex; align-items:center; gap:8px; }
+    .city-card h2 .swatch{ width:11px; height:11px; border-radius:3px; background:var(--accent); box-shadow:0 0 10px var(--accent); }
+    .city-stats{ display:flex; gap:16px; margin:2px 0 4px; font-size:.76rem; color:var(--muted); }
+    .city-stats b{ color:var(--text); font-variant-numeric:tabular-nums; }
+    .pie-wrap{ height:270px; position:relative; }
+
+    .skeleton{
+        position:absolute; inset:0; border-radius:12px; margin:10px;
+        background:linear-gradient(100deg, #161d3a 30%, #1e2650 50%, #161d3a 70%);
+        background-size:200% 100%;
+        animation:shimmer 1.3s infinite;
+    }
+    @keyframes shimmer{ 0%{ background-position:150% 0; } 100%{ background-position:-50% 0; } }
+
+    /* ---------- mix / compare grids ---------- */
+    .mix-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .donut-wrap{ height:280px; }
+    .compare-grid{ display:grid; grid-template-columns:1.5fr 1fr; gap:20px; align-items:stretch; }
+    .bar-wrap{ height:430px; }
+
+    /* ---------- leaderboard ---------- */
+    .leaderboard-card h3{ margin:0 0 4px; font-size:1rem; }
+    .leaderboard-card p.sub{ margin:0 0 18px; color:var(--muted); font-size:.78rem; }
+    .lb-row{ display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--card-border-soft); }
+    .lb-row:last-child{ border-bottom:none; }
+    .lb-rank{
+        width:26px; height:26px; border-radius:8px; flex:none;
+        display:flex; align-items:center; justify-content:center;
+        font-size:.75rem; font-weight:800; background:#0f1530; color:var(--muted);
+        border:1px solid var(--card-border);
+    }
+    .lb-rank.gold{ background:linear-gradient(135deg,#ffd166,#f5a524); color:#26170a; border-color:transparent; }
+    .lb-body{ flex:1; min-width:0; }
+    .lb-top{ display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:6px; }
+    .lb-top .name{ display:flex; align-items:center; gap:7px; font-weight:700; }
+    .lb-top .name i{ width:9px; height:9px; border-radius:3px; display:inline-block; }
+    .lb-top .price{ font-variant-numeric:tabular-nums; color:var(--muted); font-size:.78rem; }
+    .lb-bar-track{ height:7px; border-radius:6px; background:#0f1530; overflow:hidden; }
+    .lb-bar-fill{ height:100%; border-radius:6px; transition:width 1s cubic-bezier(.2,.8,.2,1); }
+    .lb-count{ font-size:.7rem; color:var(--muted-dim); margin-top:5px; }
+
+    /* ---------- stats table ---------- */
+    .stats-table-wrap{ overflow-x:auto; }
+    .stats-table{ width:100%; border-collapse:collapse; font-size:.85rem; white-space:nowrap; }
+    .stats-table th{
+        text-align:left; padding:10px 14px; color:var(--muted); font-weight:700;
+        font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;
+        border-bottom:1px solid var(--card-border);
+    }
+    .stats-table td{ padding:12px 14px; border-bottom:1px solid var(--card-border-soft); font-variant-numeric:tabular-nums; }
+    .stats-table tbody tr{ transition:background .15s ease; }
+    .stats-table tbody tr:hover{ background:#171e40; }
+    .stats-table tbody tr:last-child td{ border-bottom:none; }
+    .stats-table .city-cell{ display:flex; align-items:center; gap:9px; font-weight:700; }
+    .stats-table .city-cell i{ width:10px; height:10px; border-radius:3px; display:inline-block; box-shadow:0 0 8px currentColor; }
+    .stats-table td.num-strong{ color:var(--text); font-weight:700; }
+
+    /* ---------- filter bar ---------- */
+    .filter-bar{ display:flex; flex-direction:column; gap:20px; }
+    .filter-row{ display:flex; align-items:flex-start; gap:22px; flex-wrap:wrap; }
+    .filter-row .filter-label{
+        display:flex; align-items:center; gap:7px; min-width:120px; flex:none;
+        font-size:.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;
+        padding-top:7px;
+    }
+    .filter-row .filter-label svg{ width:14px; height:14px; }
+    .chip-group{ display:flex; flex-wrap:wrap; gap:8px; flex:1; }
+    .chip{
+        border:1px solid var(--card-border); background:#0f1530; color:var(--muted);
+        font-size:.78rem; font-weight:700; padding:7px 14px; border-radius:999px;
+        cursor:pointer; transition:.18s; user-select:none;
+    }
+    .chip:hover{ border-color:#3a4680; color:var(--text); }
+    .chip.active{ background:linear-gradient(135deg,var(--accent-a),var(--accent-b)); color:#0b1020; border-color:transparent; }
+
+    .price-slider{ flex:1; min-width:260px; padding-top:4px; }
+    .price-slider .price-values{
+        display:flex; justify-content:space-between; font-size:.82rem; font-weight:700;
+        margin-bottom:10px; font-variant-numeric:tabular-nums; color:var(--text);
+    }
+    .price-slider .price-values span{ color:var(--accent-a); }
+    .range-wrap{ position:relative; height:30px; }
+    .range-track{ position:absolute; top:13px; left:0; right:0; height:4px; border-radius:4px; background:#1c2450; }
+    .range-fill{ position:absolute; top:13px; height:4px; border-radius:4px; background:linear-gradient(90deg,var(--accent-a),var(--accent-b)); }
+    .range-wrap input[type="range"]{
+        position:absolute; top:0; left:0; width:100%; margin:0; height:30px;
+        -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none;
+    }
+    .range-wrap input[type="range"]::-webkit-slider-thumb{
+        -webkit-appearance:none; pointer-events:auto;
+        width:18px; height:18px; border-radius:50%; margin-top:0;
+        background:#fff; border:3px solid var(--accent-a); cursor:pointer;
+        box-shadow:0 2px 8px rgba(0,0,0,.5);
+    }
+    .range-wrap input[type="range"]::-moz-range-thumb{
+        pointer-events:auto; width:14px; height:14px; border-radius:50%;
+        background:#fff; border:3px solid var(--accent-a); cursor:pointer;
+    }
+    .range-wrap input[type="range"]::-webkit-slider-runnable-track{ background:transparent; }
+
+    .filter-footer{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding-top:6px; border-top:1px solid var(--card-border-soft); }
+    .filter-count{ font-size:.8rem; color:var(--muted); }
+    .filter-count b{ color:var(--up); }
+    .reset-btn{
+        border:1px solid var(--card-border); background:transparent; color:var(--muted);
+        font-size:.78rem; font-weight:700; padding:7px 14px; border-radius:9px; cursor:pointer; transition:.2s;
+    }
+    .reset-btn:hover{ color:var(--text); border-color:#3a4680; }
+
+    /* ---------- google maps grid ---------- */
+    .map-legend{ display:flex; gap:14px; flex-wrap:wrap; font-size:.78rem; color:var(--muted); margin-bottom:18px; }
+    .map-legend span{ display:flex; align-items:center; gap:6px; }
+    .map-legend i{ width:10px; height:10px; border-radius:50%; display:inline-block; box-shadow:0 0 8px currentColor; }
+    .gmap-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:20px; }
+    .gmap-card{ position:relative; overflow:hidden; }
+    .gmap-card .card-head{ margin-bottom:14px; }
+    .gmap-card .card-head h3{ display:flex; align-items:center; gap:8px; }
+    .gmap-card .card-head h3 i{ width:11px; height:11px; border-radius:3px; display:inline-block; box-shadow:0 0 10px currentColor; }
+    .gmap-canvas{ height:300px; border-radius:14px; overflow:hidden; border:1px solid var(--card-border); background:#0f1530; }
+    .gmap-empty{
+        position:absolute; inset:56px 0 0 0; margin:0 24px; border-radius:14px;
+        display:flex; align-items:center; justify-content:center; text-align:center;
+        color:var(--muted); font-size:.82rem; background:#0f1530cc; backdrop-filter:blur(2px);
+        z-index:2; padding:20px;
+    }
+    .gmaps-missing-key{
+        text-align:center; color:var(--muted); font-size:.85rem; padding:40px 20px;
+        border:1px dashed var(--card-border); border-radius:14px;
+    }
+    .gmaps-missing-key a{ color:var(--accent-a); }
+
+    #pageStatus{ text-align:center; color:var(--muted); padding:16px; }
+    .error-msg{ color:#ff8080 !important; }
+
+    .dash-footer{ text-align:center; color:var(--muted-dim); font-size:.78rem; margin-top:50px; }
+
+    @media (max-width:900px){
+        .mix-grid, .compare-grid{ grid-template-columns:1fr; }
+        .filter-row .filter-label{ min-width:0; padding-top:0; }
+    }
+</style>
+</head>
+<body>
+
+<div id="loadOverlay">
+    <div class="ring-spinner"></div>
+    <p>Crunching thousands of property records&hellip;</p>
+</div>
+
+<div class="dashboard">
+
+    <header class="dash-header anim">
+        <div class="brand">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+            </div>
+            <div>
+                <h1>Pakistan Real Estate Intelligence</h1>
+                <p>Karachi &bull; Lahore &bull; Islamabad &bull; Rawalpindi &mdash; live market dashboard</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="sync-chip"><span class="pulse-dot"></span> Live &middot; <span id="clock">--:--:--</span></div>
+            <button class="icon-btn" id="refreshBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Refresh
+            </button>
+            <a href="/myshop/shop/0" class="back-link">&larr; Back to Property</a>
+        </div>
+    </header>
+
+    <div id="pageStatus" class="anim d1"></div>
+
+    <div class="wide-card filter-bar anim d1">
+        <div class="filter-row">
+            <div class="filter-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="17" width="7" height="3"/></svg>
+                Property Type
+            </div>
+            <div class="chip-group" id="typeChips"></div>
+        </div>
+        <div class="filter-row">
+            <div class="filter-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Price Range
+            </div>
+            <div class="price-slider">
+                <div class="price-values"><span id="priceMinLabel">&mdash;</span><span id="priceMaxLabel">&mdash;</span></div>
+                <div class="range-wrap">
+                    <div class="range-track"></div>
+                    <div class="range-fill" id="rangeFill"></div>
+                    <input type="range" id="rangeMin">
+                    <input type="range" id="rangeMax">
+                </div>
+            </div>
+        </div>
+        <div class="filter-footer">
+            <div class="filter-count" id="filterCount">Showing all listings</div>
+            <button class="reset-btn" id="resetFiltersBtn">Reset filters</button>
+        </div>
+    </div>
+
+    <section class="kpi-row anim d1" id="kpiRow"></section>
+
+    <div class="section-title anim d2"><span class="dot"></span> City-wise Price Breakdown <span class="line"></span> <span class="section-sub">3D pie &middot; top locations</span></div>
+    <div class="pie-grid" id="pieGrid"></div>
+
+    <div class="section-title anim d3"><span class="dot"></span> Portfolio Mix <span class="line"></span> <span class="section-sub">property type &amp; purpose</span></div>
+    <div class="mix-grid anim d3">
+        <div class="wide-card">
+            <div class="card-head"><h3>Property Type</h3><span class="badge" id="typeBadge">&mdash;</span></div>
+            <div class="donut-wrap" id="typeDonut"></div>
+        </div>
+        <div class="wide-card">
+            <div class="card-head"><h3>Sale vs. Rent</h3><span class="badge" id="purposeBadge">&mdash;</span></div>
+            <div class="donut-wrap" id="purposeDonut"></div>
+        </div>
+    </div>
+
+    <div class="section-title anim d3"><span class="dot"></span> Distribution Insights <span class="line"></span> <span class="section-sub">rooms &amp; price bands</span></div>
+    <div class="mix-grid anim d3">
+        <div class="wide-card">
+            <div class="card-head"><h3>Bedrooms &amp; Bathrooms</h3><span class="badge" id="roomsBadge">&mdash;</span></div>
+            <div class="donut-wrap" id="roomsChart"></div>
+        </div>
+        <div class="wide-card">
+            <div class="card-head"><h3>Price Distribution</h3><span class="badge" id="priceDistBadge">&mdash;</span></div>
+            <div class="donut-wrap" id="priceDistChart"></div>
+        </div>
+    </div>
+
+    <div class="section-title anim d4"><span class="dot"></span> Average Price Comparison <span class="line"></span> <span class="section-sub">3D bar &middot; city leaderboard</span></div>
+    <div class="compare-grid anim d4">
+        <div class="wide-card"><div class="bar-wrap" id="barChart"></div></div>
+        <div class="wide-card leaderboard-card">
+            <h3>City Leaderboard</h3>
+            <p class="sub">Ranked by average listing price</p>
+            <div id="leaderboard"></div>
+        </div>
+    </div>
+
+    <div class="section-title anim d4"><span class="dot"></span> Detailed City Stats <span class="line"></span> <span class="section-sub">min &middot; median &middot; max &middot; price per marla</span></div>
+    <div class="wide-card anim d4">
+        <div class="stats-table-wrap">
+            <table class="stats-table" id="statsTable">
+                <thead>
+                    <tr>
+                        <th>City</th>
+                        <th>Listings</th>
+                        <th>Min Price</th>
+                        <th>Median Price</th>
+                        <th>Max Price</th>
+                        <th>Avg Beds</th>
+                        <th>Avg Baths</th>
+                        <th>Price / Marla</th>
+                    </tr>
+                </thead>
+                <tbody id="statsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section-title anim d5"><span class="dot"></span> Property Locations <span class="line"></span> <span class="section-sub">Google Maps &middot; one live map per city</span></div>
+    <div id="gmapsSection" class="anim d5">
+        <div class="map-legend" id="typeLegend"></div>
+        <div class="gmap-grid" id="gmapGrid"></div>
+    </div>
+
+    <footer class="dash-footer anim d6">Source: world_real_estate_data.xls &middot; Django + Highcharts 3D + Google Maps &middot; refreshed live from the dataset on every load</footer>
+
+</div>
+
+<script>
+    const DATA_URL = "/myshop/realEstateDashboardData/";
+
+    const CITY_COLORS = {
+        "Karachi":    "#ff6b6b",
+        "Lahore":     "#2ecc71",
+        "Islamabad":  "#38bdf8",
+        "Rawalpindi": "#c084fc"
+    };
+    const CITY_SLUG = { "Karachi":"karachi", "Lahore":"lahore", "Islamabad":"islamabad", "Rawalpindi":"rawalpindi" };
+    const PIE_PALETTE = ["#ff6b6b","#ffa94d","#ffd43b","#69db7c","#38d9a9","#4dabf7","#748ffc","#e599f7"];
+    const MIX_PALETTE = ["#8ab4ff","#c084fc","#ff9ecb","#34d399","#ffd166","#4dabf7","#fb7185"];
+
+    Highcharts.setOptions({
+        chart: { backgroundColor: 'transparent', style: { fontFamily: 'Manrope, sans-serif', color: '#e7ebff' } },
+        title: { style: { color: '#e7ebff' } },
+        subtitle: { style: { color: '#93a0c9' } },
+        legend: { itemStyle: { color: '#cdd6ff' }, itemHoverStyle: { color: '#ffffff' } },
+        xAxis: { labels: { style: { color: '#93a0c9' } }, lineColor: '#2a3562', gridLineColor: '#232c56' },
+        yAxis: { labels: { style: { color: '#93a0c9' } }, gridLineColor: '#232c56', title: { style: { color: '#93a0c9' } } },
+        credits: { enabled: false }
+    });
+
+    function fmtRs(v) {
+        v = Number(v) || 0;
+        if (v >= 10000000) return 'Rs. ' + (v / 10000000).toFixed(2) + ' Cr';
+        if (v >= 100000) return 'Rs. ' + (v / 100000).toFixed(2) + ' Lac';
+        return 'Rs. ' + Math.round(v).toLocaleString('en-PK');
+    }
+    function fmtNum(v) { return Math.round(Number(v) || 0).toLocaleString('en-PK'); }
+
+    function countUp(el, target, formatter, duration) {
+        duration = duration || 1000;
+        const start = performance.now();
+        const from = 0;
+        function tick(now) {
+            const p = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = formatter(from + (target - from) * eased);
+            if (p < 1) requestAnimationFrame(tick);
+            else el.textContent = formatter(target);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function tickClock() {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-GB');
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    const ICONS = {
+        listings: '<path d="M3 6h18M3 12h18M3 18h18"/>',
+        price: '<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+        up: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+        down: '<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>',
+        beds: '<path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 14h20"/><circle cx="7" cy="8" r="2"/>',
+        median: '<path d="M3 3v18h18"/><path d="M7 16l4-6 3 3 5-8"/>',
+        area: '<path d="M3 3h7v7H3z"/><path d="M14 14h7v7h-7z"/><path d="M10 6.5h4M17.5 10v4"/>'
+    };
+
+    function buildKPI(id, label, iconKey, accent, trend) {
+        const card = document.createElement('div');
+        card.className = 'kpi-card anim';
+        card.style.setProperty('--accent', accent);
+        card.innerHTML = `
+            <div class="glow"></div>
+            <div class="kpi-top">
+                <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1020" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS[iconKey]}</svg></div>
+                ${trend ? `<span class="kpi-trend ${trend.dir}">${trend.text}</span>` : ''}
+            </div>
+            <div class="kpi-value" id="${id}">&mdash;</div>
+            <div class="kpi-label">${label}</div>
+        `;
+        return card;
+    }
+
+    function renderKPIs(summary) {
+        const row = document.getElementById('kpiRow');
+        row.innerHTML = '';
+        row.appendChild(buildKPI('kpiListings', 'Total Listings Analysed', 'listings', '#8ab4ff'));
+        row.appendChild(buildKPI('kpiAvg', 'National Average Price', 'price', '#c084fc'));
+        row.appendChild(buildKPI('kpiMedian', 'Median Price', 'median', '#4dabf7'));
+        row.appendChild(buildKPI('kpiPpm', 'Avg. Price per Marla', 'area', '#38d9a9'));
+        row.appendChild(buildKPI('kpiHigh', 'Priciest Market: ' + summary.priciest_city, 'up', '#ff6b6b', { dir: 'up', text: 'Highest' }));
+        row.appendChild(buildKPI('kpiLow', 'Most Affordable: ' + summary.cheapest_city, 'down', '#34d399', { dir: 'down', text: 'Lowest' }));
+        row.appendChild(buildKPI('kpiBeds', 'Avg. Bedrooms / Baths', 'beds', '#ffd166'));
+
+        countUp(document.getElementById('kpiListings'), summary.total_listings, fmtNum, 1100);
+        countUp(document.getElementById('kpiAvg'), summary.national_avg_price, fmtRs, 1200);
+        countUp(document.getElementById('kpiMedian'), summary.median_price, fmtRs, 1200);
+        countUp(document.getElementById('kpiPpm'), summary.avg_price_per_marla, fmtRs, 1200);
+        countUp(document.getElementById('kpiHigh'), summary.priciest_price, fmtRs, 1300);
+        countUp(document.getElementById('kpiLow'), summary.cheapest_price, fmtRs, 1300);
+        document.getElementById('kpiBeds').textContent = summary.avg_bedrooms + ' bd / ' + summary.avg_baths + ' ba';
+    }
+
+    function buildPieCard(city) {
+        const slug = CITY_SLUG[city];
+        const card = document.createElement('div');
+        card.className = 'city-card ' + slug + ' anim';
+        card.innerHTML = `
+            <h2><span class="swatch"></span>${city}</h2>
+            <div class="city-stats">
+                <span>Listings: <b id="count-${slug}">&mdash;</b></span>
+                <span>Avg: <b id="avg-${slug}">&mdash;</b></span>
+            </div>
+            <div class="pie-wrap" id="pie-${slug}"><div class="skeleton"></div></div>
+        `;
+        return card;
+    }
+
+    function renderPie(city, labels, values) {
+        const slug = CITY_SLUG[city];
+        const el = document.getElementById('pie-' + slug);
+        el.innerHTML = '';
+        Highcharts.chart('pie-' + slug, {
+            chart: { type: 'pie', options3d: { enabled: true, alpha: 55, beta: 0 }, animation: { duration: 700 } },
+            title: { text: null },
+            tooltip: {
+                pointFormatter: function () {
+                    return this.name + ': <b>' + fmtRs(this.y) + '</b> (' + this.percentage.toFixed(1) + '%)';
+                }
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: 0, depth: 38, borderWidth: 1, borderColor: '#0b1020',
+                    dataLabels: { enabled: true, distance: 14, format: '{point.percentage:.0f}%', style: { color: '#e7ebff', textOutline: 'none', fontSize: '10px' } },
+                    showInLegend: false
+                }
+            },
+            series: [{ name: 'Avg Price', colors: PIE_PALETTE, data: labels.map((l, i) => ({ name: l, y: values[i] })) }]
+        });
+    }
+
+    function renderDonut(containerId, labels, values, colors, centerLabel) {
+        const total = values.reduce((a, b) => a + b, 0);
+        Highcharts.chart(containerId, {
+            chart: { type: 'pie', animation: { duration: 700 } },
+            title: { text: fmtNum(total) + '<br><span style="font-size:10px;color:#93a0c9;font-weight:500">' + centerLabel + '</span>', verticalAlign: 'middle', floating: true, y: 6, style: { fontSize: '18px', fontWeight: '800' } },
+            tooltip: {
+                pointFormatter: function () {
+                    return this.name + ': <b>' + fmtNum(this.y) + '</b> (' + this.percentage.toFixed(1) + '%)';
+                }
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: '72%', borderWidth: 2, borderColor: '#12172e',
+                    dataLabels: { enabled: true, distance: -28, format: '{point.percentage:.0f}%', filter: { property: 'percentage', operator: '>', value: 6 }, style: { color: '#0b1020', textOutline: 'none', fontSize: '10px', fontWeight: '700' } }
+                }
+            },
+            legend: { enabled: true, verticalAlign: 'bottom', itemStyle: { fontSize: '11px', color: '#cdd6ff' } },
+            series: [{ name: 'Count', colors: colors, data: labels.map((l, i) => ({ name: l, y: values[i] })) }]
+        });
+    }
+
+    function renderBar(labels, values, counts) {
+        const colors = labels.map(c => CITY_COLORS[c] || '#8ab4ff');
+        Highcharts.chart('barChart', {
+            chart: { type: 'column', options3d: { enabled: true, alpha: 12, beta: 18, depth: 60, viewDistance: 30 }, animation: { duration: 800 } },
+            title: { text: null },
+            xAxis: { categories: labels, crosshair: true },
+            yAxis: { title: { text: 'Average Price (Rs.)' }, labels: { formatter: function () { return fmtRs(this.value); } } },
+            tooltip: {
+                formatter: function () {
+                    const i = this.point.index;
+                    return '<b>' + this.x + '</b><br/>Avg price: ' + fmtRs(this.y) + '<br/>Listings: ' + counts[i];
+                }
+            },
+            plotOptions: {
+                column: {
+                    depth: 55, colorByPoint: true, colors: colors, borderRadius: 4,
+                    dataLabels: { enabled: true, formatter: function () { return fmtRs(this.y); }, style: { color: '#e7ebff', textOutline: 'none', fontSize: '11px' } }
+                }
+            },
+            series: [{ name: 'Average Price', data: values, showInLegend: false }]
+        });
+    }
+
+    function renderLeaderboard(labels, values, counts) {
+        const order = labels.map((c, i) => ({ city: c, price: values[i], count: counts[i] })).sort((a, b) => b.price - a.price);
+        const max = Math.max(...values, 1);
+        const el = document.getElementById('leaderboard');
+        el.innerHTML = order.map((row, i) => `
+            <div class="lb-row">
+                <div class="lb-rank ${i === 0 ? 'gold' : ''}">${i + 1}</div>
+                <div class="lb-body">
+                    <div class="lb-top">
+                        <span class="name"><i style="background:${CITY_COLORS[row.city]};box-shadow:0 0 6px ${CITY_COLORS[row.city]}"></i>${row.city}</span>
+                        <span class="price">${fmtRs(row.price)}</span>
+                    </div>
+                    <div class="lb-bar-track"><div class="lb-bar-fill" style="width:0%;background:${CITY_COLORS[row.city]}" data-w="${(row.price / max * 100).toFixed(1)}"></div></div>
+                    <div class="lb-count">${fmtNum(row.count)} listings analysed</div>
+                </div>
+            </div>
+        `).join('');
+        requestAnimationFrame(() => {
+            el.querySelectorAll('.lb-bar-fill').forEach(bar => { bar.style.width = bar.dataset.w + '%'; });
+        });
+    }
+
+    function renderRoomsChart(bedroomDist, bathroomDist) {
+        const labels = bedroomDist.labels.length ? bedroomDist.labels : bathroomDist.labels;
+        Highcharts.chart('roomsChart', {
+            chart: { type: 'column', animation: { duration: 700 } },
+            title: { text: null },
+            xAxis: { categories: labels, title: { text: 'Count per property' } },
+            yAxis: { title: { text: 'Listings' }, labels: { formatter: function () { return fmtNum(this.value); } } },
+            tooltip: {
+                shared: true,
+                formatter: function () {
+                    let lines = '<b>' + this.x + '</b>';
+                    this.points.forEach(p => { lines += '<br/>' + p.series.name + ': ' + fmtNum(p.y); });
+                    return lines;
+                }
+            },
+            plotOptions: { column: { borderRadius: 4, groupPadding: 0.12 } },
+            legend: { enabled: true, verticalAlign: 'top' },
+            series: [
+                { name: 'Bedrooms', data: bedroomDist.data, color: '#8ab4ff' },
+                { name: 'Bathrooms', data: bathroomDist.data, color: '#c084fc' }
+            ]
+        });
+    }
+
+    function renderPriceDistChart(priceDist) {
+        const shades = ['#38d9a9', '#4dabf7', '#748ffc', '#c084fc', '#ff9ecb', '#ff6b6b'];
+        Highcharts.chart('priceDistChart', {
+            chart: { type: 'column', animation: { duration: 700 } },
+            title: { text: null },
+            xAxis: { categories: priceDist.labels, title: { text: 'Price band' } },
+            yAxis: { title: { text: 'Listings' }, labels: { formatter: function () { return fmtNum(this.value); } } },
+            tooltip: {
+                formatter: function () { return '<b>' + this.x + '</b><br/>Listings: ' + fmtNum(this.y); }
+            },
+            plotOptions: {
+                column: {
+                    colorByPoint: true, colors: shades, borderRadius: 4,
+                    dataLabels: { enabled: true, formatter: function () { return fmtNum(this.y); }, style: { color: '#e7ebff', textOutline: 'none', fontSize: '10px' } }
+                }
+            },
+            series: [{ name: 'Listings', data: priceDist.data, showInLegend: false }]
+        });
+    }
+
+    function renderStatsTable(cityStats) {
+        const order = ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi'];
+        const body = document.getElementById('statsTableBody');
+        body.innerHTML = order.map(city => {
+            const s = cityStats[city] || {};
+            const color = CITY_COLORS[city];
+            return `
+                <tr>
+                    <td><span class="city-cell" style="color:${color}"><i style="background:${color}"></i>${city}</span></td>
+                    <td>${fmtNum(s.count)}</td>
+                    <td>${fmtRs(s.min_price)}</td>
+                    <td class="num-strong">${fmtRs(s.median_price)}</td>
+                    <td>${fmtRs(s.max_price)}</td>
+                    <td>${s.avg_bedrooms}</td>
+                    <td>${s.avg_baths}</td>
+                    <td>${fmtRs(s.avg_price_per_marla)}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    /* ============ filters (property type + price range) ============ */
+
+    let filters = { types: new Set(), minPrice: null, maxPrice: null };
+    let filterOptionsCache = null;
+    let filtersBuilt = false;
+    let fetchDebounceTimer = null;
+
+    function scheduleFetch(delay) {
+        clearTimeout(fetchDebounceTimer);
+        fetchDebounceTimer = setTimeout(() => { fetchAndRender(); }, delay);
+    }
+
+    function buildQueryString() {
+        const params = new URLSearchParams();
+        if (filters.types.size) params.set('property_type', Array.from(filters.types).join(','));
+        if (filters.minPrice !== null) params.set('min_price', filters.minPrice);
+        if (filters.maxPrice !== null) params.set('max_price', filters.maxPrice);
+        return params.toString();
+    }
+
+    function syncChipUI() {
+        document.querySelectorAll('#typeChips .chip').forEach(c => {
+            if (c.dataset.type === '__all__') c.classList.toggle('active', filters.types.size === 0);
+            else c.classList.toggle('active', filters.types.has(c.dataset.type));
+        });
+    }
+
+    function updateRangeUI() {
+        const rMin = document.getElementById('rangeMin');
+        const rMax = document.getElementById('rangeMax');
+        const min = Number(rMin.min), max = Number(rMin.max);
+        const vMin = Number(rMin.value), vMax = Number(rMax.value);
+        const span = Math.max(1, max - min);
+        const pctMin = ((vMin - min) / span) * 100;
+        const pctMax = ((vMax - min) / span) * 100;
+        document.getElementById('rangeFill').style.left = pctMin + '%';
+        document.getElementById('rangeFill').style.width = Math.max(0, pctMax - pctMin) + '%';
+        document.getElementById('priceMinLabel').textContent = fmtRs(vMin);
+        document.getElementById('priceMaxLabel').textContent = fmtRs(vMax);
+    }
+
+    function buildFilterBar(fo) {
+        filterOptionsCache = fo;
+
+        const chipsEl = document.getElementById('typeChips');
+        chipsEl.innerHTML = '';
+        const allChip = document.createElement('button');
+        allChip.type = 'button';
+        allChip.className = 'chip active';
+        allChip.textContent = 'All Types';
+        allChip.dataset.type = '__all__';
+        chipsEl.appendChild(allChip);
+        fo.property_types.forEach(t => {
+            const c = document.createElement('button');
+            c.type = 'button';
+            c.className = 'chip';
+            c.textContent = t;
+            c.dataset.type = t;
+            chipsEl.appendChild(c);
+        });
+        chipsEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.chip');
+            if (!btn) return;
+            if (btn.dataset.type === '__all__') {
+                filters.types.clear();
+            } else if (filters.types.has(btn.dataset.type)) {
+                filters.types.delete(btn.dataset.type);
+            } else {
+                filters.types.add(btn.dataset.type);
+            }
+            syncChipUI();
+            scheduleFetch(150);
+        });
+
+        const rMin = document.getElementById('rangeMin');
+        const rMax = document.getElementById('rangeMax');
+        rMin.min = rMax.min = Math.floor(fo.price_min);
+        rMin.max = rMax.max = Math.ceil(fo.price_max);
+        rMin.value = filters.minPrice !== null ? filters.minPrice : fo.price_min;
+        rMax.value = filters.maxPrice !== null ? filters.maxPrice : fo.price_max;
+        updateRangeUI();
+
+        [rMin, rMax].forEach(input => {
+            input.addEventListener('pointerdown', () => {
+                rMin.style.zIndex = input === rMin ? 5 : 3;
+                rMax.style.zIndex = input === rMax ? 5 : 3;
+            });
+            input.addEventListener('input', () => {
+                if (Number(rMin.value) > Number(rMax.value)) {
+                    if (input === rMin) rMin.value = rMax.value;
+                    else rMax.value = rMin.value;
+                }
+                updateRangeUI();
+            });
+            input.addEventListener('change', () => {
+                filters.minPrice = Number(rMin.value);
+                filters.maxPrice = Number(rMax.value);
+                scheduleFetch(0);
+            });
+        });
+
+        document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+            filters.types.clear();
+            filters.minPrice = null;
+            filters.maxPrice = null;
+            rMin.value = fo.price_min;
+            rMax.value = fo.price_max;
+            updateRangeUI();
+            syncChipUI();
+            scheduleFetch(0);
+        });
+
+        filtersBuilt = true;
+    }
+
+    function typeColor(type) {
+        if (!filterOptionsCache) return '#8ab4ff';
+        const idx = filterOptionsCache.property_types.indexOf(type);
+        return MIX_PALETTE[idx >= 0 ? idx % MIX_PALETTE.length : 0] || '#8ab4ff';
+    }
+
+    function buildTypeLegend() {
+        if (!filterOptionsCache) return;
+        const el = document.getElementById('typeLegend');
+        if (!el) return;
+        el.innerHTML = filterOptionsCache.property_types.map((t, i) => {
+            const color = MIX_PALETTE[i % MIX_PALETTE.length];
+            return `<span style="color:${color}"><i style="background:${color}"></i>${t}</span>`;
+        }).join('');
+    }
+
+    /* ============ Google Maps: one live component per city ============ */
+
+    const CITY_CENTERS = {
+        "Karachi":    { lat: 24.8607, lng: 67.0011, zoom: 11 },
+        "Lahore":     { lat: 31.5497, lng: 74.3436, zoom: 11 },
+        "Islamabad":  { lat: 33.6844, lng: 73.0479, zoom: 11 },
+        "Rawalpindi": { lat: 33.5651, lng: 73.0169, zoom: 11 }
+    };
+
+    const DARK_MAP_STYLE = [
+        { elementType: "geometry", stylers: [{ color: "#12172e" }] },
+        { elementType: "labels.text.stroke", stylers: [{ color: "#12172e" }] },
+        { elementType: "labels.text.fill", stylers: [{ color: "#8b96c3" }] },
+        { featureType: "administrative", elementType: "geometry", stylers: [{ color: "#2a3562" }] },
+        { featureType: "poi", stylers: [{ visibility: "off" }] },
+        { featureType: "road", elementType: "geometry", stylers: [{ color: "#1c2450" }] },
+        { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#6b76a8" }] },
+        { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#242c52" }] },
+        { featureType: "transit", stylers: [{ visibility: "off" }] },
+        { featureType: "water", elementType: "geometry", stylers: [{ color: "#0b1020" }] },
+        { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#4a5590" }] }
+    ];
+
+    let cityMaps = {};
+    let cityMarkers = { Karachi: [], Lahore: [], Islamabad: [], Rawalpindi: [] };
+    let lastMapPoints = null;
+
+    function buildGmapGrid() {
+        const grid = document.getElementById('gmapGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi'].forEach(city => {
+            const slug = CITY_SLUG[city];
+            const card = document.createElement('div');
+            card.className = 'wide-card gmap-card anim';
+            card.innerHTML = `
+                <div class="card-head">
+                    <h3><i style="background:${CITY_COLORS[city]};color:${CITY_COLORS[city]}"></i>${city}</h3>
+                    <span class="badge" id="gcount-${slug}">&mdash;</span>
+                </div>
+                <div class="gmap-canvas" id="gmap-${slug}"></div>
+                <div class="gmap-empty" id="empty-${slug}" style="display:none;">No properties match the current filters in ${city}.</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function ensureCityMap(city) {
+        if (cityMaps[city]) return cityMaps[city];
+        const center = CITY_CENTERS[city];
+        const map = new google.maps.Map(document.getElementById('gmap-' + CITY_SLUG[city]), {
+            center: { lat: center.lat, lng: center.lng },
+            zoom: center.zoom,
+            streetViewControl: false,
+            mapTypeControl: true,
+            fullscreenControl: true,
+            styles: DARK_MAP_STYLE
+        });
+        cityMaps[city] = map;
+        return map;
+    }
+
+    function updateCityMarkers(city, points) {
+        const map = ensureCityMap(city);
+
+        (cityMarkers[city] || []).forEach(m => m.setMap(null));
+        cityMarkers[city] = [];
+
+        const infoWindow = new google.maps.InfoWindow();
+
+        points.forEach(p => {
+            const color = typeColor(p.type);
+            const marker = new google.maps.Marker({
+                position: { lat: p.lat, lng: p.lng },
+                map: map,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 6,
+                    fillColor: color,
+                    fillOpacity: 0.9,
+                    strokeColor: '#0b1020',
+                    strokeWeight: 1
+                }
+            });
+            marker.addListener('click', () => {
+                infoWindow.setContent(
+                    '<div style="color:#0b1020;font-family:Manrope,sans-serif;min-width:170px;">' +
+                    '<b>' + p.location + '</b><br/>' + p.type + '<br/>' +
+                    '<span style="color:#0a7a3d;font-weight:700;">' + fmtRs(p.price) + '</span></div>'
+                );
+                infoWindow.open(map, marker);
+            });
+            cityMarkers[city].push(marker);
+        });
+
+        const emptyEl = document.getElementById('empty-' + CITY_SLUG[city]);
+        if (emptyEl) emptyEl.style.display = points.length ? 'none' : 'flex';
+
+        const countEl = document.getElementById('gcount-' + CITY_SLUG[city]);
+        if (countEl) countEl.textContent = points.length.toLocaleString() + ' shown';
+    }
+
+    function updateAllCityMaps(mapPoints) {
+        lastMapPoints = mapPoints;
+        if (!window.__gMapsReady || typeof google === 'undefined') return;
+
+        const byCity = { Karachi: [], Lahore: [], Islamabad: [], Rawalpindi: [] };
+        mapPoints.forEach(p => { if (byCity[p.city]) byCity[p.city].push(p); });
+
+        Object.keys(byCity).forEach(city => updateCityMarkers(city, byCity[city]));
+    }
+
+    window.__onGMapsReady = function () {
+        if (lastMapPoints) updateAllCityMaps(lastMapPoints);
+    };
+
+    let fetchToken = 0;
+
+    async function fetchAndRender() {
+        const status = document.getElementById('pageStatus');
+        const overlay = document.getElementById('loadOverlay');
+        const pieGrid = document.getElementById('pieGrid');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        const myToken = ++fetchToken;
+
+        refreshBtn.classList.add('spinning');
+        status.textContent = '';
+        status.classList.remove('error-msg');
+
+        try {
+            const qs = buildQueryString();
+            const res = await fetch(DATA_URL + (qs ? '?' + qs : ''), { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
+            const data = await res.json();
+            if (data.ERROR) throw new Error(data.ERROR);
+
+            // a newer filter/refresh request has since been fired — drop this stale response
+            if (myToken !== fetchToken) return;
+
+            overlay.classList.add('hidden');
+
+            if (!filtersBuilt && data.filter_options) {
+                buildFilterBar(data.filter_options);
+            }
+
+            const hasActiveFilter = filters.types.size > 0 || filters.minPrice !== null || filters.maxPrice !== null;
+            const matched = data.summary ? data.summary.total_listings : 0;
+            document.getElementById('filterCount').innerHTML = hasActiveFilter
+                ? '<b>' + fmtNum(matched) + '</b> listings match your filters'
+                : 'Showing all <b>' + fmtNum(matched) + '</b> listings';
+
+            renderKPIs(data.summary);
+
+            const cityOrder = ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi'];
+            pieGrid.innerHTML = '';
+            cityOrder.forEach(city => pieGrid.appendChild(buildPieCard(city)));
+
+            cityOrder.forEach(city => {
+                const info = data.cities[city] || { labels: [], data: [], count: 0 };
+                const slug = CITY_SLUG[city];
+                document.getElementById('count-' + slug).textContent = info.count.toLocaleString();
+                const avg = info.data.length ? (info.data.reduce((a, b) => a + b, 0) / info.data.length) : 0;
+                document.getElementById('avg-' + slug).textContent = fmtRs(avg);
+
+                if (info.labels.length) {
+                    renderPie(city, info.labels, info.data);
+                } else {
+                    document.getElementById('pie-' + slug).innerHTML = '<p style="text-align:center;color:#93a0c9;padding-top:100px;">No matching data</p>';
+                }
+            });
+
+            if (data.property_types.labels.length) {
+                renderDonut('typeDonut', data.property_types.labels, data.property_types.data, MIX_PALETTE, 'Listings');
+                document.getElementById('typeBadge').textContent = data.property_types.labels.length + ' types';
+            } else {
+                document.getElementById('typeDonut').innerHTML = '<p style="text-align:center;color:#93a0c9;padding-top:100px;">No data</p>';
+                document.getElementById('typeBadge').textContent = '0 types';
+            }
+
+            if (data.purpose_mix.labels.length) {
+                renderDonut('purposeDonut', data.purpose_mix.labels, data.purpose_mix.data, ['#34d399', '#fb7185', '#ffd166'], 'Listings');
+                document.getElementById('purposeBadge').textContent = data.purpose_mix.labels.join(' / ');
+            } else {
+                document.getElementById('purposeDonut').innerHTML = '<p style="text-align:center;color:#93a0c9;padding-top:100px;">No data</p>';
+                document.getElementById('purposeBadge').textContent = '&mdash;';
+            }
+
+            renderBar(data.city_totals.labels, data.city_totals.data, data.city_totals.counts);
+            renderLeaderboard(data.city_totals.labels, data.city_totals.data, data.city_totals.counts);
+
+            if (data.bedroom_dist.labels.length || data.bathroom_dist.labels.length) {
+                renderRoomsChart(data.bedroom_dist, data.bathroom_dist);
+                document.getElementById('roomsBadge').textContent = fmtNum(matched) + ' listings';
+            } else {
+                document.getElementById('roomsChart').innerHTML = '<p style="text-align:center;color:#93a0c9;padding-top:100px;">No data</p>';
+                document.getElementById('roomsBadge').textContent = '0 listings';
+            }
+
+            if (data.price_dist.labels.length) {
+                renderPriceDistChart(data.price_dist);
+                document.getElementById('priceDistBadge').textContent = data.price_dist.labels.length + ' bands';
+            } else {
+                document.getElementById('priceDistChart').innerHTML = '<p style="text-align:center;color:#93a0c9;padding-top:100px;">No data</p>';
+                document.getElementById('priceDistBadge').textContent = '0 bands';
+            }
+
+            renderStatsTable(data.city_stats);
+
+            const gmapsSection = document.getElementById('gmapsSection');
+            if (!window.__GMAPS_KEY__) {
+                gmapsSection.innerHTML =
+                    '<div class="gmaps-missing-key">Add a Google Maps API key in <code>settings.py</code> ' +
+                    '(<code>GOOGLE_MAPS_API_KEY</code>) to enable the live per-city maps. Get a free key from ' +
+                    '<a href="https://developers.google.com/maps/documentation/javascript/demo-key" target="_blank" rel="noopener">' +
+                    "Google's Maps Demo Key page</a>.</div>";
+            } else {
+                if (!document.getElementById('gmapGrid')) {
+                    gmapsSection.innerHTML = '<div class="map-legend" id="typeLegend"></div><div class="gmap-grid" id="gmapGrid"></div>';
+                }
+                const gmapGridEl = document.getElementById('gmapGrid');
+                if (!gmapGridEl.childElementCount) {
+                    buildGmapGrid();
+                }
+                buildTypeLegend();
+                updateAllCityMaps(data.map_points);
+            }
+
+        } catch (err) {
+            overlay.classList.add('hidden');
+            status.textContent = 'Failed to load dashboard: ' + err.message;
+            status.classList.add('error-msg');
+            console.error(err);
+        } finally {
+            refreshBtn.classList.remove('spinning');
+        }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', () => fetchAndRender());
+    document.addEventListener('DOMContentLoaded', () => fetchAndRender());
+</script>
+
+</body>
+</html>

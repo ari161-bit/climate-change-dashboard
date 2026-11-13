@@ -1,0 +1,204 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+  <!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Real Estate Prediction & Analytics</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+        }
+
+        .chart-card {
+            background: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media(max-width: 900px) {
+
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #555;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <a href="/" class="back-btn">
+        Home
+    </a>
+
+
+    <div class="page-title">
+
+        <h1>
+            Real Estate Analytics
+        </h1>
+
+        <p>
+            City-wise property price and location analysis
+        </p>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- BAR + PIE -->
+    <!-- ========================================= -->
+
+    <div class="charts-row">
+
+
+        <!-- BAR CHART -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Average Price by City
+            </div>
+
+            {{ BarChart_Div|safe }}
+
+        </div>
+
+
+        <!-- PIE CHART -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Property Distribution
+            </div>
+
+            {{ PieChart_Div|safe }}
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- LINE CHART -->
+    <!-- ========================================= -->
+
+    <div class="chart-card">
+
+        <div class="chart-title">
+            Average Real Estate Price by City
+        </div>
+
+        {{ LineChart_Div|safe }}
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- MAP -->
+    <!-- ========================================= -->
+
+    {% if MapChart_Div %}
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Real Estate Location Map
+            </div>
+
+            {{ MapChart_Div|safe }}
+
+        </div>
+
+    {% else %}
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Map Not Available
+            </div>
+
+            <p style="text-align:center;color:#777;">
+                Latitude and longitude data were not found
+                in the Excel file.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+</body>
+
+</html>
+{% endblock %}

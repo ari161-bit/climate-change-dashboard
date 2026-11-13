@@ -1,0 +1,96 @@
+{% extends './template.html' %}
+{% load static %}
+{% block body %}
+  
+    <!-- BREADCRUMB AREA START -->
+    <div class="ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image "  data-bs-bg="img/bg/14.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ltn__breadcrumb-inner">
+                        <h1 class="page-title">Cart</h1>
+                        <div class="ltn__breadcrumb-list">
+                            <ul>
+                                <li><a href="index.html"><span class="ltn__secondary-color"><i class="fas fa-home"></i></span> Home</a></li>
+                                <li>Cart</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BREADCRUMB AREA END -->
+
+    <!-- SHOPING CART AREA START -->
+    <div class="liton__shoping-cart-area mb-120">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping-cart-inner">
+                        <div class="shoping-cart-table table-responsive">
+                            <table class="table">
+                                <!-- <thead>
+                                    <th class="cart-product-remove">Remove</th>
+                                    <th class="cart-product-image">Image</th>
+                                    <th class="cart-product-info">Product</th>
+                                    <th class="cart-product-price">Price</th>
+                                    <th class="cart-product-quantity">Quantity</th>
+                                    <th class="cart-product-subtotal">Subtotal</th>
+                                </thead> -->
+                                <tbody>
+
+                                    {% for row in cart_items %}
+                                    <tr>
+                                        <td class="cart-product-remove">x</td>
+                                        <td class="cart-product-image">
+                                            <a href="\myshop\remove_from_cart\{{ row.product.id }}"><img src={{ row.product.image.url }} alt="#"></a>
+                                        </td>
+                                        <td class="cart-product-info">
+                                            <h4><a href="product-details.html">{{ row.product.product_name }}</a></h4>
+                                        </td>
+                                        <td class="cart-product-price">$ {{ row.product.price }}</td>
+                                        <td class="cart-product-quantity">
+                                            <div class="cart-plus-minus">
+                                                <input type="text" value="{{ row.quantity }}" name="qtybutton" class="cart-plus-minus-box">
+                                            </div>
+                                        </td>
+                                        <td class="cart-product-subtotal">$ {{ row.total }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="shoping-cart-total mt-50">
+                            <h4>Cart Totals</h4>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>Cart Subtotal</td>
+                                        <td>$ {{ cart_total }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shipping and Handing</td>
+                                        <td>$ {{ cart_sub_total }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vat</td>
+                                        <td>$00.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Order Total</strong></td>
+                                        <td><strong>$ {{ cart_total }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="btn-wrapper text-right">
+                                <a href="\myshop\checkout" class="theme-btn-1 btn btn-effect-1">Proceed to checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SHOPING CART AREA END -->
+{% endblock %}

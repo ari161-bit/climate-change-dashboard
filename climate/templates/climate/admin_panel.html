@@ -1,0 +1,53 @@
+{% extends 'climate/base.html' %}
+{% block title %}Alerts &amp; admin - EarthScape Climate{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 4px">Alerts &amp; administration</h1>
+<p style="color:var(--muted);margin:0 0 20px">Set the thresholds that drive dashboard alerts, and respond to feedback from analysts.</p>
+<div style="display:grid;grid-template-columns:minmax(320px,460px) 1fr;gap:18px;align-items:start" class="ad">
+  <div>
+    <form class="card" method="post">
+      {% csrf_token %}<input type="hidden" name="action" value="thresholds">
+      <h2>Alert thresholds</h2>
+      <div class="sub">An alert fires when the latest value exceeds its threshold; it turns critical at 1.5&times;.</div>
+      {% for t in thresholds %}
+      <label for="th_{{ t.key }}">{{ t.label }} ({{ t.unit }})</label>
+      <input id="th_{{ t.key }}" name="th_{{ t.key }}" type="number" step="any" min="0.001" value="{{ t.value }}" required>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">{{ t.description }}</div>
+      {% endfor %}
+      <button class="primary" type="submit" style="margin-top:16px">Save thresholds</button>
+    </form>
+    <div class="card" style="margin-top:16px">
+      <h2>Current status</h2>
+      {% for a in alerts %}
+      <div style="display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)">
+        <span style="width:11px;height:11px;border-radius:50%;background:{% if a.severity == 'critical' %}var(--hot){% elif a.severity == 'warning' %}var(--warm){% else %}var(--green){% endif %}"></span>
+        <div style="flex:1">{{ a.subject }}</div><div style="color:var(--muted)">{{ a.value }} / {{ a.threshold }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div>
+    <h2 style="margin:0 0 10px;font-size:16px">Feedback inbox ({{ feedback_items|length }})</h2>
+    {% for item in feedback_items %}
+    <form class="card" method="post" style="margin-bottom:12px">
+      {% csrf_token %}<input type="hidden" name="action" value="respond"><input type="hidden" name="feedback_id" value="{{ item.id }}">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <strong>{{ item.subject }}</strong>
+        <span class="badge" style="{% if item.status == 'resolved' %}color:var(--green);border-color:var(--green){% endif %}">{{ item.get_status_display }}</span>
+      </div>
+      <div style="color:var(--muted);font-size:12.5px;margin:2px 0 8px">{{ item.user.username }} &middot; {{ item.get_category_display }} &middot; {{ item.created_at|date:"j M Y, H:i" }}</div>
+      <div style="white-space:pre-wrap">{{ item.message }}</div>
+      <label for="r{{ item.id }}">Response</label>
+      <textarea id="r{{ item.id }}" name="response" rows="3" maxlength="2000">{{ item.response }}</textarea>
+      <div style="display:flex;gap:14px;align-items:center;margin-top:10px">
+        <button type="submit">Save</button>
+        <label style="margin:0;display:flex;gap:6px;align-items:center"><input type="checkbox" name="resolve" value="1" style="width:auto" {% if item.status == 'resolved' %}checked{% endif %}> Mark resolved</label>
+      </div>
+    </form>
+    {% empty %}
+    <div class="card" style="color:var(--muted)">No feedback yet.</div>
+    {% endfor %}
+  </div>
+</div>
+<style>@media(max-width:900px){.ad{grid-template-columns:1fr!important}}</style>
+{% endblock %}
