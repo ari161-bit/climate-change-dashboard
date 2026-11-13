@@ -42,7 +42,7 @@
       "co2_ppm"
     ],
     "frequency": "monthly",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1950,
       1960,
@@ -76,7 +76,7 @@
       "events"
     ],
     "frequency": "annual",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1970,
       1980,
@@ -113,7 +113,7 @@
       "share_global_co2"
     ],
     "frequency": "annual",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1850,
       1860,
@@ -158,7 +158,7 @@
       "forest_km2"
     ],
     "frequency": "annual",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1990,
       2000,
@@ -188,7 +188,7 @@
       "observations"
     ],
     "frequency": "annual",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1950,
       1960,
@@ -215,6 +215,77 @@
     "year_max": 2023,
     "year_min": 1956
   },
+  "imf_disasters": {
+    "analyzer": true,
+    "category": "Impacts",
+    "columns": [
+      "entity",
+      "iso3",
+      "indicator",
+      "unit",
+      "year",
+      "value",
+      "is_group"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 13:19 UTC",
+    "partitions": [
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "value": 0.0
+      }
+    },
+    "rows": 22236,
+    "sha256": "3cf9bef390bb5a96e060aaf6a0c4c4805ba3efc363674808b01f428f6f8aad3d",
+    "source": "IMF Climate Change Indicators (EM-DAT, CRED)",
+    "title": "Climate-related disasters by country (IMF)",
+    "unit": "events / people affected",
+    "url": "https://climatedata.imf.org/",
+    "year_max": 2024,
+    "year_min": 1980
+  },
+  "imf_forest_carbon": {
+    "analyzer": true,
+    "category": "Land use",
+    "columns": [
+      "entity",
+      "iso3",
+      "indicator",
+      "unit",
+      "year",
+      "value",
+      "is_group"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 13:19 UTC",
+    "partitions": [
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "value": 0.0
+      }
+    },
+    "rows": 42294,
+    "sha256": "7c43a16e0fea32a187e88b0cba3ec4ffdaba9e2082d7edc9de2b9d6c4944186c",
+    "source": "IMF Climate Change Indicators (FAO)",
+    "title": "Forest area and carbon stocks by country (IMF)",
+    "unit": "varies by indicator",
+    "url": "https://climatedata.imf.org/",
+    "year_max": 2023,
+    "year_min": 1992
+  },
   "sea_level_annual": {
     "category": "Oceans",
     "columns": [
@@ -222,7 +293,7 @@
       "sea_level_mm"
     ],
     "frequency": "annual",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1880,
       1890,
@@ -265,7 +336,7 @@
       "sh_anomaly"
     ],
     "frequency": "monthly",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1880,
       1890,
@@ -314,7 +385,7 @@
       "antarctic_90_64S"
     ],
     "frequency": "annual",
-    "ingested_at": "2026-11-13 12:48 UTC",
+    "ingested_at": "2026-11-13 13:19 UTC",
     "partitions": [
       1880,
       1890,

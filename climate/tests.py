@@ -95,6 +95,43 @@ class ModelTests(TestCase):
         self.assertEqual(runs[0].triggered_by, 'tester')
 
 
+class TrendAnalyzerTests(TestCase):
+    def test_reproduces_the_known_regional_series(self):
+        result = analytics.trend_analysis('imf_forest_carbon', 'Advanced Economies', 'Carbon stocks in forests', 2035)
+        self.assertEqual(result['kpis']['recent10'], 57863.19)
+        self.assertGreater(result['kpis']['r2'], 0.98)
+        self.assertEqual(result['future'][-1][0], 2035)
+        self.assertEqual(len(result['fitted']), len(result['observed']))
+
+    def test_outliers_are_beyond_two_sigma(self):
+        result = analytics.trend_analysis('imf_forest_carbon', 'Advanced Economies', 'Carbon stocks in forests', 2035)
+        self.assertTrue(all(abs(o['z']) >= 2 for o in result['outliers']))
+        self.assertEqual(result['kpis']['outliers'], len(result['outliers']))
+
+    def test_forced_model_and_horizon_are_respected(self):
+        result = analytics.trend_analysis('imf_disasters', 'Pakistan', 'Number of Disasters: TOTAL', 2040, 'quadratic')
+        self.assertEqual(result['model'], 'quadratic')
+        self.assertEqual(result['future'][-1][0], 2040)
+
+    def test_country_groups_are_separated_from_countries(self):
+        options = analytics.analyzer_options('imf_forest_carbon', 'Carbon stocks in forests')
+        self.assertIn('World', options['groups'])
+        self.assertIn('Namibia', options['countries'])      # ISO2 code "NA" must not be read as missing
+        self.assertNotIn('Namibia', options['groups'])
+
+    def test_too_little_data_is_a_clean_error(self):
+        with self.assertRaises(ValueError):
+            analytics.trend_analysis('imf_disasters', 'Nowhere', 'Number of Disasters: TOTAL', 2035)
+
+    def test_endpoints(self):
+        self.client.force_login(make_user('ana', 'Analysts'))
+        ok = self.client.get(reverse('climate:trends_data'), {'dataset': 'imf_forest_carbon', 'entity': 'World', 'indicator': 'Forest area'})
+        self.assertEqual(ok.status_code, 200)
+        bad = self.client.get(reverse('climate:trends_data'), {'dataset': 'imf_forest_carbon', 'entity': 'Nowhere', 'indicator': 'Forest area'})
+        self.assertEqual(bad.status_code, 422)
+        self.assertEqual(self.client.get(reverse('climate:trends_data'), {'dataset': 'secret'}).status_code, 404)
+
+
 class CryptoTests(TestCase):
     def test_roundtrip_and_idempotence(self):
         token = crypto.encrypt('secret climate note')
@@ -118,14 +155,14 @@ class AccessTests(TestCase):
         self.analyst = make_user('ana', 'Analysts')
 
     def test_anonymous_users_are_redirected(self):
-        for name in ('dashboard', 'data', 'explorer', 'live', 'satellite', 'models', 'help', 'feedback', 'admin_panel', 'monitor'):
+        for name in ('dashboard', 'data', 'explorer', 'trends', 'trends_options', 'trends_data', 'live', 'satellite', 'models', 'help', 'feedback', 'admin_panel', 'monitor'):
             response = self.client.get(reverse(f'climate:{name}'))
             self.assertEqual(response.status_code, 302, name)
             self.assertIn('/login/', response['Location'])
 
     def test_analyst_can_read_but_not_administer(self):
         self.client.force_login(self.analyst)
-        for name in ('dashboard', 'explorer', 'live', 'satellite', 'models', 'help', 'feedback'):
+        for name in ('dashboard', 'explorer', 'trends', 'live', 'satellite', 'models', 'help', 'feedback'):
             self.assertEqual(self.client.get(reverse(f'climate:{name}')).status_code, 200, name)
         for name in ('admin_panel', 'monitor', 'monitor_data', 'backup'):
             self.assertEqual(self.client.get(reverse(f'climate:{name}')).status_code, 302, name)

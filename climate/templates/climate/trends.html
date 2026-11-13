@@ -1,0 +1,92 @@
+{% extends 'climate/base.html' %}
+{% load static %}
+{% block title %}Trend analyzer · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Trend analyzer</p>
+  <h1>Climate and carbon trends by country or region</h1>
+  <p class="lede">Pick a dataset, a country or IMF country group and an indicator. A trend model is fitted to the observed years, projected forward, and checked for outliers. The model is chosen by backtest unless you force one.</p>
+</section>
+
+<div class="card" style="margin-bottom:18px">
+  <div class="grid" style="align-items:end">
+    <div class="c3"><label for="ds" style="margin-top:0">Dataset</label><select id="ds">{% for key, title in datasets.items %}<option value="{{ key }}">{{ title }}</option>{% endfor %}</select></div>
+    <div class="c3"><label for="ind" style="margin-top:0">Indicator</label><select id="ind"></select></div>
+    <div class="c3"><label for="ent" style="margin-top:0">Country / region</label><select id="ent"></select></div>
+    <div class="c3"><div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
+      <div><label for="hor" style="margin-top:0">Project to</label><select id="hor"><option>2030</option><option selected>2035</option><option>2040</option><option>2050</option></select></div>
+      <div><label for="mod" style="margin-top:0">Model</label><select id="mod"><option value="auto" selected>Auto</option><option value="linear">Linear</option><option value="quadratic">Quadratic</option></select></div></div></div>
+  </div>
+</div>
+
+<div class="kpis" id="kp" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"></div>
+<div id="msg" class="card hidden" style="margin-bottom:18px"></div>
+<div class="grid" id="body">
+  <div class="card c12"><h2 id="chTitle">Observed values and projection</h2><div class="sub" id="chSub"></div><div id="chTrend" class="chart tall"></div></div>
+  <div class="card c6"><h2>Model quality</h2><div class="sub">R² and RMSE are measured on the observed years; the backtest scores each model on years it was not trained on.</div><div class="metrics" id="quality"></div></div>
+  <div class="card c6"><h2>Outliers</h2><div class="sub">Years whose value departs from the trend by more than two standard deviations of the residuals.</div><div class="table-wrap" id="outl"></div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'vendor/highcharts/highcharts-more.js' %}"></script>
+<script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
+<script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+<script src="{% static 'climate/charts.js' %}"></script>
+<script>
+const $ = id => document.getElementById(id);
+const URLS = {options: "{% url 'climate:trends_options' %}", data: "{% url 'climate:trends_data' %}", login: "{% url 'climate:login' %}"};
+const DEFAULTS = {'imf_forest_carbon': ['Carbon stocks in forests', 'Advanced Economies'], 'imf_disasters': ['Number of Disasters: TOTAL', 'Pakistan']};
+let P = ES.apply(), last = null;
+const fmt = (v, d = 2) => v == null ? '-' : Number(v).toLocaleString(undefined, {maximumFractionDigits: d});
+const kpi = (l, v, u, c) => `<div class="kpi" style="--c:${c}"><div class="l">${l}</div><div class="v" style="font-size:1.6rem">${v}<small> ${u || ''}</small></div></div>`;
+
+async function getJson(url){
+  const res = await fetch(url, {credentials: 'same-origin'});
+  if (res.redirected || !(res.headers.get('content-type') || '').includes('json')) { location.href = URLS.login; return null; }
+  return {ok: res.ok, data: await res.json()};
+}
+async function loadOptions(keepIndicator, keepEntity){
+  const r = await getJson(`${URLS.options}?dataset=${$('ds').value}&indicator=${encodeURIComponent(keepIndicator || '')}`);
+  if (!r) return;
+  const o = r.data;
+  $('ind').innerHTML = o.indicators.map(i => `<option>${i}</option>`).join('');
+  $('ind').value = o.indicator;
+  const opt = list => list.map(e => `<option>${e}</option>`).join('');
+  $('ent').innerHTML = `<optgroup label="Regions and groups">${opt(o.groups)}</optgroup><optgroup label="Countries">${opt(o.countries)}</optgroup>`;
+  const all = o.groups.concat(o.countries);
+  $('ent').value = all.includes(keepEntity) ? keepEntity : (all.includes(DEFAULTS[$('ds').value][1]) ? DEFAULTS[$('ds').value][1] : all[0]);
+}
+function render(d){
+  P = ES.palette(); last = d; const k = d.kpis;
+  $('kp').innerHTML = kpi('Selected region', d.entity.length > 22 ? d.entity.slice(0, 21) + '…' : d.entity, '', P.cool) + kpi('Recent 10-yr average', fmt(k.recent10), d.unit, P.green) +
+    kpi('Model R² score', k.r2, '', P.teal) + kpi('Model RMSE', fmt(k.rmse, 3), '', P.amber) + kpi('Outliers detected', k.outliers, '', P.hot) +
+    kpi(`Projected ${k.horizon}`, fmt(k.projected), (k.change_pct != null ? (k.change_pct > 0 ? '+' : '') + k.change_pct + '% vs ' + k.last_year : ''), P.deep);
+  $('chTitle').textContent = `${d.indicator}: observed values and projection (${d.entity})`;
+  $('chSub').textContent = `${d.model_label} model, ${k.years_observed} observed years (${d.observed[0][0]}-${k.last_year}), projected to ${k.horizon}. Shaded band is the 95% range. Unit: ${d.unit}.` + (d.zero_filled ? ' Years with no recorded disaster count as zero.' : '');
+  Highcharts.chart('chTrend', {chart: {zoomType: 'x'}, xAxis: {title: {text: 'Year'}, plotLines: [{value: k.last_year, color: P.faint, dashStyle: 'Dash', width: 1}]}, yAxis: {title: {text: d.unit}},
+    tooltip: {valueDecimals: 2}, series: [
+      {name: 'Observed values', type: 'line', data: d.observed, color: P.green, lineWidth: 2.4, marker: {enabled: true, radius: 3}},
+      {name: `Trend and projection to ${k.horizon}`, type: 'line', data: d.fitted.concat(d.future), color: P.cool, dashStyle: 'Dash', lineWidth: 2, marker: {enabled: false}},
+      {name: '95% band', type: 'arearange', data: d.band, color: P.cool, fillOpacity: .16, lineWidth: 0, marker: {enabled: false}, enableMouseTracking: false},
+      {name: 'Outliers', type: 'scatter', data: d.outliers.map(o => [o.year, o.value]), color: P.hot, marker: {radius: 7, symbol: 'diamond', lineColor: P.paper, lineWidth: 1.5}}]});
+  const bt = Object.entries(d.backtest).map(([n, v]) => [fmt(v, 3), `backtest RMSE, ${n}`]);
+  $('quality').innerHTML = [[d.model_label, 'model used'], [fmt(k.slope_per_year, 3) + ' ' + d.unit, 'change per year'], [k.r2, 'R² (fit)'], [fmt(k.rmse, 3), 'RMSE (fit)']].concat(bt)
+    .map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
+  $('outl').innerHTML = d.outliers.length ? '<table class="t"><tr><th>Year</th><th>Value</th><th>Expected</th><th>z</th></tr>' + d.outliers.map(o => `<tr><td>${o.year}</td><td>${fmt(o.value)}</td><td>${fmt(o.expected)}</td><td><span class="pill">${o.z}σ</span></td></tr>`).join('') + '</table>'
+    : '<p class="muted">No year departs from the trend by more than two standard deviations.</p>';
+}
+async function run(){
+  const q = new URLSearchParams({dataset: $('ds').value, indicator: $('ind').value, entity: $('ent').value, horizon: $('hor').value, model: $('mod').value});
+  const r = await getJson(`${URLS.data}?${q}`); if (!r) return;
+  $('msg').classList.toggle('hidden', r.ok); $('body').classList.toggle('hidden', !r.ok);
+  if (!r.ok) { $('msg').textContent = r.data.error || 'Could not analyse that selection.'; $('kp').innerHTML = ''; return; }
+  render(r.data);
+}
+$('ds').onchange = async () => { await loadOptions(DEFAULTS[$('ds').value][0], DEFAULTS[$('ds').value][1]); $('ind').value = DEFAULTS[$('ds').value][0]; await run(); };
+$('ind').onchange = async () => { const e = $('ent').value; await loadOptions($('ind').value, e); await run(); };
+['ent', 'hor', 'mod'].forEach(id => $(id).onchange = run);
+ES.onTheme(() => { if (last) render(last); });
+(async () => { await loadOptions(DEFAULTS[$('ds').value][0], DEFAULTS[$('ds').value][1]); $('ind').value = DEFAULTS[$('ds').value][0]; await run(); })();
+</script>
+{% endblock %}

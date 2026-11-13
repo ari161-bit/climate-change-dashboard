@@ -1,8 +1,10 @@
 import io
+import os
 import time
 
 import pandas as pd
 import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from climate import lake
@@ -28,6 +30,19 @@ CITIES = {
     'Tokyo': (35.68, 139.69), 'Sydney': (-33.87, 151.21), 'Cairo': (30.04, 31.24), 'Lagos': (6.52, 3.38),
     'London': (51.51, -0.13), 'New York': (40.71, -74.01), 'Sao Paulo': (-23.55, -46.63), 'Moscow': (55.76, 37.62),
 }
+
+
+def imf_tidy(filename, year_prefix):
+    """IMF Climate Change Indicators CSV (one row per country x indicator, one column per year) to long form."""
+    path = os.path.join(settings.BASE_DIR, 'climate', 'data', 'source', filename)
+    raw = pd.read_csv(path, encoding='utf-8-sig', keep_default_na=False, na_values=[''])   # keep Namibia's ISO2 code "NA" as text
+    year_cols = [c for c in raw.columns if c.lstrip(year_prefix).isdigit() and (c.startswith(year_prefix) if year_prefix else c.isdigit())]
+    long = raw.melt(id_vars=['Country', 'ISO2', 'ISO3', 'Indicator', 'Unit'], value_vars=year_cols, var_name='year', value_name='value')
+    long['year'] = long['year'].str.lstrip(year_prefix).astype(int) if year_prefix else long['year'].astype(int)
+    long['is_group'] = long['ISO2'].isna()          # IMF country groupings (World, Advanced Economies, ...) have no ISO2 code
+    long = long.dropna(subset=['value'])
+    long['Indicator'] = long['Indicator'].str.replace('Climate related disasters frequency, ', '', regex=False)
+    return long.rename(columns={'Country': 'entity', 'ISO3': 'iso3', 'Indicator': 'indicator', 'Unit': 'unit'}).drop(columns='ISO2')
 
 
 def fetch(url, **kwargs):
@@ -188,9 +203,24 @@ class Command(BaseCommand):
                 'title': 'City temperatures (annual, 12 cities)', 'unit': 'deg C', 'category': 'Weather stations',
                 'source': 'NASA POWER (MERRA-2 reanalysis)', 'url': 'https://power.larc.nasa.gov/', 'frequency': 'annual'}, quality)
 
+        def imf_forests():
+            data = imf_tidy('imf_carbon_indicators.csv', 'F')
+            data, quality = lake.clean(data, ['value'], fill_limit=0)
+            return lake.write_dataset('imf_forest_carbon', data, {
+                'title': 'Forest area and carbon stocks by country (IMF)', 'unit': 'varies by indicator', 'category': 'Land use', 'analyzer': True,
+                'source': 'IMF Climate Change Indicators (FAO)', 'url': 'https://climatedata.imf.org/', 'frequency': 'annual'}, quality)
+
+        def imf_disasters():
+            data = imf_tidy('imf_disaster_indicators.csv', '')
+            data, quality = lake.clean(data, ['value'], fill_limit=0)
+            return lake.write_dataset('imf_disasters', data, {
+                'title': 'Climate-related disasters by country (IMF)', 'unit': 'events / people affected', 'category': 'Impacts', 'analyzer': True,
+                'source': 'IMF Climate Change Indicators (EM-DAT, CRED)', 'url': 'https://climatedata.imf.org/', 'frequency': 'annual'}, quality)
+
         steps = [('temperature_monthly', temperature), ('co2_monthly', co2), ('temperature_zonal_annual', zonal),
                  ('emissions_country_annual', emissions), ('disasters_annual', disasters), ('sea_level_annual', sea_level),
-                 ('glacier_mass_annual', glaciers), ('forest_area_annual', forest)]
+                 ('glacier_mass_annual', glaciers), ('forest_area_annual', forest),
+                 ('imf_forest_carbon', imf_forests), ('imf_disasters', imf_disasters)]
         if options['only_cities']:
             steps = []
         if not options['skip_cities']:

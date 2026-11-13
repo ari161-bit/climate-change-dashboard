@@ -25,6 +25,7 @@
     <div class="nav-links">
       <a class="nav-link {% if page == 'dashboard' %}active{% endif %}" href="{% url 'climate:dashboard' %}">Dashboard</a>
       <a class="nav-link {% if page == 'explorer' %}active{% endif %}" href="{% url 'climate:explorer' %}">Data explorer</a>
+      <a class="nav-link {% if page == 'trends' %}active{% endif %}" href="{% url 'climate:trends' %}">Trends</a>
       <a class="nav-link {% if page == 'live' %}active{% endif %}" href="{% url 'climate:live' %}">Live</a>
       <a class="nav-link {% if page == 'satellite' %}active{% endif %}" href="{% url 'climate:satellite' %}">Satellite</a>
       <a class="nav-link {% if page == 'models' %}active{% endif %}" href="{% url 'climate:models' %}">Models</a>

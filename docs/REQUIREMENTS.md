@@ -8,7 +8,7 @@ Every requirement in the eProject brief, how it is met, where to find it and how
 |---|---|---|---|---|
 | F1 | Secure authentication with roles (administrators, analysts) | Met | `views.login_view`, `signup_view`, groups in `roles.py`; sign-up creates Analysts | `AccessTests` |
 | F1b | Access controls restrict data by role | Met | `admin_required`; raw CSV download and admin-only uploaded datasets restricted | `AccessTests`, `AdminToolsTests` |
-| F2 | Ingest diverse datasets: satellite, weather station, sensor | Met | 9 lake datasets (NASA GISTEMP, NOAA, GCP, EM-DAT, FAO, NASA POWER), live Open-Meteo sensor feed, NASA GIBS satellite imagery, admin uploads | `LakeTests`, manual |
+| F2 | Ingest diverse datasets: satellite, weather station, sensor | Met | 11 lake datasets (NASA GISTEMP, NOAA, GCP, EM-DAT, FAO, IMF, NASA POWER), live Open-Meteo sensor feed, NASA GIBS satellite imagery, admin uploads | `LakeTests`, manual |
 | F2b | Historical and real-time sources | Met | Batch: `ingest_climate_data`. Real-time: `live.py` + `/live/` | `LiveAndMonitorTests` |
 | F2c | Common formats | Met | CSV, JSON, XLS upload parsing; CSV/JSON source ingestion | `AdminToolsTests` |
 | F3 | HDFS storage, partitioning for fast retrieval | **Adapted** | Partitioned lake with manifest and partition pruning (see ARCHITECTURE s2). HDFS needs a cluster; the data is ~300 KB | `LakeTests.test_partition_pruning...` |
@@ -16,7 +16,7 @@ Every requirement in the eProject brief, how it is met, where to find it and how
 | F4b | Identify patterns, anomalies, correlations | Met | k-means regimes, z-score anomalies, correlation matrix | `ModelTests` |
 | F4c | Handle missing or incomplete data gracefully | Met | `lake.clean` fills gaps of 2 periods or fewer, leaves longer gaps blank, records missing % per dataset | `LakeTests.test_clean_fills_short_gaps_only` |
 | F5 | Real-time processing integrated with batch | Met | Live cards beside each city's batch 10-year mean | manual |
-| F6 | ML for trend prediction, anomaly detection, correlation | Met | `ml.py` | `ModelTests` |
+| F6 | ML for trend prediction, anomaly detection, correlation | Met | `ml.py`; per-country/region **Trend analyzer** (`/trends/`) with projection, R², RMSE and outliers | `ModelTests`, `TrendAnalyzerTests` |
 | F6b | Regularly update and refine models | Met | Backtest-based model selection; **Retrain** records a `ModelRun` each time | `ModelTests.test_train_all_records_runs` |
 | F7 | Interactive dashboards, customisable and user-friendly | Met | Year filters, presets, zoom, legend toggles, exports, dark/light theme, dataset explorer with column/group pickers | manual |
 | F7b | Visual representations of patterns, anomalies, predictions | Met | Stripes, anomaly markers, 2050 projection with band, regime scatter, heat-map matrix | manual |

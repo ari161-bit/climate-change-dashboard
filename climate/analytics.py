@@ -306,7 +306,7 @@ def catalogue():
         out.append({
             'name': name, 'title': meta.get('title', name), 'category': meta.get('category', ''), 'unit': meta.get('unit', ''),
             'source': meta.get('source', ''), 'url': meta.get('url', ''), 'frequency': meta.get('frequency', ''),
-            'rows': meta['rows'], 'years': f"{meta['year_min']}-{meta['year_max']}", 'partitions': len(meta['partitions']),
+            'analyzer': meta.get('analyzer', False), 'rows': meta['rows'], 'years': f"{meta['year_min']}-{meta['year_max']}", 'partitions': len(meta['partitions']),
             'columns': meta['columns'], 'sha256': meta['sha256'][:12], 'ingested_at': meta['ingested_at'],
             'gaps_filled': quality.get('gaps_filled', 0), 'max_missing_pct': max(missing.values()) if missing else 0.0,
         })
@@ -338,3 +338,73 @@ def dataset_preview(name, series_col=None, group=None):
             'group_label': group_cols[0] if group_cols else None, 'groups': groups, 'group': group, 'kind': kind, 'points': points,
             'stats': {'count': len(values), 'min': min(values) if values else None, 'max': max(values) if values else None,
                       'mean': round(float(np.mean(values)), 3) if values else None}}
+
+
+# ---------------------------------------------------------------- trend analyzer
+ANALYZER_DATASETS = {'imf_forest_carbon': 'Forests and carbon (IMF)', 'imf_disasters': 'Climate-related disasters (IMF)'}
+
+
+def analyzer_options(dataset, indicator=None):
+    """Indicators in a dataset and, for one indicator, the countries/groups that have data."""
+    frame = lake.read_dataset(dataset)
+    indicators = sorted(frame['indicator'].unique())
+    indicator = indicator if indicator in indicators else indicators[0]
+    sub = frame[frame['indicator'] == indicator]
+    counts = sub.groupby(['entity', 'is_group']).size().reset_index(name='n')
+    counts = counts[counts['n'] >= (3 if dataset == 'imf_disasters' else 8)]
+    groups = sorted(counts[counts['is_group']]['entity'])
+    countries = sorted(counts[~counts['is_group']]['entity'])
+    return {'indicators': indicators, 'indicator': indicator, 'groups': groups, 'countries': countries,
+            'unit': str(sub['unit'].iloc[0]) if len(sub) else ''}
+
+
+def trend_analysis(dataset, entity, indicator, horizon=2035, model='auto'):
+    """Fit a trend to one series, project it, and flag outliers (residuals beyond 2 standard deviations)."""
+    frame = lake.read_dataset(dataset)
+    series = frame[(frame['entity'] == entity) & (frame['indicator'] == indicator)].sort_values('year')
+    series = series.groupby('year', as_index=False).agg(value=('value', 'mean'), unit=('unit', 'first'))
+    zero_filled = False
+    if dataset == 'imf_disasters' and len(series):
+        # EM-DAT lists only events that happened: a blank year means none were recorded, so it counts as zero.
+        full = pd.DataFrame({'year': range(int(frame['year'].min()), int(frame['year'].max()) + 1)})
+        series = full.merge(series, on='year', how='left')
+        series['value'] = series['value'].fillna(0.0)
+        series['unit'] = series['unit'].ffill().bfill()
+        zero_filled = True
+    if len(series) < 8:
+        raise ValueError('Not enough observations for this selection (at least 8 years are needed).')
+    years, values = series['year'].values.astype(float), series['value'].values
+    last = int(years.max())
+    horizon = max(last + 1, min(int(horizon), 2100))
+    first_fold = max(8, len(years) // 2)
+    scores = ml.backtest(years, values, horizon=3, first_fold=first_fold, kinds=('linear', 'quadratic')) if len(years) >= first_fold + 4 else {}
+    chosen = model if model in ('linear', 'quadratic') else (min(scores, key=scores.get) if scores else 'linear')
+    fitted = ml._predict(chosen, years, values, years)
+    residuals = values - fitted
+    resid_std = float(np.std(residuals, ddof=2 if len(years) > 3 else 1)) or 1e-9
+    z = residuals / resid_std
+    ss_tot = float(np.sum((values - values.mean()) ** 2))
+    r2 = 1 - float(np.sum(residuals ** 2)) / ss_tot if ss_tot else 0.0
+    rmse = float(np.sqrt(np.mean(residuals ** 2)))
+    future = np.arange(last + 1, horizon + 1, dtype=float)
+    projection = ml._predict(chosen, years, values, future)
+    band = 1.96 * resid_std
+    outliers = [{'year': int(y), 'value': round(float(v), 2), 'expected': round(float(f), 2), 'z': round(float(zz), 2)}
+                for y, v, f, zz in zip(years, values, fitted, z) if abs(zz) > 2]
+    unit = str(series['unit'].iloc[0])
+    sign = 1 if projection[-1] >= values[-1] else -1
+    return {
+        'entity': entity, 'indicator': indicator, 'unit': unit, 'model': chosen, 'model_label': ml.MODEL_LABELS.get(chosen, chosen).split(' (')[0],
+        'observed': [[int(y), round(float(v), 3)] for y, v in zip(years, values)],
+        'fitted': [[int(y), round(float(v), 3)] for y, v in zip(years, fitted)],
+        'future': [[int(y), round(float(v), 3)] for y, v in zip(future, projection)],
+        'band': [[int(y), round(float(v - band), 3), round(float(v + band), 3)] for y, v in zip(future, projection)],
+        'outliers': outliers,
+        'kpis': {'recent10': round(float(values[-10:].mean()), 2), 'r2': round(r2, 3), 'rmse': round(rmse, 3), 'outliers': len(outliers),
+                 'last_value': round(float(values[-1]), 2), 'last_year': last, 'horizon': horizon,
+                 'projected': round(float(projection[-1]), 2) if len(projection) else None,
+                 'change_pct': round(100 * (float(projection[-1]) - float(values[-1])) / abs(float(values[-1])), 1) if len(projection) and values[-1] else None,
+                 'slope_per_year': round(float(np.polyfit(years, values, 1)[0]), 3), 'years_observed': len(years)},
+        'backtest': {ml.MODEL_LABELS[k].split(' (')[0]: v for k, v in scores.items()},
+        'direction': 'up' if sign > 0 else 'down', 'zero_filled': zero_filled,
+    }

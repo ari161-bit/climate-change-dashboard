@@ -187,6 +187,36 @@ def explorer_download(request, name):
     return response
 
 
+# ---------------------------------------------------------------- trend analyzer
+@login_required(login_url=LOGIN)
+def trends(request):
+    return render(request, 'climate/trends.html', {'datasets': analytics.ANALYZER_DATASETS})
+
+
+@login_required(login_url=LOGIN)
+def trends_options(request):
+    dataset = request.GET.get('dataset', '')
+    if dataset not in analytics.ANALYZER_DATASETS:
+        raise Http404
+    return JsonResponse(analytics.analyzer_options(dataset, request.GET.get('indicator')))
+
+
+@login_required(login_url=LOGIN)
+def trends_data(request):
+    dataset = request.GET.get('dataset', '')
+    if dataset not in analytics.ANALYZER_DATASETS:
+        raise Http404
+    try:
+        horizon = int(request.GET.get('horizon', 2035))
+    except ValueError:
+        horizon = 2035
+    try:
+        return JsonResponse(analytics.trend_analysis(dataset, request.GET.get('entity', ''), request.GET.get('indicator', ''), horizon,
+                                                     request.GET.get('model', 'auto')))
+    except ValueError as exc:
+        return JsonResponse({'error': str(exc)}, status=422)
+
+
 # ---------------------------------------------------------------- real-time + satellite
 @login_required(login_url=LOGIN)
 def live(request):

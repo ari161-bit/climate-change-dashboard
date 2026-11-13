@@ -4,13 +4,13 @@
 
 ### Climate-change monitoring, analytics and alerting platform
 
-**Nine public datasets · a partitioned data lake · MapReduce-style processing · four ML models · real-time city feed · NASA satellite imagery · role-based access**
+**Eleven public datasets · a partitioned data lake · MapReduce-style processing · four ML models · real-time city feed · NASA satellite imagery · role-based access**
 
 ![Django](https://img.shields.io/badge/Django-5.2%2B-0C4B33?logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![pandas](https://img.shields.io/badge/pandas-NumPy-150458?logo=pandas&logoColor=white)
 ![Highcharts](https://img.shields.io/badge/Highcharts-11.4-2caffe)
-![Tests](https://img.shields.io/badge/tests-31%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-37%20passing-2ea44f)
 ![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel&logoColor=white)
 
 ### 🔗 [**Live demo → climate-change-dashboard-eight.vercel.app**](https://climate-change-dashboard-eight.vercel.app)
@@ -40,6 +40,8 @@ Everything on screen is real data:
 | Natural disasters by type | EM-DAT | 1970 → today |
 | World forest area | FAO | 1990 → today |
 | 12 cities: annual mean temperature and hottest day | NASA POWER (MERRA-2 reanalysis) | 1981 → 2025 |
+| Forest area and carbon stocks, 230+ countries and groups | IMF Climate Change Indicators (FAO) | 1992 → 2023 |
+| Climate-related disasters and people affected, 160+ countries | IMF Climate Change Indicators (EM-DAT) | 1980 → 2024 |
 | Live weather, air quality, CO₂ | Open-Meteo (real-time) | now |
 | Satellite imagery | NASA GIBS | daily |
 
@@ -49,6 +51,7 @@ Everything on screen is real data:
 - 🟥🟦 **Warming stripes** and a dashboard in five sections: the warming signal, drivers (emissions), impacts (sea level, glaciers, disasters, forests), regions and cities, cross-dataset correlation.
 - 🗂️ **Data lake.** Datasets split into decade partitions with a manifest of source, checksum and data-quality figures. Queries open only the partitions they need.
 - ⚙️ **MapReduce-style jobs.** Decade statistics are computed by per-partition mappers run in parallel, then reduced.
+- 📈 **Trend analyzer.** Pick a country or IMF region and an indicator: observed values, a backtest-selected trend, a projection to 2030-2050 with a 95% band, R², RMSE, recent 10-year average and flagged outliers.
 - 🤖 **Four models with a retraining loop.** Trend prediction chosen by expanding-window backtest, z-score anomaly detection, k-means climate regimes and a correlation matrix. Every retraining is recorded.
 - 📡 **Real-time feed.** Weather, PM2.5 and CO₂ for 12 cities beside each city's long-term mean, with live alerts.
 - 🛰️ **Satellite viewer.** NASA GIBS true colour, aerosol, vegetation, land temperature and snow layers by date.
@@ -64,6 +67,7 @@ Everything on screen is real data:
 |---|---|
 | <img src="docs/img/login.jpg" alt="Sign-in page"><br>**Sign in** | <img src="docs/img/drivers.jpg" alt="Emissions and impacts"><br>**Drivers and impacts** |
 | <img src="docs/img/live.jpg" alt="Live city conditions"><br>**Live conditions and alerts** | <img src="docs/img/models.jpg" alt="Models page"><br>**Models and backtests** |
+| <img src="docs/img/trends.jpg" alt="Trend analyzer"><br>**Trend analyzer: projection, R², RMSE, outliers** | |
 
 ## Quick start
 
@@ -83,7 +87,7 @@ Open <http://127.0.0.1:8000/>. The first run copies `deploy/demo.sqlite3` to `db
 | Administrator | `admin_demo` | `Climate#Admin2026` |
 | Analyst | `analyst_demo` | `Climate#Analyst2026` |
 
-Refresh the data with `python manage.py ingest_climate_data`; run the tests with `python manage.py test climate --settings=mysite.test_settings`. Full instructions: [docs/INSTALL.md](docs/INSTALL.md).
+Refresh the data with `python manage.py ingest_climate_data`; run the 37 tests with `python manage.py test climate --settings=mysite.test_settings`. Full instructions: [docs/INSTALL.md](docs/INSTALL.md).
 
 > The hosted demo runs on serverless hosting where each server instance has its own throwaway database. Feedback, uploads and threshold edits made there are not shared between instances and disappear when an instance restarts. The application itself is stateless; point it at Postgres for persistence.
 
@@ -92,7 +96,7 @@ Refresh the data with `python manage.py ingest_climate_data`; run the tests with
 ```mermaid
 flowchart LR
     subgraph Sources
-        S1[NASA · NOAA · GCP<br/>EM-DAT · FAO]
+        S1[NASA · NOAA · GCP<br/>EM-DAT · FAO · IMF]
         S2[Open-Meteo live]
         S3[NASA GIBS imagery]
     end
@@ -113,7 +117,7 @@ The brief names Hadoop, HDFS, Impala and Tableau. Those are built for clusters a
 | Brief | Where it is met |
 |---|---|
 | User authentication and authorisation, roles | Django auth, groups, `admin_required`, role-restricted data (raw CSVs, admin-only uploads) |
-| Data ingestion: diverse, historical and real-time | `ingest_climate_data` (9 datasets), live Open-Meteo feed, NASA GIBS imagery, admin uploads |
+| Data ingestion: diverse, historical and real-time | `ingest_climate_data` (11 datasets), live Open-Meteo feed, NASA GIBS imagery, admin uploads |
 | Data storage: HDFS, partitioning | Partitioned lake with manifest and partition pruning *(adapted, see above)* |
 | Data processing: MapReduce, patterns, missing data | `pipeline.py` jobs; k-means patterns; gap handling with quality reporting |
 | Real-time processing integrated with batch | Live cards set beside batch 10-year means |
@@ -157,7 +161,7 @@ climate/
 ├── management/commands/ ingest_climate_data · seed_climate · backup_data
 ├── data/lake/           the partitioned datasets and manifest.json
 ├── templates/ static/   UI
-└── tests.py             31 tests
+└── tests.py             37 tests
 deploy/demo.sqlite3      sanitized seed database
 docs/                    design, requirements, tests, install, video script
 api/index.py             Vercel entry point
@@ -180,4 +184,4 @@ myshop/                  earlier shop / real-estate module (kept, mounted at /my
 
 ## Credits
 
-NASA GISS (GISTEMP Team, Lenssen et al. 2019) · NOAA Global Monitoring Laboratory, Dr Pieter Tans and Dr Ralph Keeling · Global Carbon Project, EM-DAT (CRED), FAO and Our World in Data · Church & White (2011), UHSLC · EPA and WGMS · NASA POWER (MERRA-2) and Open-Meteo · NASA GIBS / EOSDIS · Highcharts · Leaflet · Warming stripes concept by Prof. Ed Hawkins, University of Reading.
+NASA GISS (GISTEMP Team, Lenssen et al. 2019) · NOAA Global Monitoring Laboratory, Dr Pieter Tans and Dr Ralph Keeling · Global Carbon Project, EM-DAT (CRED), FAO, IMF Climate Change Indicators and Our World in Data · Church & White (2011), UHSLC · EPA and WGMS · NASA POWER (MERRA-2) and Open-Meteo · NASA GIBS / EOSDIS · Highcharts · Leaflet · Warming stripes concept by Prof. Ed Hawkins, University of Reading.

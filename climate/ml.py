@@ -53,9 +53,9 @@ def _predict(kind, x, y, new_x):
 MODEL_LABELS = {'linear': 'Linear (1970-)', 'quadratic': 'Quadratic (1970-)', 'recent30': 'Linear, last 30 years'}
 
 
-def backtest(years, values, horizon=5, first_fold=25):
+def backtest(years, values, horizon=5, first_fold=25, kinds=None):
     """Expanding-window backtest: train up to year t, score the next `horizon` years, slide forward."""
-    scores = {k: [] for k in MODEL_LABELS}
+    scores = {k: [] for k in (kinds or MODEL_LABELS)}
     for cut in range(first_fold, len(years) - horizon + 1):
         train_x, train_y = years[:cut], values[:cut]
         test_x, test_y = years[cut:cut + horizon], values[cut:cut + horizon]

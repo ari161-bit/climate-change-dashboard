@@ -37,7 +37,7 @@ Each source is fetched independently, so one unreachable source does not stop th
 |---|---|
 | `python manage.py seed_climate` | Create groups, thresholds and demo accounts in any database |
 | `python manage.py backup_data --keep 7` | Rotating backup zips in `./backups` (schedule with cron / Task Scheduler) |
-| `python manage.py test climate --settings=mysite.test_settings` | Run the 31 automated tests |
+| `python manage.py test climate --settings=mysite.test_settings` | Run the 37 automated tests |
 
 ## Create your own administrator
 

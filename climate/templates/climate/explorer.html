@@ -15,7 +15,7 @@
       {% regroup catalogue by category as groups %}
       {% for g in groups %}
         <div class="muted" style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-top:8px">{{ g.grouper }}</div>
-        {% for d in g.list %}<button class="btn btn-ghost btn-sm" style="justify-content:flex-start;text-align:left" data-ds="{{ d.name }}">{{ d.title }}</button>{% endfor %}
+        {% for d in g.list %}{% if d.analyzer %}<a class="btn btn-ghost btn-sm" style="justify-content:flex-start;text-align:left" href="{% url 'climate:trends' %}">{{ d.title }} &rarr; Trend analyzer</a>{% else %}<button class="btn btn-ghost btn-sm" style="justify-content:flex-start;text-align:left" data-ds="{{ d.name }}">{{ d.title }}</button>{% endif %}{% endfor %}
       {% endfor %}
       {% if custom %}<div class="muted" style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-top:8px">Uploaded</div>
         {% for c in custom %}<button class="btn btn-ghost btn-sm" style="justify-content:flex-start;text-align:left" data-ds="custom:{{ c.slug }}">{{ c.title }}{% if c.visibility == 'admins' %} <span class="badge admin">admin</span>{% endif %}</button>{% endfor %}{% endif %}
