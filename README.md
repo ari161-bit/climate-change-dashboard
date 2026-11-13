@@ -10,7 +10,7 @@
 ![Highcharts](https://img.shields.io/badge/Highcharts-11.4-2caffe)
 ![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel&logoColor=white)
 
-**[Live demo](#live-demo)** · **[Quick start](#quick-start)** · **[Architecture](#architecture)** · **[Requirements coverage](#requirements-coverage)** · **[User guide](#user-guide)** · **[Developer guide](#developer-guide)**
+**[Live demo](https://climate-change-dashboard-eight.vercel.app)** · **[Quick start](#quick-start)** · **[Architecture](#architecture)** · **[Requirements coverage](#requirements-coverage)** · **[User guide](#user-guide)** · **[Developer guide](#developer-guide)**
 
 </div>
 
@@ -41,7 +41,7 @@ Two real, public datasets drive everything:
 
 ## Live demo
 
-> **URL:** _added after deployment, see the repository's **About** panel._
+> ### 🔗 **https://climate-change-dashboard-eight.vercel.app**
 
 Sign in with either demo account (also shown on the login page):
 
