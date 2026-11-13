@@ -1,0 +1,111 @@
+disaster_type,year,events
+Extreme temperature,1990,13
+All disasters excluding earthquakes,1990,240
+Wildfire,1990,4
+Landslide,1990,7
+Volcanic activity,1990,2
+All disasters excluding extreme temperature,1990,268
+Earthquake,1990,41
+All disasters,1990,281
+Drought,1990,16
+Extreme weather,1990,138
+Flood,1990,60
+Wildfire,1991,8
+All disasters excluding extreme temperature,1991,235
+Extreme temperature,1991,8
+Extreme weather,1991,76
+Drought,1991,24
+Landslide,1991,12
+Flood,1991,76
+Volcanic activity,1991,10
+Earthquake,1991,29
+All disasters excluding earthquakes,1991,214
+All disasters,1991,243
+Drought,1992,25
+Volcanic activity,1992,5
+Earthquake,1992,25
+All disasters excluding extreme temperature,1992,215
+All disasters excluding earthquakes,1992,198
+Extreme temperature,1992,8
+Landslide,1992,12
+Flood,1992,58
+All disasters,1992,223
+Wildfire,1992,8
+Extreme weather,1992,82
+All disasters,1993,272
+Wildfire,1993,3
+Earthquake,1993,20
+All disasters excluding earthquakes,1993,252
+Volcanic activity,1993,6
+Drought,1993,13
+Extreme weather,1993,112
+Flood,1993,88
+Landslide,1993,26
+Extreme temperature,1993,4
+All disasters excluding extreme temperature,1993,268
+Extreme weather,1994,86
+Flood,1994,90
+All disasters,1994,259
+Wildfire,1994,13
+All disasters excluding extreme temperature,1994,250
+Extreme temperature,1994,9
+Landslide,1994,11
+All disasters excluding earthquakes,1994,234
+Earthquake,1994,25
+Volcanic activity,1994,6
+Drought,1994,19
+Flood,1995,93
+Wildfire,1995,7
+Volcanic activity,1995,5
+Landslide,1995,16
+Extreme weather,1995,85
+Extreme temperature,1995,13
+Drought,1995,14
+Earthquake,1995,26
+All disasters,1995,259
+All disasters excluding earthquakes,1995,233
+All disasters excluding extreme temperature,1995,246
+All disasters,1996,231
+Wildfire,1996,4
+All disasters excluding extreme temperature,1996,226
+Drought,1996,9
+Extreme temperature,1996,5
+Landslide,1996,24
+Earthquake,1996,13
+Volcanic activity,1996,5
+All disasters excluding earthquakes,1996,218
+Extreme weather,1996,77
+Flood,1996,94
+Flood,1997,96
+Volcanic activity,1997,4
+All disasters excluding earthquakes,1997,243
+Wildfire,1997,15
+Extreme temperature,1997,13
+All disasters,1997,265
+Extreme weather,1997,82
+Drought,1997,20
+Earthquake,1997,22
+Landslide,1997,13
+All disasters excluding extreme temperature,1997,252
+Extreme temperature,1998,12
+Wildfire,1998,18
+All disasters,1998,304
+All disasters excluding earthquakes,1998,274
+Flood,1998,95
+All disasters excluding extreme temperature,1998,292
+Landslide,1998,22
+Drought,1998,29
+Extreme weather,1998,94
+Volcanic activity,1998,4
+Earthquake,1998,30
+All disasters,1999,349
+Drought,1999,29
+Wildfire,1999,21
+Extreme weather,1999,113
+Flood,1999,122
+All disasters excluding earthquakes,1999,316
+Earthquake,1999,33
+Volcanic activity,1999,5
+All disasters excluding extreme temperature,1999,341
+Extreme temperature,1999,8
+Landslide,1999,18

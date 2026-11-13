@@ -12,3 +12,4 @@ readme.txt
 staticfiles/
 db.sqlite3
 *.sqlite3-journal
+backups/

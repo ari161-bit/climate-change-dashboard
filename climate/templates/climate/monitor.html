@@ -1,0 +1,52 @@
+{% extends 'climate/base.html' %}
+{% load static %}
+{% block title %}Performance monitor · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Administration</p>
+  <h1>Performance monitor</h1>
+  <p class="lede">Request latency, error rate, processing-stage timings and resource use for this server instance, refreshed every 5 seconds. On serverless hosting each instance keeps its own counters, which reset when it restarts.</p>
+</section>
+<div class="kpis" id="kp"></div>
+<div class="grid">
+  <div class="card c8"><h2>Request latency</h2><div class="sub">Milliseconds for the most recent requests.</div><div id="chLat" class="chart short"></div></div>
+  <div class="card c4"><h2>Slowest routes</h2><div class="sub">Average time per path.</div><div id="slow"></div></div>
+  <div class="card c6"><h2>Processing stages</h2><div class="sub">Time spent loading data, running models, MapReduce jobs and live fetches.</div><div class="table-wrap"><table class="t" id="stages"></table></div></div>
+  <div class="card c6"><h2>Recent requests</h2><div class="table-wrap"><table class="t" id="recent"></table></div></div>
+  <div class="card c12"><h2>Storage and optimisation</h2>
+    <ul style="margin:6px 0 0;padding-left:1.2em;color:var(--ink-soft)">
+      <li>Data lake: <b>{{ datasets }}</b> datasets, <b>{{ lake_kb }} KB</b>, split into decade partitions; a request opens only the partitions that overlap its year range.</li>
+      <li>Datasets are cached in memory after the first read, and the live feed is cached for 5 minutes, so many viewers cost one upstream call.</li>
+      <li>Decade statistics run as a parallel map/reduce job over partitions; its timing appears under <i>Processing stages</i>.</li>
+      <li>Static assets are compressed and fingerprinted by WhiteNoise; charts are drawn in the browser from compact JSON.</li>
+    </ul></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
+<script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+<script src="{% static 'climate/charts.js' %}"></script>
+<script>
+const $ = id => document.getElementById(id);
+let P = ES.apply(), last = null;
+const fmtUp = s => s > 3600 ? `${Math.floor(s / 3600)}h ${Math.floor(s % 3600 / 60)}m` : s > 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
+const kpi = (l, v, u, d, c) => `<div class="kpi" style="--c:${c}"><div class="l">${l}</div><div class="v">${v}<small> ${u}</small></div><div class="d">${d}</div></div>`;
+function render(d){
+  P = ES.palette(); last = d;
+  const r = d.resources;
+  $('kp').innerHTML = kpi('Uptime', fmtUp(d.uptime_s), '', 'this instance', P.green) + kpi('Requests', d.requests, '', `${d.errors} server errors`, P.cool) +
+    kpi('Error rate', d.error_rate, '%', 'HTTP 5xx share', d.error_rate > 1 ? P.hot : P.green) + kpi('Median latency', d.latency.p50, 'ms', `p95 ${d.latency.p95} ms, max ${d.latency.max} ms`, P.amber) +
+    kpi('Memory', r.memory_mb ?? '-', 'MB', `${r.cpu_count ?? '?'} CPU cores${r.cpu_percent != null ? ', ' + r.cpu_percent + '% busy' : ''}`, P.deep);
+  Highcharts.chart('chLat', {chart: {zoomType: 'x'}, xAxis: {type: 'datetime'}, yAxis: {title: {text: 'ms'}, min: 0}, legend: {enabled: false}, tooltip: {valueSuffix: ' ms', xDateFormat: '%H:%M:%S'},
+    series: [{name: 'Latency', type: 'area', data: d.series, color: P.teal, lineWidth: 1.5, marker: {enabled: false},
+      fillColor: {linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1}, stops: [[0, Highcharts.color(P.teal).setOpacity(.3).get()], [1, Highcharts.color(P.teal).setOpacity(0).get()]]}}]});
+  $('slow').innerHTML = '<table class="t"><tr><th>Path</th><th>Avg</th><th>Hits</th></tr>' + d.slowest.map(s => `<tr><td class="mono">${s.path}</td><td>${s.avg_ms} ms</td><td>${s.hits}</td></tr>`).join('') + '</table>';
+  $('stages').innerHTML = '<tr><th>Stage</th><th>Avg</th><th>Last</th><th>Runs</th></tr>' + (d.stages.map(s => `<tr><td class="mono">${s.name}</td><td>${s.avg_ms} ms</td><td>${s.last_ms} ms</td><td>${s.runs}</td></tr>`).join('') || '<tr><td colspan="4" class="muted">Open the dashboard to generate timings.</td></tr>');
+  $('recent').innerHTML = '<tr><th>Time</th><th>Request</th><th>Status</th><th>ms</th></tr>' + d.recent.map(q => `<tr><td>${q.t}</td><td class="mono">${q.method} ${q.path}</td><td><span class="badge ${q.status >= 500 ? 'bad' : (q.status >= 400 ? 'warn' : 'good')}">${q.status}</span></td><td>${q.ms}</td></tr>`).join('');
+}
+async function load(){ const res = await fetch('{% url "climate:monitor_data" %}', {credentials: 'same-origin'}); if (res.ok && !res.redirected) render(await res.json()); }
+ES.onTheme(() => { if (last) render(last); });
+load(); setInterval(load, 5000);
+</script>
+{% endblock %}

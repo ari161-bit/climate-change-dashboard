@@ -1,0 +1,84 @@
+{% extends 'climate/base.html' %}
+{% block title %}Help · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Documentation</p>
+  <h1>User guide, tutorials and FAQ</h1>
+  <p class="lede">Everything you need to read the dashboards correctly. Developer documentation (architecture, data flows, models, installation) lives in the project's <code>README.md</code> and <code>docs/</code> folder.</p>
+</section>
+<div class="docs-layout">
+  <nav class="toc" aria-label="On this page">
+    <a href="#start">Getting started</a><a href="#tour">Page by page</a><a href="#tutorials">Tutorials</a><a href="#roles">Roles and access</a>
+    <a href="#alerts">How alerts work</a><a href="#data">Datasets</a><a href="#faq">FAQ</a><a href="#glossary">Glossary</a>
+  </nav>
+  <div class="doc">
+    <h2 id="start" style="margin-top:0">Getting started</h2>
+    <ol>
+      <li>Sign in (or create an Analyst account from the login page).</li>
+      <li>The <b>Dashboard</b> opens on the warming stripes and headline numbers. Everything below responds to the year range you choose.</li>
+      <li>Use the moon/sun button in the header to switch between light and dark themes. Your choice is remembered.</li>
+      <li>Stuck or found something odd? Use <b>Support</b> to message the agency team; replies appear on the same page.</li>
+    </ol>
+
+    <h2 id="tour">Page by page</h2>
+    <h3>Dashboard</h3>
+    <p>Five sections: <b>The warming signal</b> (temperature, CO<sub>2</sub>, anomalies, projection), <b>Drivers</b> (emissions by country), <b>Impacts</b> (sea level, glaciers, disasters, forests), <b>Regions and cities</b> and <b>Relationships</b> (cross-dataset correlation). Charts can be zoomed by dragging, and every chart has a menu to export an image or CSV.</p>
+    <h3>Data explorer</h3>
+    <p>Browse every dataset in the data lake, switch the column or group (for example a country or a city) and see its source, checksum and data-quality figures.</p>
+    <h3>Live</h3>
+    <p>Real-time temperature, air quality and CO<sub>2</sub> for twelve cities, refreshed every minute, set against each city's ten-year mean from the historical data.</p>
+    <h3>Satellite</h3>
+    <p>Daily NASA imagery on an interactive map: true colour, aerosols, vegetation, land temperature and snow.</p>
+    <h3>Models</h3>
+    <p>The four analytical models, their accuracy and the history of each retraining run.</p>
+
+    <h2 id="tutorials">Tutorials</h2>
+    <h3>Tutorial 1: measure how quickly a period warmed</h3>
+    <ol><li>On the Dashboard, press <b>Since 1980</b>.</li><li>Read <b>Warming rate</b> in the headline cards, and the decade chart for the pattern.</li><li>Compare the line of <em>months above +1 &deg;C</em>: it shows how common once-rare warmth has become.</li></ol>
+    <h3>Tutorial 2: check whether a city is warming faster than the planet</h3>
+    <ol><li>Scroll to <b>Regions and cities</b> and read the ranking.</li><li>Compare a city's trend with the global rate in the cards above.</li><li>Open the Data explorer, choose <i>City temperatures</i>, pick the city and the <code>hottest_day</code> column to see how the hottest day of each year has changed.</li></ol>
+    <h3>Tutorial 3: act on a live alert</h3>
+    <ol><li>Open <b>Live</b>. Alerts appear at the top when a city is above a threshold.</li><li>Open <b>Satellite</b> with the <i>Aerosol</i> layer to see whether haze or smoke explains a poor air-quality reading.</li><li>If you think a threshold should change, message the team via Support; administrators change thresholds under <b>Admin &rarr; Alerts, data &amp; inbox</b>.</li></ol>
+    <h3>Tutorial 4 (administrators): add your own dataset</h3>
+    <ol><li>Open <b>Admin &rarr; Alerts, data &amp; inbox</b> and find <i>Upload a dataset</i>.</li><li>Choose a CSV, JSON or XLS file that has a year (or date) column and a numeric column. Dates are averaged to yearly values.</li><li>Pick who may see it: analysts as well, or administrators only. It then appears under <i>Uploaded</i> in the Data explorer.</li></ol>
+
+    <h2 id="roles">Roles and access</h2>
+    <div class="table-wrap"><table class="t">
+      <tr><th>Capability</th><th>Analyst</th><th>Administrator</th></tr>
+      <tr><td>Dashboard, Data explorer charts, Live, Satellite, Models, Help</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Send support messages</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Download raw dataset CSVs</td><td>No</td><td>Yes</td></tr>
+      <tr><td>See administrator-only uploaded datasets</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Change alert thresholds, answer feedback</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Upload datasets, retrain models</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Performance monitor, audit log, backups</td><td>No</td><td>Yes</td></tr>
+    </table></div>
+
+    <h2 id="alerts">How alerts work</h2>
+    <p>Each alert compares a current value with a threshold. It is <b>normal</b> below the threshold, an <b>alert</b> above it and <b>critical</b> at 1.5&times; the threshold (live alerts use 1.15&times; for heat and 2&times; for particulates). Climate alerts are recalculated whenever the dashboard loads; live alerts are recalculated on every live refresh. Alerts are shown in the portal; the system does not send email or text messages.</p>
+
+    <h2 id="data">Datasets</h2>
+    <div class="table-wrap"><table class="t"><tr><th>Dataset</th><th>Source</th><th>Years</th></tr>
+      {% for d in catalogue %}<tr><td>{{ d.title }}</td><td>{{ d.source }}</td><td>{{ d.years }}</td></tr>{% endfor %}</table></div>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <details class="faq"><summary>What is a temperature "anomaly"?</summary>The difference between a temperature and the 1951-1980 average for the same place and time of year. +1.2 &deg;C means 1.2 &deg;C warmer than that baseline. Anomalies are used because they are comparable across places and seasons.</details>
+    <details class="faq"><summary>Is the 2050 projection a forecast?</summary>No. It extends the statistical trend of recent decades and shows its uncertainty band. It contains no emissions scenarios or climate physics, so treat it as an illustration of the current trajectory.</details>
+    <details class="faq"><summary>Why does the correlation table show strong links between almost everything?</summary>Many climate series rise together over time, which produces high correlations whatever the cause. A strong value says the series move together, not that one causes the other.</details>
+    <details class="faq"><summary>Why do some charts have gaps or stop earlier than others?</summary>Each source starts and ends on its own schedule (CO<sub>2</sub> from 1958, disasters from 1970, sea level to about 2020). Short gaps in continuous series are interpolated; longer ones are left blank.</details>
+    <details class="faq"><summary>How fresh is the data?</summary>Temperature and CO<sub>2</sub> are published monthly and loaded by the ingestion command. The Live page is real-time, cached for up to five minutes.</details>
+    <details class="faq"><summary>Where does my feedback go, and is it private?</summary>It is stored encrypted and is visible only to you and to administrators.</details>
+    <details class="faq"><summary>Why was I signed out or shown "form expired"?</summary>Sessions last eight hours, and a form that was open in another tab before you signed in becomes invalid. Reload the page and try again.</details>
+
+    <h2 id="glossary">Glossary</h2>
+    <dl>
+      <dt><b>ppm</b></dt><dd>Parts per million: molecules of CO<sub>2</sub> per million molecules of air.</dd>
+      <dt><b>Reanalysis (MERRA-2)</b></dt><dd>A physically consistent reconstruction of past weather that blends observations with a model; NASA POWER uses it for the city records.</dd>
+      <dt><b>RMSE</b></dt><dd>Root mean squared error: the typical size of a model's prediction error, in the data's own units.</dd>
+      <dt><b>z-score</b></dt><dd>How many standard deviations a value lies from a reference mean.</dd>
+      <dt><b>Mass balance</b></dt><dd>Net gain or loss of glacier ice, in metres of water equivalent.</dd>
+      <dt><b>PM2.5</b></dt><dd>Fine particles under 2.5 micrometres across that reach deep into the lungs.</dd>
+    </dl>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'climate/base.html' %}
+{% load static %}
+{% block title %}Satellite imagery · EarthScape Climate Agency{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Earth observation</p>
+  <h1>Satellite imagery</h1>
+  <p class="lede">Daily imagery from NASA's Global Imagery Browse Services (GIBS). Switch layers and dates to watch snow, vegetation, aerosols and ground temperature change. The 12 monitored cities are marked.</p>
+</section>
+<div class="filters">
+  <div style="min-width:280px"><label for="layer" style="margin-top:0">Layer</label><select id="layer"></select></div>
+  <div class="f" style="width:170px"><label for="date" style="margin-top:0">Date</label><input type="date" id="date"></div>
+  <button class="btn btn-ghost btn-sm" id="prev">&larr; Day</button><button class="btn btn-ghost btn-sm" id="next">Day &rarr;</button>
+  <button class="btn btn-ghost btn-sm" id="yearago">Same day a year ago</button>
+</div>
+<div id="map" role="application" aria-label="Satellite map"></div>
+<p class="field-hint" id="note" style="margin-top:10px"></p>
+{{ cities|json_script:"cities-data" }}
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
+<script>
+const LAYERS = [
+  {id: 'MODIS_Terra_CorrectedReflectance_TrueColor', name: 'True colour (MODIS Terra)', fmt: 'jpg', max: 9, note: 'What the planet looks like to the eye, with clouds and snow.'},
+  {id: 'MODIS_Terra_Aerosol', name: 'Aerosol optical depth (MODIS Terra)', fmt: 'png', max: 6, note: 'Smoke, dust and haze in the atmosphere.'},
+  {id: 'MODIS_Terra_NDVI_8Day', name: 'Vegetation index, NDVI (8-day)', fmt: 'png', max: 9, note: 'Greenness of land; useful for drought and deforestation.'},
+  {id: 'MODIS_Terra_Land_Surface_Temp_Day', name: 'Land surface temperature, day', fmt: 'png', max: 7, note: 'Skin temperature of the ground. Gaps are cloud cover.'},
+  {id: 'MODIS_Terra_NDSI_Snow_Cover', name: 'Snow cover (MODIS Terra)', fmt: 'png', max: 8, note: 'Where snow lies on land.'}
+];
+const $ = id => document.getElementById(id);
+const today = new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10);
+$('date').value = today; $('date').max = today;
+$('layer').innerHTML = LAYERS.map((l, i) => `<option value="${i}">${l.name}</option>`).join('');
+const map = L.map('map', {worldCopyJump: true, minZoom: 1, maxZoom: 9}).setView([22, 20], 2);
+let tile = null;
+function setLayer(){
+  const l = LAYERS[+$('layer').value], d = $('date').value;
+  if (tile) map.removeLayer(tile);
+  const url = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${l.id}/default/${d}/GoogleMapsCompatible_Level${l.max}/{z}/{y}/{x}.${l.fmt}`;
+  tile = L.tileLayer(url, {maxNativeZoom: l.max, maxZoom: 9, attribution: 'Imagery: NASA GIBS / EOSDIS'}).addTo(map);
+  $('note').textContent = `${l.name}, ${d}. ${l.note} Imagery for the most recent day or two may not be published yet.`;
+}
+JSON.parse($('cities-data').textContent).forEach(c => L.circleMarker([c.lat, c.lon], {radius: 5, color: '#fff', weight: 1.5, fillColor: '#e8772e', fillOpacity: .95}).bindTooltip(c.city).addTo(map));
+function shift(days){ const d = new Date($('date').value); d.setUTCDate(d.getUTCDate() + days); if (d.toISOString().slice(0, 10) <= today) { $('date').value = d.toISOString().slice(0, 10); setLayer(); } }
+$('layer').onchange = setLayer; $('date').onchange = setLayer;
+$('prev').onclick = () => shift(-1); $('next').onclick = () => shift(1); $('yearago').onclick = () => shift(-365);
+setLayer();
+</script>
+{% endblock %}

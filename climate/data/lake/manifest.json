@@ -1,0 +1,357 @@
+{
+  "city_climate_annual": {
+    "category": "Weather stations",
+    "columns": [
+      "city",
+      "lat",
+      "lon",
+      "year",
+      "temp_mean",
+      "hottest_day"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 13:13 UTC",
+    "partitions": [
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "hottest_day": 0.0,
+        "temp_mean": 0.0
+      }
+    },
+    "rows": 540,
+    "sha256": "c243aa90dafaae77c3662b902b14cf769f1e68008740db56246dbc234d8ac9ca",
+    "source": "NASA POWER (MERRA-2 reanalysis)",
+    "title": "City temperatures (annual, 12 cities)",
+    "unit": "deg C",
+    "url": "https://power.larc.nasa.gov/",
+    "year_max": 2025,
+    "year_min": 1981
+  },
+  "co2_monthly": {
+    "category": "Greenhouse gases",
+    "columns": [
+      "year",
+      "month",
+      "co2_ppm"
+    ],
+    "frequency": "monthly",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1950,
+      1960,
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "co2_ppm": 0.0
+      }
+    },
+    "rows": 823,
+    "sha256": "04fc94e6d1aa3fbcb2b0db74bebba76ebd5924132051727b4998d63b64215fe0",
+    "source": "NOAA Global Monitoring Laboratory",
+    "title": "Atmospheric CO2, Mauna Loa",
+    "unit": "ppm",
+    "url": "https://gml.noaa.gov/ccgg/trends/",
+    "year_max": 2026,
+    "year_min": 1958
+  },
+  "disasters_annual": {
+    "category": "Impacts",
+    "columns": [
+      "disaster_type",
+      "year",
+      "events"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "events": 0.0
+      }
+    },
+    "rows": 605,
+    "sha256": "52381298541ec4073a2ce340ac5f273d642891fcadfeecc67b54aeeeed151335",
+    "source": "EM-DAT via Our World in Data",
+    "title": "Natural disasters by type (annual count)",
+    "unit": "events",
+    "url": "https://ourworldindata.org/natural-disasters",
+    "year_max": 2025,
+    "year_min": 1970
+  },
+  "emissions_country_annual": {
+    "category": "Emissions",
+    "columns": [
+      "country",
+      "year",
+      "iso_code",
+      "population",
+      "co2",
+      "co2_per_capita",
+      "cumulative_co2",
+      "share_global_co2"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1850,
+      1860,
+      1870,
+      1880,
+      1890,
+      1900,
+      1910,
+      1920,
+      1930,
+      1940,
+      1950,
+      1960,
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "co2": 13.69,
+        "co2_per_capita": 13.69,
+        "cumulative_co2": 13.69
+      }
+    },
+    "rows": 3520,
+    "sha256": "a28bed2a433ebea48193fb0a6c021959ea53bbc5a95f4b1971abeb3b1c922cae",
+    "source": "Global Carbon Project via Our World in Data",
+    "title": "CO2 emissions by country (annual)",
+    "unit": "million tonnes CO2",
+    "url": "https://github.com/owid/co2-data",
+    "year_max": 2025,
+    "year_min": 1850
+  },
+  "forest_area_annual": {
+    "category": "Land use",
+    "columns": [
+      "year",
+      "forest_km2"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "forest_km2": 0.0
+      }
+    },
+    "rows": 36,
+    "sha256": "f81c044b98d8b40964aa43627ac80e6a8f2fbad574a552839caffec5b6524914",
+    "source": "FAO via Our World in Data",
+    "title": "World forest area",
+    "unit": "km2",
+    "url": "https://ourworldindata.org/forests-and-deforestation",
+    "year_max": 2025,
+    "year_min": 1990
+  },
+  "glacier_mass_annual": {
+    "category": "Ice",
+    "columns": [
+      "year",
+      "mass_balance_mwe",
+      "observations"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1950,
+      1960,
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "mass_balance_mwe": 0.0,
+        "observations": 1.47
+      }
+    },
+    "rows": 68,
+    "sha256": "61bfb2dcbed58e4cba29a64b854dc62a4dda83cfc7756ded3c8af7ec435222da",
+    "source": "US EPA / WGMS",
+    "title": "Glacier cumulative mass balance",
+    "unit": "m water equivalent",
+    "url": "https://github.com/datasets/glacier-mass-balance",
+    "year_max": 2023,
+    "year_min": 1956
+  },
+  "sea_level_annual": {
+    "category": "Oceans",
+    "columns": [
+      "year",
+      "sea_level_mm"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1880,
+      1890,
+      1900,
+      1910,
+      1920,
+      1930,
+      1940,
+      1950,
+      1960,
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "sea_level_mm": 0.0
+      }
+    },
+    "rows": 141,
+    "sha256": "e0034043867b639e3a24420c54de73c7dad0808290177d8aff32dac11f714d57",
+    "source": "Church & White / UHSLC via Our World in Data",
+    "title": "Global mean sea level",
+    "unit": "mm (relative)",
+    "url": "https://ourworldindata.org/sea-level-rise",
+    "year_max": 2020,
+    "year_min": 1880
+  },
+  "temperature_monthly": {
+    "category": "Temperature",
+    "columns": [
+      "year",
+      "month",
+      "global_anomaly",
+      "nh_anomaly",
+      "sh_anomaly"
+    ],
+    "frequency": "monthly",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1880,
+      1890,
+      1900,
+      1910,
+      1920,
+      1930,
+      1940,
+      1950,
+      1960,
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "global_anomaly": 0.0,
+        "nh_anomaly": 0.0,
+        "sh_anomaly": 0.0
+      }
+    },
+    "rows": 1762,
+    "sha256": "e15a7080549aa32644d998bc5366ea6c6ef195a72ee95713686fc6fc4173d748",
+    "source": "NASA GISS GISTEMP v4",
+    "title": "Global surface temperature anomaly (monthly)",
+    "unit": "deg C vs 1951-1980",
+    "url": "https://data.giss.nasa.gov/gistemp/",
+    "year_max": 2026,
+    "year_min": 1880
+  },
+  "temperature_zonal_annual": {
+    "category": "Temperature",
+    "columns": [
+      "year",
+      "arctic_64_90N",
+      "north_44_64N",
+      "north_24_44N",
+      "tropics_0_24N",
+      "tropics_24S_0",
+      "south_44_24S",
+      "south_64_44S",
+      "antarctic_90_64S"
+    ],
+    "frequency": "annual",
+    "ingested_at": "2026-11-13 12:48 UTC",
+    "partitions": [
+      1880,
+      1890,
+      1900,
+      1910,
+      1920,
+      1930,
+      1940,
+      1950,
+      1960,
+      1970,
+      1980,
+      1990,
+      2000,
+      2010,
+      2020
+    ],
+    "quality": {
+      "gaps_filled": 0,
+      "missing_pct": {
+        "antarctic_90_64S": 0.0,
+        "arctic_64_90N": 0.0,
+        "north_24_44N": 0.0,
+        "north_44_64N": 0.0,
+        "south_44_24S": 0.0,
+        "south_64_44S": 0.0,
+        "tropics_0_24N": 0.0,
+        "tropics_24S_0": 0.0
+      }
+    },
+    "rows": 146,
+    "sha256": "c959a0a44533de825f4511605571cef93c27fc05b32b451c578def3ef074eb26",
+    "source": "NASA GISS GISTEMP v4 (zonal means)",
+    "title": "Temperature anomaly by latitude band (annual)",
+    "unit": "deg C vs 1951-1980",
+    "url": "https://data.giss.nasa.gov/gistemp/",
+    "year_max": 2025,
+    "year_min": 1880
+  }
+}

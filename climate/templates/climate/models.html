@@ -1,0 +1,84 @@
+{% extends 'climate/base.html' %}
+{% load static %}
+{% block title %}Models · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Machine learning</p>
+  <h1>Models and how they are kept current</h1>
+  <p class="lede">Four models run on the lake: trend prediction, anomaly detection, regime clustering and correlation analysis. Retraining re-fits every model on whatever data is currently stored (data through <strong>{{ data_through }}</strong>) and records the result, so quality can be tracked as new months arrive.</p>
+</section>
+<div class="stack" style="margin-bottom:18px">
+  {% if is_admin %}<form method="post">{% csrf_token %}<button class="btn btn-primary" type="submit">Retrain all models now</button></form>
+  {% else %}<span class="badge">Retraining is an administrator action</span>{% endif %}
+  <span class="muted">After ingesting new data with <code>python manage.py ingest_climate_data</code>, retrain to refresh the metrics.</span>
+</div>
+
+<div class="grid">
+  <div class="card c6">
+    <h2>1 &middot; Trend prediction</h2>
+    <div class="sub">Three candidate models are scored by expanding-window backtest: train on years up to <em>t</em>, predict the next five, slide forward, average the error.</div>
+    <table class="t"><tr><th>Model</th><th>Backtest RMSE</th><th></th></tr>
+      {% for name, score in scores.items %}<tr><td>{{ name }}</td><td>{{ score }} &deg;C</td><td>{% if name == best %}<span class="badge good">selected</span>{% endif %}</td></tr>{% endfor %}
+    </table>
+    <div class="metrics"><div><b>+{{ trend.slope }} &deg;C</b><span>trend per decade (1970-)</span></div><div><b>{{ trend.r2 }}</b><span>R&sup2; of the linear fit</span></div><div><b>+{{ trend.p2050 }} &deg;C</b><span>2050 projection, selected model</span></div></div>
+  </div>
+  <div class="card c6">
+    <h2>2 &middot; Anomaly detection</h2>
+    <div class="sub">A year is anomalous when its z-score against the 1951-1980 reference period exceeds 2.</div>
+    <div class="metrics"><div><b>{{ anomaly.mean }} &deg;C</b><span>reference mean</span></div><div><b>{{ anomaly.std }} &deg;C</b><span>reference std. deviation</span></div><div><b>{{ anomaly.count }}</b><span>years flagged</span></div><div><b>2.0&sigma;</b><span>threshold</span></div></div>
+    <p class="field-hint" style="margin-top:12px">The reference period is fixed so that the rule stays comparable as new years arrive; each retraining run records how many years it flags.</p>
+  </div>
+  <div class="card c8">
+    <h2>3 &middot; Climate regimes (k-means clustering)</h2>
+    <div class="sub">Years grouped by temperature anomaly and CO<sub>2</sub> concentration, standardised. The clusters find the cool baseline, a transition and the accelerated-warming era without being told the dates.</div>
+    <div id="chRegime" class="chart"></div>
+  </div>
+  <div class="card c4">
+    <h2>Regime summary</h2>
+    <table class="t"><tr><th>Regime</th><th>Years</th><th>Anomaly</th></tr>
+      {% for r in regimes %}<tr><td><b>{{ r.regime }}</b><br><span class="muted">{{ r.from }}-{{ r.to }} &middot; {{ r.mean_co2 }} ppm</span></td><td>{{ r.years }}</td><td>{{ r.mean_anomaly }} &deg;C</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div class="card c12">
+    <h2>4 &middot; Correlation analysis</h2>
+    <div class="sub">Pearson correlation between annual series on overlapping years (at least 15).</div>
+    <div class="table-wrap"><table class="t heat" id="corr">
+      <tr><th></th>{% for l in corr_labels %}<th>{{ l }}</th>{% endfor %}</tr>
+      {% for row in corr_rows %}<tr><th>{{ row.label }}</th>{% for v in row.cells %}<td class="cell" data-v="{{ v|default_if_none:'' }}">{{ v|default_if_none:'-' }}</td>{% endfor %}</tr>{% endfor %}
+    </table></div>
+  </div>
+  <div class="card c12">
+    <h2>Training history</h2>
+    <div class="sub">Every retraining run is stored, with the data it saw and how long it took.</div>
+    <div class="table-wrap"><table class="t"><tr><th>When</th><th>Model</th><th>Data through</th><th>Key metrics</th><th>Time</th><th>By</th></tr>
+      {% for r in runs %}<tr><td>{{ r.trained_at|date:"j M Y H:i" }}</td><td>{{ r.name }}</td><td>{{ r.data_through }}</td><td class="mono" style="font-size:.78rem;max-width:420px">{{ r.metrics }}</td><td>{{ r.duration_ms }} ms</td><td>{{ r.triggered_by|default:"-" }}</td></tr>
+      {% empty %}<tr><td colspan="6" class="muted">No runs recorded yet. An administrator can press <b>Retrain all models now</b>.</td></tr>{% endfor %}
+    </table></div>
+  </div>
+</div>
+{{ regime_members|json_script:"regime-data" }}
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
+<script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+<script src="{% static 'climate/charts.js' %}"></script>
+<script>
+const MEMBERS = JSON.parse(document.getElementById('regime-data').textContent);
+function paintCorr(){
+  document.querySelectorAll('#corr td.cell').forEach(td => {
+    const v = parseFloat(td.dataset.v); if (isNaN(v)) return;
+    const a = Math.min(1, Math.abs(v)), rgb = v >= 0 ? '23,131,145' : '217,72,43';
+    td.style.background = `rgba(${rgb},${(a * .75).toFixed(2)})`; td.style.color = a > .55 ? '#fff' : 'inherit';
+  });
+}
+function draw(){
+  const P = ES.apply(), names = ['Cool baseline', 'Transition', 'Accelerated warming'], cols = [P.cool, P.amber, P.hot];
+  Highcharts.chart('chRegime', {chart: {zoomType: 'xy'}, xAxis: {title: {text: 'Annual mean CO₂ (ppm)'}}, yAxis: {title: {text: 'Temperature anomaly (°C)'}},
+    tooltip: {shared: false, headerFormat: '', pointFormat: '<b>{point.year}</b><br>CO₂ {point.x} ppm<br>Anomaly {point.y} °C<br>{series.name}'},
+    series: names.map((n, i) => ({name: n, type: 'scatter', color: cols[i], marker: {radius: 5}, data: MEMBERS.filter(m => m.regime === n).map(m => ({x: m.co2, y: m.anomaly, year: m.year}))}))});
+  paintCorr();
+}
+ES.onTheme(draw); draw();
+</script>
+{% endblock %}

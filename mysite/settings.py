@@ -59,6 +59,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'climate.middleware.MonitorMiddleware',
+    'climate.middleware.SecurityHeadersMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,6 +82,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'climate.context.nav',
             ],
         },
     },
@@ -165,3 +168,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Set GOOGLE_MAPS_API_KEY as an environment variable (or in a local .env file); never commit it.
 # Restrict the key to your site's HTTP referrers in the Google Cloud console.
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
+
+
+# --- Security (climate app) ---------------------------------------------------------------------------
+# Sessions live in a signed cookie, not the database: serverless hosts run several instances with separate
+# throwaway SQLite files, and a DB-backed session created on one instance would be unknown to the next.
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_AGE = 60 * 60 * 8
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_FAILURE_VIEW = 'climate.views.csrf_failure'
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_REFERRER_POLICY = 'same-origin'

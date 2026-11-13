@@ -1,0 +1,77 @@
+{% extends 'climate/base.html' %}
+{% load static %}
+{% block title %}Data explorer · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Data explorer</p>
+  <h1>The data lake</h1>
+  <p class="lede">Every dataset is stored in a partitioned lake (one folder per decade, like HDFS blocks) with a manifest that records its source, checksum and data quality. Pick one to chart it. {% if is_admin %}As an administrator you can also download the raw CSV.{% else %}Raw CSV downloads are restricted to administrators.{% endif %}</p>
+</section>
+<div class="grid">
+  <div class="card c4" style="align-self:start">
+    <h2>Datasets</h2>
+    <div class="sub">{{ catalogue|length }} in the lake{% if custom %}, {{ custom|length }} uploaded{% endif %} &middot; {{ lake_kb }} KB on disk</div>
+    <div id="list" style="display:flex;flex-direction:column;gap:6px">
+      {% regroup catalogue by category as groups %}
+      {% for g in groups %}
+        <div class="muted" style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-top:8px">{{ g.grouper }}</div>
+        {% for d in g.list %}<button class="btn btn-ghost btn-sm" style="justify-content:flex-start;text-align:left" data-ds="{{ d.name }}">{{ d.title }}</button>{% endfor %}
+      {% endfor %}
+      {% if custom %}<div class="muted" style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-top:8px">Uploaded</div>
+        {% for c in custom %}<button class="btn btn-ghost btn-sm" style="justify-content:flex-start;text-align:left" data-ds="custom:{{ c.slug }}">{{ c.title }}{% if c.visibility == 'admins' %} <span class="badge admin">admin</span>{% endif %}</button>{% endfor %}{% endif %}
+    </div>
+  </div>
+  <div class="card c8">
+    <div class="stack" style="justify-content:space-between"><div><h2 id="dsTitle">Select a dataset</h2><div class="sub" id="dsMeta"></div></div>
+      <div class="stack"><select id="selGroup" class="hidden" style="width:auto"></select><select id="selCol" class="hidden" style="width:auto"></select>
+      {% if is_admin %}<a class="btn btn-ghost btn-sm hidden" id="dl" href="#">Download CSV</a>{% endif %}</div></div>
+    <div id="chDs" class="chart tall"></div>
+    <div class="metrics" id="dsStats" style="grid-template-columns:repeat(4,1fr)"></div>
+  </div>
+</div>
+<div class="section-head"><h2>Catalogue and data quality</h2></div>
+<div class="card"><div class="table-wrap"><table class="t">
+  <tr><th>Dataset</th><th>Source</th><th>Rows</th><th>Years</th><th>Partitions</th><th>Missing</th><th>Gaps filled</th><th>Checksum</th><th>Ingested</th></tr>
+  {% for d in catalogue %}<tr><td><b>{{ d.title }}</b><br><span class="muted">{{ d.unit }} &middot; {{ d.frequency }}</span></td><td><a href="{{ d.url }}" rel="noopener" target="_blank">{{ d.source }}</a></td>
+    <td>{{ d.rows }}</td><td>{{ d.years }}</td><td>{{ d.partitions }}</td><td>{{ d.max_missing_pct }}%</td><td>{{ d.gaps_filled }}</td><td><code>{{ d.sha256 }}</code></td><td>{{ d.ingested_at }}</td></tr>{% endfor %}
+</table></div>
+<p class="field-hint" style="margin-top:12px">Missing values are interpolated across gaps of at most two periods for continuous series; anything longer is left blank and excluded from charts and models rather than guessed.</p></div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
+<script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+<script src="{% static 'climate/charts.js' %}"></script>
+<script>
+const $ = id => document.getElementById(id);
+let P = ES.apply(), cur = null, curName = null;
+function draw(d){
+  P = ES.palette(); cur = d;
+  $('dsTitle').textContent = d.title + (d.group ? ' – ' + d.group : '');
+  $('dsMeta').textContent = `${d.unit} · column "${d.column}"`;
+  Highcharts.chart('chDs', {chart: {zoomType: 'x'}, xAxis: d.kind === 'datetime' ? {type: 'datetime'} : {title: {text: 'Year'}}, yAxis: {title: {text: d.unit}}, legend: {enabled: false},
+    tooltip: {valueDecimals: 2, valueSuffix: ' ' + d.unit}, series: [{name: d.column, type: 'line', data: d.points, color: P.teal, lineWidth: 1.8, marker: {enabled: d.points.length < 80, radius: 3}}]});
+  const s = d.stats;
+  $('dsStats').innerHTML = [[s.count, 'observations'], [s.min, 'minimum'], [s.max, 'maximum'], [s.mean, 'mean']].map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
+  const sg = $('selGroup'), sc = $('selCol');
+  sg.classList.toggle('hidden', !d.groups.length);
+  if (d.groups.length) { sg.innerHTML = d.groups.map(g => `<option ${g === d.group ? 'selected' : ''}>${g}</option>`).join(''); }
+  sc.classList.toggle('hidden', d.columns.length < 2);
+  if (d.columns.length > 1) { sc.innerHTML = d.columns.map(c => `<option ${c === d.column ? 'selected' : ''}>${c}</option>`).join(''); }
+  const dl = $('dl'); if (dl) { dl.classList.toggle('hidden', curName.startsWith('custom:')); dl.href = `/datasets/${curName}/download/`; }
+}
+async function pick(name, extra){
+  curName = name;
+  document.querySelectorAll('#list button').forEach(b => b.classList.toggle('on', b.dataset.ds === name));
+  const q = new URLSearchParams(extra || {});
+  const res = await fetch(`/datasets/${encodeURIComponent(name)}/data/?${q}`, {credentials: 'same-origin'});
+  if (res.redirected || !res.ok) { location.href = '/login/'; return; }
+  draw(await res.json());
+}
+$('list').onclick = e => { if (e.target.dataset.ds) pick(e.target.dataset.ds); };
+$('selGroup').onchange = e => pick(curName, {group: e.target.value, column: $('selCol').value});
+$('selCol').onchange = e => pick(curName, {column: e.target.value, group: $('selGroup').value});
+ES.onTheme(() => { if (cur) draw(cur); });
+pick('temperature_monthly');
+</script>
+{% endblock %}

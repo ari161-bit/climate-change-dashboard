@@ -1,0 +1,111 @@
+disaster_type,year,events
+Flood,2000,146
+Volcanic activity,2000,5
+All disasters,2000,405
+Earthquake,2000,29
+All disasters excluding extreme temperature,2000,377
+Wildfire,2000,27
+All disasters excluding earthquakes,2000,376
+Landslide,2000,29
+Drought,2000,42
+Extreme temperature,2000,28
+Extreme weather,2000,99
+Volcanic activity,2001,5
+Wildfire,2001,14
+Extreme temperature,2001,20
+Landslide,2001,24
+All disasters excluding extreme temperature,2001,363
+Drought,2001,42
+Flood,2001,151
+Earthquake,2001,24
+Extreme weather,2001,103
+All disasters excluding earthquakes,2001,359
+All disasters,2001,383
+Drought,2002,38
+Extreme weather,2002,121
+Volcanic activity,2002,6
+Landslide,2002,20
+All disasters,2002,425
+Earthquake,2002,37
+Extreme temperature,2002,16
+Wildfire,2002,22
+All disasters excluding earthquakes,2002,388
+Flood,2002,165
+All disasters excluding extreme temperature,2002,409
+Earthquake,2003,38
+Flood,2003,158
+Wildfire,2003,14
+Drought,2003,23
+All disasters excluding earthquakes,2003,337
+All disasters excluding extreme temperature,2003,348
+All disasters,2003,375
+Extreme temperature,2003,27
+Landslide,2003,20
+Extreme weather,2003,93
+Volcanic activity,2003,2
+All disasters,2004,370
+All disasters excluding extreme temperature,2004,351
+All disasters excluding earthquakes,2004,328
+Landslide,2004,17
+Flood,2004,131
+Volcanic activity,2004,5
+Earthquake,2004,42
+Extreme temperature,2004,19
+Wildfire,2004,8
+Drought,2004,19
+Extreme weather,2004,129
+Extreme weather,2005,132
+Extreme temperature,2005,30
+Flood,2005,191
+Drought,2005,24
+Volcanic activity,2005,8
+Earthquake,2005,25
+All disasters,2005,436
+All disasters excluding extreme temperature,2005,406
+Landslide,2005,13
+Wildfire,2005,13
+All disasters excluding earthquakes,2005,411
+Wildfire,2006,11
+All disasters,2006,429
+Flood,2006,232
+Extreme temperature,2006,33
+Extreme weather,2006,76
+All disasters excluding extreme temperature,2006,396
+Drought,2006,20
+Earthquake,2006,24
+Landslide,2006,21
+Volcanic activity,2006,12
+All disasters excluding earthquakes,2006,405
+Wildfire,2007,17
+All disasters excluding earthquakes,2007,393
+Flood,2007,219
+Earthquake,2007,21
+Volcanic activity,2007,6
+Landslide,2007,10
+Extreme temperature,2007,25
+All disasters excluding extreme temperature,2007,389
+All disasters,2007,414
+Drought,2007,12
+Extreme weather,2007,104
+All disasters excluding earthquakes,2008,339
+Landslide,2008,15
+Flood,2008,171
+Volcanic activity,2008,7
+Extreme weather,2008,110
+Extreme temperature,2008,12
+All disasters,2008,361
+Earthquake,2008,22
+All disasters excluding extreme temperature,2008,349
+Wildfire,2008,5
+Drought,2008,19
+Extreme weather,2009,87
+All disasters excluding earthquakes,2009,345
+Volcanic activity,2009,3
+Wildfire,2009,9
+Landslide,2009,29
+Drought,2009,31
+Flood,2009,159
+Extreme temperature,2009,27
+All disasters excluding extreme temperature,2009,340
+Earthquake,2009,22
+All disasters,2009,367

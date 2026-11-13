@@ -1,0 +1,67 @@
+disaster_type,year,events
+All disasters excluding extreme temperature,2020,409
+Flood,2020,207
+Extreme temperature,2020,5
+Extreme weather,2020,133
+All disasters,2020,414
+Volcanic activity,2020,4
+Drought,2020,20
+Earthquake,2020,16
+Wildfire,2020,10
+Landslide,2020,19
+All disasters excluding earthquakes,2020,398
+All disasters,2021,438
+Extreme weather,2021,118
+Drought,2021,25
+Wildfire,2021,19
+Landslide,2021,12
+All disasters excluding extreme temperature,2021,435
+Extreme temperature,2021,3
+All disasters excluding earthquakes,2021,410
+Earthquake,2021,28
+Volcanic activity,2021,9
+Flood,2021,224
+Flood,2022,182
+All disasters,2022,440
+Wildfire,2022,16
+Extreme weather,2022,109
+Drought,2022,39
+Earthquake,2022,31
+Extreme temperature,2022,41
+Volcanic activity,2022,5
+All disasters excluding extreme temperature,2022,399
+All disasters excluding earthquakes,2022,409
+Landslide,2022,17
+Earthquake,2023,32
+Wildfire,2023,17
+Extreme temperature,2023,45
+Drought,2023,21
+All disasters excluding extreme temperature,2023,406
+Flood,2023,168
+All disasters,2023,451
+Landslide,2023,24
+Extreme weather,2023,140
+Volcanic activity,2023,4
+All disasters excluding earthquakes,2023,419
+Flood,2024,148
+Earthquake,2024,14
+Landslide,2024,33
+Drought,2024,22
+Extreme weather,2024,152
+Volcanic activity,2024,7
+All disasters excluding extreme temperature,2024,397
+Extreme temperature,2024,50
+All disasters,2024,447
+Wildfire,2024,21
+All disasters excluding earthquakes,2024,433
+Landslide,2025,19
+All disasters,2025,407
+Earthquake,2025,29
+Flood,2025,124
+Drought,2025,12
+Volcanic activity,2025,4
+All disasters excluding extreme temperature,2025,369
+Extreme temperature,2025,38
+Extreme weather,2025,153
+All disasters excluding earthquakes,2025,378
+Wildfire,2025,28

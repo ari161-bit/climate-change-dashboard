@@ -1,0 +1,22 @@
+{% extends 'climate/base.html' %}
+{% block title %}Create account · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero" style="text-align:center;padding-top:28px">
+  <p class="eyebrow">Join the agency portal</p>
+  <h1>Create an account</h1>
+  <p class="lede" style="margin:0 auto 26px">New accounts get the <strong>Analyst</strong> role: full read access to dashboards, data and models. Administrators can adjust alert thresholds, upload data and retrain models.</p>
+</section>
+<div class="auth-card">
+  <form method="post" autocomplete="on">
+    {% csrf_token %}
+    <div class="signup-grid">
+      <div><label for="username">Username</label><input id="username" name="username" maxlength="40" value="{{ form.username }}" required autocomplete="username"><div class="field-hint">3-40 characters: letters, digits and . @ + - _</div></div>
+      <div><label for="email">Email <span class="muted">(optional)</span></label><input id="email" name="email" type="email" value="{{ form.email }}" autocomplete="email"></div>
+      <div><label for="password">Password</label><input id="password" name="password" type="password" minlength="8" required autocomplete="new-password"><div class="field-hint">At least 8 characters, not a common password</div></div>
+      <div><label for="confirm">Confirm password</label><input id="confirm" name="confirm" type="password" minlength="8" required autocomplete="new-password"></div>
+    </div>
+    <div style="text-align:center;margin-top:22px"><button type="submit" class="btn btn-primary" style="padding:12px 34px">Create account &rarr;</button></div>
+    <p class="auth-foot">Already registered? <a href="{% url 'climate:login' %}">Sign in</a></p>
+  </form>
+</div>
+{% endblock %}

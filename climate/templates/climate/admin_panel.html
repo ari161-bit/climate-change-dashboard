@@ -1,53 +1,87 @@
 {% extends 'climate/base.html' %}
-{% block title %}Alerts &amp; admin - EarthScape Climate{% endblock %}
+{% block title %}Alerts, data &amp; inbox · EarthScape Climate Agency{% endblock %}
 {% block content %}
-<h1 style="margin:0 0 4px">Alerts &amp; administration</h1>
-<p style="color:var(--muted);margin:0 0 20px">Set the thresholds that drive dashboard alerts, and respond to feedback from analysts.</p>
-<div style="display:grid;grid-template-columns:minmax(320px,460px) 1fr;gap:18px;align-items:start" class="ad">
-  <div>
-    <form class="card" method="post">
-      {% csrf_token %}<input type="hidden" name="action" value="thresholds">
-      <h2>Alert thresholds</h2>
-      <div class="sub">An alert fires when the latest value exceeds its threshold; it turns critical at 1.5&times;.</div>
-      {% for t in thresholds %}
-      <label for="th_{{ t.key }}">{{ t.label }} ({{ t.unit }})</label>
-      <input id="th_{{ t.key }}" name="th_{{ t.key }}" type="number" step="any" min="0.001" value="{{ t.value }}" required>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px">{{ t.description }}</div>
-      {% endfor %}
-      <button class="primary" type="submit" style="margin-top:16px">Save thresholds</button>
-    </form>
-    <div class="card" style="margin-top:16px">
+<section class="hero">
+  <p class="eyebrow">Administration</p>
+  <h1>Alerts, data and inbox</h1>
+  <p class="lede">Set the thresholds that drive alerts, upload datasets, answer support messages, take a backup and review who did what.</p>
+</section>
+<div class="grid">
+  <form class="card c6" method="post">
+    {% csrf_token %}<input type="hidden" name="action" value="thresholds">
+    <h2>Alert thresholds</h2>
+    <div class="sub">An alert fires when a value exceeds its threshold and turns critical at 1.5&times;. Changes apply to the dashboard and the live feed immediately.</div>
+    {% for t in thresholds %}
+    <label for="th_{{ t.key }}">{{ t.label }} ({{ t.unit }})</label>
+    <input id="th_{{ t.key }}" name="th_{{ t.key }}" type="number" step="any" min="0.001" value="{{ t.value }}" required>
+    <div class="field-hint">{{ t.description }}</div>
+    {% endfor %}
+    <button class="btn btn-primary" type="submit" style="margin-top:16px">Save thresholds</button>
+  </form>
+  <div class="c6" style="display:flex;flex-direction:column;gap:16px">
+    <div class="card">
       <h2>Current status</h2>
       {% for a in alerts %}
-      <div style="display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)">
-        <span style="width:11px;height:11px;border-radius:50%;background:{% if a.severity == 'critical' %}var(--hot){% elif a.severity == 'warning' %}var(--warm){% else %}var(--green){% endif %}"></span>
-        <div style="flex:1">{{ a.subject }}</div><div style="color:var(--muted)">{{ a.value }} / {{ a.threshold }}</div>
+      <div class="stack" style="padding:7px 0;border-bottom:1px solid var(--line-soft)">
+        <span style="width:11px;height:11px;border-radius:50%;background:{% if a.severity == 'critical' %}var(--coral-600){% elif a.severity == 'warning' %}var(--amber-500){% else %}var(--green-600){% endif %}"></span>
+        <div style="flex:1">{{ a.subject }}</div><div class="muted">{{ a.value }} / {{ a.threshold }}</div>
       </div>
       {% endfor %}
     </div>
-  </div>
-  <div>
-    <h2 style="margin:0 0 10px;font-size:16px">Feedback inbox ({{ feedback_items|length }})</h2>
-    {% for item in feedback_items %}
-    <form class="card" method="post" style="margin-bottom:12px">
-      {% csrf_token %}<input type="hidden" name="action" value="respond"><input type="hidden" name="feedback_id" value="{{ item.id }}">
-      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-        <strong>{{ item.subject }}</strong>
-        <span class="badge" style="{% if item.status == 'resolved' %}color:var(--green);border-color:var(--green){% endif %}">{{ item.get_status_display }}</span>
+    <form class="card" method="post" enctype="multipart/form-data">
+      {% csrf_token %}<input type="hidden" name="action" value="upload">
+      <h2>Upload a dataset</h2>
+      <div class="sub">CSV, JSON or XLS (max 2 MB) with a year or date column and a numeric column. Values are averaged by year.</div>
+      <label for="up_title" style="margin-top:0">Title</label><input id="up_title" name="title" maxlength="120" required>
+      <div class="signup-grid">
+        <div><label for="up_unit">Unit</label><input id="up_unit" name="unit" maxlength="30" placeholder="e.g. mm, ppm"></div>
+        <div><label for="up_col">Value column <span class="muted">(optional)</span></label><input id="up_col" name="value_column" placeholder="first numeric column"></div>
       </div>
-      <div style="color:var(--muted);font-size:12.5px;margin:2px 0 8px">{{ item.user.username }} &middot; {{ item.get_category_display }} &middot; {{ item.created_at|date:"j M Y, H:i" }}</div>
-      <div style="white-space:pre-wrap">{{ item.message }}</div>
-      <label for="r{{ item.id }}">Response</label>
-      <textarea id="r{{ item.id }}" name="response" rows="3" maxlength="2000">{{ item.response }}</textarea>
-      <div style="display:flex;gap:14px;align-items:center;margin-top:10px">
-        <button type="submit">Save</button>
-        <label style="margin:0;display:flex;gap:6px;align-items:center"><input type="checkbox" name="resolve" value="1" style="width:auto" {% if item.status == 'resolved' %}checked{% endif %}> Mark resolved</label>
-      </div>
+      <label for="up_src">Source</label><input id="up_src" name="source" maxlength="200">
+      <label for="up_vis">Who can see it</label>
+      <select id="up_vis" name="visibility"><option value="analysts">Administrators and analysts</option><option value="admins">Administrators only</option></select>
+      <label for="up_file">File</label><input id="up_file" type="file" name="file" accept=".csv,.json,.xls" required>
+      <button class="btn btn-primary" type="submit" style="margin-top:14px">Upload</button>
     </form>
-    {% empty %}
-    <div class="card" style="color:var(--muted)">No feedback yet.</div>
-    {% endfor %}
+    <div class="card">
+      <h2>Backup</h2>
+      <div class="sub">A zip with a consistent database snapshot and the full data lake with its manifest.</div>
+      <a class="btn btn-ghost" href="{% url 'climate:backup' %}">Download backup</a>
+      <p class="field-hint" style="margin-top:10px">Local installs can also run <code>python manage.py backup_data</code> from a scheduler to keep rotating backups on disk.</p>
+    </div>
   </div>
 </div>
-<style>@media(max-width:900px){.ad{grid-template-columns:1fr!important}}</style>
+
+<div class="section-head"><h2>Feedback inbox ({{ feedback_items|length }})</h2></div>
+<div class="grid">
+{% for item in feedback_items %}
+  <form class="card c6" method="post">
+    {% csrf_token %}<input type="hidden" name="action" value="respond"><input type="hidden" name="feedback_id" value="{{ item.id }}">
+    <div class="stack" style="justify-content:space-between"><strong>{{ item.subject }}</strong><span class="badge {% if item.status == 'resolved' %}good{% endif %}">{{ item.get_status_display }}</span></div>
+    <div class="muted" style="font-size:.8rem;margin:2px 0 8px">{{ item.user.username }} &middot; {{ item.get_category_display }} &middot; {{ item.created_at|date:"j M Y, H:i" }}</div>
+    <div style="white-space:pre-wrap">{{ item.message }}</div>
+    <label for="r{{ item.id }}">Response</label>
+    <textarea id="r{{ item.id }}" name="response" rows="3" maxlength="2000">{{ item.response }}</textarea>
+    <div class="stack" style="margin-top:10px"><button class="btn btn-ghost btn-sm" type="submit">Save</button>
+      <label style="margin:0;display:flex;gap:6px;align-items:center;font-weight:500"><input type="checkbox" name="resolve" value="1" {% if item.status == 'resolved' %}checked{% endif %}> Mark resolved</label></div>
+  </form>
+{% empty %}
+  <div class="card c12 muted">No feedback yet.</div>
+{% endfor %}
+</div>
+
+<div class="section-head"><h2>Uploaded datasets</h2></div>
+<div class="card"><div class="table-wrap"><table class="t"><tr><th>Title</th><th>Points</th><th>Visibility</th><th>By</th><th>When</th><th></th></tr>
+  {% for c in custom %}<tr><td><b>{{ c.title }}</b><br><span class="muted">{{ c.unit }} {{ c.source }}</span></td><td>{{ c.points|length }}</td><td>{{ c.get_visibility_display }}</td><td>{{ c.uploaded_by }}</td><td>{{ c.created_at|date:"j M Y" }}</td>
+    <td><form method="post" style="margin:0">{% csrf_token %}<input type="hidden" name="action" value="delete_dataset"><input type="hidden" name="slug" value="{{ c.slug }}"><button class="btn btn-ghost btn-sm" type="submit">Remove</button></form></td></tr>
+  {% empty %}<tr><td colspan="6" class="muted">Nothing uploaded yet.</td></tr>{% endfor %}</table></div></div>
+
+<div class="section-head"><h2>Accounts</h2></div>
+<div class="card"><div class="table-wrap"><table class="t"><tr><th>User</th><th>Role</th><th>Last sign-in</th></tr>
+  {% for u in users %}<tr><td>{{ u.username }}</td><td>{% for g in u.groups.all %}<span class="badge {% if g.name == 'Administrators' %}admin{% endif %}">{{ g.name }}</span> {% empty %}<span class="muted">none</span>{% endfor %}{% if u.is_superuser %}<span class="badge admin">superuser</span>{% endif %}</td><td>{{ u.last_login|date:"j M Y H:i"|default:"never" }}</td></tr>{% endfor %}</table></div></div>
+
+<div class="section-head"><h2>Audit log</h2></div>
+<div class="card"><div class="table-wrap"><table class="t"><tr><th>When</th><th>User</th><th>Action</th><th>Detail</th><th>IP</th></tr>
+  {% for a in audit %}<tr><td>{{ a.at|date:"j M H:i:s" }}</td><td>{{ a.user|default:"-" }}</td><td><span class="badge {% if a.action == 'login_failed' %}bad{% endif %}">{{ a.action }}</span></td><td>{{ a.detail }}</td><td class="mono">{{ a.ip }}</td></tr>
+  {% empty %}<tr><td colspan="5" class="muted">No activity recorded yet.</td></tr>{% endfor %}</table></div></div>
 {% endblock %}

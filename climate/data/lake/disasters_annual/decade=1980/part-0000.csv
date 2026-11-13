@@ -1,0 +1,110 @@
+disaster_type,year,events
+Landslide,1980,5
+Drought,1980,20
+Flood,1980,39
+Extreme weather,1980,35
+All disasters excluding extreme temperature,1980,119
+All disasters,1980,122
+All disasters excluding earthquakes,1980,105
+Extreme temperature,1980,3
+Volcanic activity,1980,2
+Wildfire,1980,1
+Earthquake,1980,17
+Volcanic activity,1981,1
+Landslide,1981,8
+All disasters excluding earthquakes,1981,122
+All disasters excluding extreme temperature,1981,135
+Extreme weather,1981,48
+All disasters,1981,137
+Wildfire,1981,2
+Drought,1981,19
+Extreme temperature,1981,2
+Flood,1981,42
+Earthquake,1981,15
+Extreme weather,1982,53
+All disasters excluding earthquakes,1982,143
+Flood,1982,46
+Wildfire,1982,2
+Earthquake,1982,15
+All disasters excluding extreme temperature,1982,156
+Extreme temperature,1982,2
+Volcanic activity,1982,3
+All disasters,1982,158
+Drought,1982,24
+Landslide,1982,13
+Earthquake,1983,26
+Flood,1983,49
+Extreme weather,1983,56
+Drought,1983,46
+Wildfire,1983,11
+Extreme temperature,1983,2
+Landslide,1983,19
+All disasters,1983,216
+Volcanic activity,1983,7
+All disasters excluding earthquakes,1983,190
+All disasters excluding extreme temperature,1983,214
+All disasters excluding earthquakes,1984,148
+Wildfire,1984,7
+Flood,1984,46
+Extreme temperature,1984,1
+Volcanic activity,1984,7
+Extreme weather,1984,53
+All disasters excluding extreme temperature,1984,160
+Earthquake,1984,13
+Drought,1984,28
+All disasters,1984,161
+Landslide,1984,6
+Volcanic activity,1985,2
+Extreme temperature,1985,9
+Wildfire,1985,12
+Drought,1985,20
+All disasters excluding extreme temperature,1985,166
+Landslide,1985,8
+Earthquake,1985,17
+Extreme weather,1985,50
+All disasters,1985,175
+All disasters excluding earthquakes,1985,158
+Flood,1985,57
+Extreme weather,1986,53
+Flood,1986,49
+Extreme temperature,1986,2
+Drought,1986,5
+Wildfire,1986,5
+All disasters excluding earthquakes,1986,125
+Volcanic activity,1986,2
+All disasters excluding extreme temperature,1986,144
+All disasters,1986,146
+Landslide,1986,9
+Earthquake,1986,21
+Drought,1987,16
+Extreme weather,1987,60
+All disasters,1987,185
+Flood,1987,65
+Volcanic activity,1987,2
+All disasters excluding earthquakes,1987,170
+Earthquake,1987,15
+Extreme temperature,1987,5
+Wildfire,1987,7
+All disasters excluding extreme temperature,1987,180
+Landslide,1987,15
+Extreme weather,1988,65
+Extreme temperature,1988,6
+Earthquake,1988,15
+All disasters,1988,202
+All disasters excluding extreme temperature,1988,196
+Landslide,1988,18
+Volcanic activity,1988,4
+All disasters excluding earthquakes,1988,187
+Flood,1988,75
+Drought,1988,19
+Earthquake,1989,19
+Landslide,1989,18
+Wildfire,1989,2
+Flood,1989,46
+All disasters excluding extreme temperature,1989,168
+Drought,1989,9
+Extreme temperature,1989,5
+All disasters excluding earthquakes,1989,154
+All disasters,1989,173
+Volcanic activity,1989,1
+Extreme weather,1989,73

@@ -1,0 +1,56 @@
+{% extends 'climate/base.html' %}
+{% load static %}
+{% block title %}Live feed · EarthScape Climate Agency{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow"><span class="pulse-dot"></span>Real-time</p>
+  <h1>Live conditions in 12 cities</h1>
+  <p class="lede">Current weather, air quality and CO<sub>2</sub> from the Open-Meteo stream, refreshed automatically. Each card is set beside the city's ten-year mean from the batch data lake, so streaming and historical data are read together. Alerts use the thresholds your administrators set.</p>
+</section>
+<div class="stack" style="margin-bottom:16px"><span class="badge" id="status">Loading&hellip;</span><button class="btn btn-ghost btn-sm" id="refresh">Refresh now</button><span class="muted" id="next"></span></div>
+<div class="alerts" id="liveAlerts"></div>
+<div class="live-grid" id="cards"></div>
+<div class="section-head"><h2>Live comparison</h2></div>
+<div class="grid"><div class="card c6"><h2>Temperature now vs 10-year mean</h2><div class="sub">Seasonal differences are expected: the mean is annual.</div><div id="chLiveT" class="chart"></div></div>
+<div class="card c6"><h2>Air quality: PM2.5</h2><div class="sub">&micro;g/m&sup3;; the WHO 24-hour guideline is 15.</div><div id="chLiveP" class="chart"></div></div></div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
+<script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+<script src="{% static 'climate/charts.js' %}"></script>
+<script>
+const $ = id => document.getElementById(id);
+const LIVE_URL = "{% url 'climate:live_data' %}", LOGIN_URL = "{% url 'climate:login' %}";
+let P = ES.apply(), last = null, left = 0;
+function render(d){
+  P = ES.palette(); last = d;
+  if (d.error && !(d.cities || []).length) { $('status').textContent = d.error; $('cards').innerHTML = ''; return; }
+  $('status').textContent = (d.stale ? 'Showing cached data · ' : 'Updated ') + d.fetched_at;
+  const bad = {}; (d.alerts || []).forEach(a => { bad[a.city] = (bad[a.city] === 'critical' || a.severity === 'critical') ? 'critical' : 'warning'; });
+  $('liveAlerts').innerHTML = (d.alerts || []).length ? d.alerts.map(a => `<div class="alert ${a.severity}"><div class="dot"></div><div><b>${a.severity === 'critical' ? 'CRITICAL' : 'ALERT'}: ${a.kind} in ${a.city}</b><span>${a.value} ${a.unit} (threshold ${a.threshold})</span></div></div>`).join('')
+    : '<div class="alert ok"><div class="dot"></div><div><b>No live alerts</b><span>All monitored cities are within the configured thresholds.</span></div></div>';
+  $('cards').innerHTML = d.cities.map(c => `<div class="live-card ${bad[c.city] || ''}"><div class="city">${c.city}</div><div class="temp">${c.temp ?? '-'}<small style="font:500 .9rem Inter"> °C</small></div>
+    <dl><dt>Feels like</dt><dd>${c.feels ?? '-'} °C</dd><dt>Humidity</dt><dd>${c.humidity ?? '-'}%</dd><dt>Wind</dt><dd>${c.wind ?? '-'} km/h</dd>
+    <dt>PM2.5</dt><dd>${c.pm25 ?? '-'} µg/m³</dd><dt>Air-quality index</dt><dd>${c.aqi ?? '-'}</dd><dt>CO₂ (air)</dt><dd>${c.co2 ?? '-'} ppm</dd>
+    <dt>10-yr mean (batch)</dt><dd>${c.long_term_mean ?? '-'} °C</dd></dl></div>`).join('');
+  Highcharts.chart('chLiveT', {chart: {type: 'column'}, xAxis: {categories: d.cities.map(c => c.city), labels: {rotation: -35}}, yAxis: {title: {text: '°C'}}, tooltip: {valueSuffix: ' °C'}, plotOptions: {column: {borderWidth: 0, borderRadius: 3}},
+    series: [{name: 'Now (live)', data: d.cities.map(c => c.temp), color: P.hot}, {name: '10-year annual mean (batch)', data: d.cities.map(c => c.long_term_mean), color: P.cool}]});
+  Highcharts.chart('chLiveP', {chart: {type: 'column'}, xAxis: {categories: d.cities.map(c => c.city), labels: {rotation: -35}}, yAxis: {title: {text: 'µg/m³'}, plotLines: [{value: 15, color: P.green, dashStyle: 'Dash', width: 1.5, label: {text: 'WHO 15', style: {color: P.green}}}]},
+    legend: {enabled: false}, tooltip: {valueSuffix: ' µg/m³'}, plotOptions: {column: {borderWidth: 0, borderRadius: 3}},
+    series: [{name: 'PM2.5', data: d.cities.map(c => ({y: c.pm25, color: c.pm25 > 35 ? P.hot : (c.pm25 > 15 ? P.amber : P.green)}))}]});
+}
+async function load(){
+  try {
+    const res = await fetch(LIVE_URL, {credentials: 'same-origin'});
+    if (res.redirected || !(res.headers.get('content-type') || '').includes('json')) { location.href = LOGIN_URL; return; }
+    render(await res.json());
+  } catch (e) { $('status').textContent = 'Live feed unavailable'; }
+  left = 60;
+}
+setInterval(() => { left = Math.max(0, left - 1); $('next').textContent = left ? `next refresh in ${left}s` : ''; if (!left && !document.hidden) load(); }, 1000);
+$('refresh').onclick = load;
+ES.onTheme(() => { if (last) render(last); });
+load();
+</script>
+{% endblock %}

@@ -1,0 +1,111 @@
+disaster_type,year,events
+Wildfire,2010,7
+All disasters excluding extreme temperature,2010,381
+All disasters,2010,413
+Drought,2010,28
+All disasters excluding earthquakes,2010,391
+Volcanic activity,2010,6
+Extreme weather,2010,93
+Landslide,2010,33
+Flood,2010,192
+Earthquake,2010,22
+Extreme temperature,2010,32
+Drought,2011,24
+Volcanic activity,2011,6
+Extreme weather,2011,85
+Wildfire,2011,8
+Landslide,2011,16
+Flood,2011,158
+All disasters,2011,345
+Extreme temperature,2011,18
+All disasters excluding extreme temperature,2011,327
+Earthquake,2011,30
+All disasters excluding earthquakes,2011,315
+Volcanic activity,2012,1
+All disasters excluding extreme temperature,2012,313
+Earthquake,2012,27
+Wildfire,2012,7
+Drought,2012,31
+Flood,2012,141
+Extreme temperature,2012,52
+Landslide,2012,14
+All disasters,2012,365
+Extreme weather,2012,92
+All disasters excluding earthquakes,2012,338
+Earthquake,2013,29
+Wildfire,2013,10
+Landslide,2013,11
+Flood,2013,152
+Volcanic activity,2013,3
+Extreme weather,2013,108
+All disasters excluding extreme temperature,2013,328
+Extreme temperature,2013,17
+Drought,2013,15
+All disasters,2013,345
+All disasters excluding earthquakes,2013,316
+All disasters excluding earthquakes,2014,303
+All disasters excluding extreme temperature,2014,310
+Landslide,2014,15
+Extreme temperature,2014,18
+Drought,2014,21
+Flood,2014,139
+Extreme weather,2014,99
+All disasters,2014,328
+Earthquake,2014,25
+Volcanic activity,2014,7
+Wildfire,2014,4
+Earthquake,2015,23
+All disasters,2015,398
+Drought,2015,39
+Volcanic activity,2015,7
+Extreme weather,2015,120
+Extreme temperature,2015,14
+All disasters excluding extreme temperature,2015,384
+Landslide,2015,21
+Wildfire,2015,13
+All disasters excluding earthquakes,2015,375
+Flood,2015,161
+All disasters,2016,350
+Earthquake,2016,30
+Landslide,2016,13
+All disasters excluding earthquakes,2016,320
+Volcanic activity,2016,1
+Wildfire,2016,10
+Extreme temperature,2016,13
+Flood,2016,164
+All disasters excluding extreme temperature,2016,337
+Drought,2016,32
+Extreme weather,2016,87
+Earthquake,2017,22
+Wildfire,2017,15
+Extreme temperature,2017,11
+Drought,2017,27
+Extreme weather,2017,130
+All disasters,2017,365
+All disasters excluding extreme temperature,2017,354
+Flood,2017,132
+Volcanic activity,2017,2
+All disasters excluding earthquakes,2017,343
+Landslide,2017,26
+Volcanic activity,2018,9
+Wildfire,2018,10
+All disasters,2018,325
+Flood,2018,127
+Extreme temperature,2018,27
+Drought,2018,20
+Extreme weather,2018,99
+All disasters excluding earthquakes,2018,305
+Earthquake,2018,20
+Landslide,2018,13
+All disasters excluding extreme temperature,2018,298
+Drought,2019,28
+Earthquake,2019,31
+Extreme temperature,2019,23
+All disasters excluding earthquakes,2019,383
+Landslide,2019,26
+Flood,2019,193
+All disasters excluding extreme temperature,2019,391
+Wildfire,2019,14
+All disasters,2019,414
+Extreme weather,2019,95
+Volcanic activity,2019,4

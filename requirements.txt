@@ -6,3 +6,4 @@ xlrd>=2.0.1
 plotly>=5.24
 pillow>=10.4
 requests>=2.31
+cryptography>=42

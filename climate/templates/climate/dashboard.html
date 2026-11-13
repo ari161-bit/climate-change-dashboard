@@ -1,87 +1,74 @@
 {% extends 'climate/base.html' %}
 {% load static %}
-{% block title %}Dashboard - EarthScape Climate{% endblock %}
-{% block head %}
-<style>
-.hero{display:flex;gap:18px;align-items:stretch;flex-wrap:wrap;margin-bottom:18px}
-.hero .txt{flex:1;min-width:280px}
-.hero h1{margin:0 0 6px;font-size:28px;line-height:1.2}
-.hero p{margin:0;color:var(--muted);max-width:640px}
-#stripes{width:100%;height:84px;border-radius:12px;display:block;margin:14px 0 4px}
-.stripes-note{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
-.filters{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:18px}
-.filters .f{width:110px} .filters label{margin:0 0 4px}
-.presets{display:flex;gap:6px;flex-wrap:wrap}
-.presets button{padding:7px 12px;font-size:13px}
-.presets button.on{border-color:var(--accent);color:var(--accent)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
-.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
-.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--accent))}
-.kpi .l{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.6px}
-.kpi .v{font-size:30px;font-weight:700;margin:4px 0 2px}
-.kpi .v small{font-size:14px;color:var(--muted);font-weight:500}
-.kpi .d{font-size:12.5px;color:var(--muted)}
-.alerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:18px}
-.alert{border-radius:12px;padding:12px 14px;border:1px solid var(--line);background:var(--panel);display:flex;gap:12px;align-items:flex-start}
-.alert .dot{width:12px;height:12px;border-radius:50%;margin-top:5px;flex:none;background:var(--green)}
-.alert.warning{border-color:var(--warm);background:rgba(255,169,77,.08)} .alert.warning .dot{background:var(--warm)}
-.alert.critical{border-color:var(--hot);background:rgba(255,90,79,.10)} .alert.critical .dot{background:var(--hot);animation:pulse 1.6s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,90,79,.6)}100%{box-shadow:0 0 0 12px rgba(255,90,79,0)}}
-.alert b{display:block;font-size:14px} .alert span{font-size:13px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}
-@media(max-width:1000px){.c8,.c6,.c4{grid-column:span 12}}
-.chart{height:380px}
-.chart.tall{height:440px}
-table.t{width:100%;border-collapse:collapse;font-size:14px}
-table.t td,table.t th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
-table.t th{color:var(--muted);font-weight:600;font-size:12.5px}
-.pill{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;background:rgba(255,90,79,.15);color:var(--hot)}
-.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
-.metrics div{background:var(--panel2);border-radius:10px;padding:10px 12px}
-.metrics b{display:block;font-size:20px} .metrics span{font-size:12px;color:var(--muted)}
-.loading{opacity:.45;transition:opacity .2s}
-</style>
-{% endblock %}
+{% block title %}Dashboard · EarthScape Climate Agency{% endblock %}
 {% block content %}
 <section class="hero">
-  <div class="txt">
-    <h1>How fast is the planet warming?</h1>
-    <p>Interactive analysis of NASA GISTEMP surface temperature and NOAA Mauna Loa CO<sub>2</sub>: trends, anomaly detection, a 2050 projection and live threshold alerts.</p>
-  </div>
+  <p class="eyebrow">Climate dashboard</p>
+  <h1>How fast is the planet warming?</h1>
+  <p class="lede">NASA temperature, NOAA CO<sub>2</sub>, national emissions, sea level, glaciers, disasters and 12 city records, processed from a partitioned data lake with MapReduce-style jobs, trend models and threshold alerts.</p>
 </section>
 
 <div class="card" style="margin-bottom:18px">
   <h2>Warming stripes</h2>
-  <div class="sub">One stripe per year, blue (cooler than 1951-1980) to red (warmer). Hover for the year.</div>
+  <div class="sub">One stripe per year, from cooler (blue) to warmer (red) than the 1951-1980 average. Hover for the year.</div>
   <canvas id="stripes"></canvas>
   <div class="stripes-note"><span id="stripeFrom"></span><span id="stripeTo"></span></div>
 </div>
 
 <div class="filters">
-  <div class="f"><label for="start">From year</label><input id="start" type="number" min="1880" max="2100"></div>
-  <div class="f"><label for="end">To year</label><input id="end" type="number" min="1880" max="2100"></div>
-  <button class="primary" id="apply">Apply</button>
+  <div class="f"><label for="start">From year</label><input id="start" type="number" min="1850" max="2100"></div>
+  <div class="f"><label for="end">To year</label><input id="end" type="number" min="1850" max="2100"></div>
+  <button class="btn btn-primary" id="apply">Apply</button>
   <div class="presets" id="presets">
-    <button data-p="all">All time</button>
-    <button data-p="1950">Since 1950</button>
-    <button data-p="1980">Since 1980</button>
-    <button data-p="2000">Since 2000</button>
+    <button class="btn btn-ghost btn-sm" data-p="all">All time</button>
+    <button class="btn btn-ghost btn-sm" data-p="1950">Since 1950</button>
+    <button class="btn btn-ghost btn-sm" data-p="1980">Since 1980</button>
+    <button class="btn btn-ghost btn-sm" data-p="2000">Since 2000</button>
   </div>
 </div>
 
 <div class="kpis" id="kpis"></div>
 <div class="alerts" id="alerts"></div>
 
-<div class="grid" id="grid">
-  <div class="card c12"><h2>Global temperature anomaly</h2><div class="sub">Annual means by hemisphere with a 5-year centred average. Red markers are statistical anomalies (more than 2&sigma; above the 1951-1980 baseline).</div><div id="chTemp" class="chart tall"></div></div>
+<div id="grid">
+<div class="section-head"><div><p class="eyebrow">1 &middot; Temperature and CO<sub>2</sub></p><h2>The warming signal</h2></div></div>
+<div class="grid">
+  <div class="card c12"><h2>Global temperature anomaly</h2><div class="sub">Annual means by hemisphere with a 5-year average. Diamonds are statistical anomalies (more than 2&sigma; above the 1951-1980 baseline).</div><div id="chTemp" class="chart tall"></div></div>
   <div class="card c8"><h2>Atmospheric CO<sub>2</sub> (Keeling curve)</h2><div class="sub">Monthly mean at Mauna Loa Observatory, ppm. The saw-tooth is the Northern Hemisphere growing season.</div><div id="chCo2" class="chart"></div></div>
   <div class="card c4"><h2>Anomaly detection</h2><div class="sub" id="anSub"></div><div id="anTable"></div></div>
-  <div class="card c8"><h2>Projection to 2050</h2><div class="sub">Linear trend fitted to 1970 onward, with a 95% band, and a quadratic fit showing the acceleration scenario.</div><div id="chFc" class="chart"></div></div>
-  <div class="card c4"><h2>Model quality</h2><div class="sub">Least-squares trend model, validated on a time-ordered holdout.</div><div class="metrics" id="metrics"></div></div>
+  <div class="card c8"><h2>Projection to 2050</h2><div class="sub" id="fcSub"></div><div id="chFc" class="chart"></div></div>
+  <div class="card c4"><h2>Model selection</h2><div class="sub">Expanding-window backtest: the model with the lowest error on unseen years is used for the projection.</div><div class="metrics" id="metrics"></div><p style="margin-top:12px"><a href="{% url 'climate:models' %}">Open the Models page &rarr;</a></p></div>
   <div class="card c6"><h2>CO<sub>2</sub> vs temperature</h2><div class="sub" id="corrSub"></div><div id="chScatter" class="chart"></div></div>
-  <div class="card c6"><h2>Warming by decade</h2><div class="sub">Mean anomaly per decade for the selected range.</div><div id="chDec" class="chart"></div></div>
-  <div class="card c12"><h2>Seasonal profile</h2><div class="sub">Mean anomaly by calendar month: 1951-1980 against the most recent 30 years.</div><div id="chSeason" class="chart" style="height:320px"></div></div>
+  <div class="card c6"><h2>Warming by decade</h2><div class="sub">Computed by a MapReduce job over the decade partitions: columns are mean anomaly, line is the share of months above +1&nbsp;&deg;C.</div><div id="chDec" class="chart"></div></div>
+  <div class="card c12"><h2>Seasonal profile</h2><div class="sub">Mean anomaly by calendar month: 1951-1980 against the most recent 30 years.</div><div id="chSeason" class="chart short"></div></div>
+</div>
+
+<div class="section-head"><div><p class="eyebrow">2 &middot; Drivers</p><h2>Where the emissions come from</h2></div></div>
+<div class="grid">
+  <div class="card c6"><h2>World fossil CO<sub>2</sub> emissions</h2><div class="sub">Million tonnes per year, Global Carbon Project.</div><div id="chEm" class="chart short"></div></div>
+  <div class="card c6"><h2>Top emitters</h2><div class="sub" id="emSub"></div><div id="chTop" class="chart short"></div></div>
+  <div class="card c12"><h2>Who has emitted the most, cumulatively?</h2><div class="sub">Total CO<sub>2</sub> emitted since 1750 (million tonnes). Cumulative totals matter because CO<sub>2</sub> stays in the atmosphere for centuries.</div><div id="chCum" class="chart short"></div></div>
+</div>
+
+<div class="section-head"><div><p class="eyebrow">3 &middot; Impacts</p><h2>What is already changing</h2></div></div>
+<div class="grid">
+  <div class="card c6"><h2>Global mean sea level</h2><div class="sub">Millimetres relative to the series baseline (tide gauges and satellites).</div><div id="chSea" class="chart short"></div></div>
+  <div class="card c6"><h2>Glacier mass balance</h2><div class="sub">Cumulative change in metres of water equivalent; falling means net ice loss.</div><div id="chGl" class="chart short"></div></div>
+  <div class="card c8"><h2>Recorded natural disasters</h2><div class="sub">Events per year by type (EM-DAT). Reporting has improved over time, so read the trend with care.</div><div id="chDis" class="chart"></div></div>
+  <div class="card c4"><h2>World forest area</h2><div class="sub">Million km&sup2; (FAO).</div><div id="chFor" class="chart"></div></div>
+</div>
+
+<div class="section-head"><div><p class="eyebrow">4 &middot; Regions and cities</p><h2>Warming is not uniform</h2></div></div>
+<div class="grid">
+  <div class="card c6"><h2>Warming by latitude band</h2><div class="sub" id="regSub"></div><div id="chReg" class="chart"></div></div>
+  <div class="card c6"><h2>City warming ranking</h2><div class="sub">Trend of annual mean temperature since 1981 (NASA POWER reanalysis, 12 cities). Local effects such as aerosols and irrigation can mask warming in a grid cell.</div><div class="table-wrap"><table class="t" id="cityTable"></table></div></div>
+</div>
+
+<div class="section-head"><div><p class="eyebrow">5 &middot; Relationships</p><h2>Correlation across datasets</h2></div></div>
+<div class="card" style="margin-bottom:18px">
+  <div class="sub">Pearson correlation of annual series on overlapping years. Strong values mostly reflect a shared long-term trend; correlation alone does not prove one series drives another.</div>
+  <div class="table-wrap"><table class="t heat" id="corr"></table></div>
+</div>
 </div>
 {% endblock %}
 {% block scripts %}
@@ -89,173 +76,179 @@ table.t th{color:var(--muted);font-weight:600;font-size:12.5px}
 <script src="{% static 'vendor/highcharts/highcharts-more.js' %}"></script>
 <script src="{% static 'vendor/highcharts/exporting.js' %}"></script>
 <script src="{% static 'vendor/highcharts/accessibility.js' %}"></script>
+<script src="{% static 'climate/charts.js' %}"></script>
 <script>
-const DATA_URL = "{% url 'climate:data' %}";
+const DATA_URL = "{% url 'climate:data' %}", LOGIN_URL = "{% url 'climate:login' %}";
 const $ = id => document.getElementById(id);
-const C = {hot:'#ff5a4f', warm:'#ffa94d', cool:'#4dabf7', green:'#3ddc97', text:'#e6ecf7', muted:'#8fa0c0', line:'#25324d'};
-Highcharts.setOptions({
-  chart:{backgroundColor:'transparent', style:{fontFamily:'inherit'}, animation:{duration:500}},
-  title:{text:null}, credits:{enabled:false},
-  colors:[C.hot, C.cool, C.warm, C.green],
-  xAxis:{lineColor:C.line, tickColor:C.line, labels:{style:{color:C.muted}}, title:{style:{color:C.muted}}},
-  yAxis:{gridLineColor:C.line, labels:{style:{color:C.muted}}, title:{style:{color:C.muted}}},
-  legend:{itemStyle:{color:C.text}, itemHoverStyle:{color:'#fff'}},
-  tooltip:{backgroundColor:'#0b1220', borderColor:C.line, style:{color:C.text}, shared:true},
-  exporting:{buttons:{contextButton:{symbolStroke:C.muted, theme:{fill:'transparent'}}}}
-});
-
-let state = {start:null, end:null}, lastData = null;
+let P = ES.apply(), state = {start:null, end:null}, lastData = null;
+const sgn = v => (v > 0 ? '+' : '') + v;
 
 function stripeColor(v){
-  const a = Math.min(1, Math.abs(v)/1.4), target = v<0 ? [33,113,181] : [215,48,39];
-  const mix = c => Math.round(255+(c-255)*a);
-  return `rgb(${mix(target[0])},${mix(target[1])},${mix(target[2])})`;
+  const a = Math.min(1, Math.abs(v) / 1.4), t = v < 0 ? [33,113,181] : [215,48,39], mix = c => Math.round(255 + (c - 255) * a);
+  return `rgb(${mix(t[0])},${mix(t[1])},${mix(t[2])})`;
 }
 function drawStripes(years, vals){
-  const cv = $('stripes'), dpr = window.devicePixelRatio||1;
-  const w = cv.clientWidth, h = cv.clientHeight;
-  cv.width = w*dpr; cv.height = h*dpr;
-  const g = cv.getContext('2d'); g.scale(dpr,dpr);
-  const n = years.length, bw = w/n;
-  vals.forEach((v,i)=>{ g.fillStyle = v==null ? '#222' : stripeColor(v); g.fillRect(Math.floor(i*bw), 0, Math.ceil(bw)+1, h); });
-  $('stripeFrom').textContent = years[0]; $('stripeTo').textContent = years[n-1];
-  cv.onmousemove = e => { const i = Math.min(n-1, Math.floor(e.offsetX/bw)); cv.title = `${years[i]}: ${vals[i]>0?'+':''}${vals[i]} °C`; };
+  const cv = $('stripes'), dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const n = years.length, bw = w / n;
+  vals.forEach((v, i) => { g.fillStyle = v == null ? '#888' : stripeColor(v); g.fillRect(Math.floor(i * bw), 0, Math.ceil(bw) + 1, h); });
+  $('stripeFrom').textContent = years[0]; $('stripeTo').textContent = years[n - 1];
+  cv.onmousemove = e => { const i = Math.min(n - 1, Math.floor(e.offsetX / bw)); cv.title = `${years[i]}: ${sgn(vals[i])} °C`; };
 }
-
-function kpi(label, value, unit, detail, color){
-  return `<div class="kpi" style="--c:${color}"><div class="l">${label}</div><div class="v">${value}<small> ${unit}</small></div><div class="d">${detail}</div></div>`;
-}
+const kpi = (l, v, u, d, c) => `<div class="kpi" style="--c:${c}"><div class="l">${l}</div><div class="v">${v}<small> ${u}</small></div><div class="d">${d}</div></div>`;
 function renderKpis(k){
   $('kpis').innerHTML =
-    kpi(`${k.latest_year} anomaly`, (k.latest_year_anomaly>0?'+':'')+k.latest_year_anomaly, '°C', 'Latest complete year vs 1951-1980', C.hot) +
-    kpi('Latest month', (k.latest_month_anomaly>0?'+':'')+k.latest_month_anomaly, '°C', k.latest_month_label, C.warm) +
-    kpi('Warmest year', k.warmest_year, '', `+${k.warmest_anomaly} °C on record`, C.hot) +
-    kpi('Atmospheric CO₂', k.co2_latest, 'ppm', `${k.co2_latest_label}, +${k.co2_since_1958} ppm since 1958`, C.green) +
-    kpi('CO₂ growth', '+'+k.co2_growth_per_year, 'ppm/yr', 'Last 10 years, linear trend', C.green) +
-    kpi('Warming rate', '+'+k.warming_rate_per_decade, '°C/decade', 'Linear trend since 1970', C.cool) +
-    kpi('CO₂-temperature correlation', k.co2_temp_correlation, 'r', 'Pearson, annual means 1959 onward', C.cool);
+    kpi(`${k.latest_year} anomaly`, sgn(k.latest_year_anomaly), '°C', 'Latest complete year vs 1951-1980', P.hot) +
+    kpi('Latest month', sgn(k.latest_month_anomaly), '°C', k.latest_month_label, P.amber) +
+    kpi('Warmest year', k.warmest_year, '', `+${k.warmest_anomaly} °C on record`, P.hot) +
+    kpi('Atmospheric CO₂', k.co2_latest, 'ppm', `${k.co2_latest_label}, +${k.co2_since_1958} ppm since 1958`, P.green) +
+    kpi('CO₂ growth', '+' + k.co2_growth_per_year, 'ppm/yr', 'Last 10 years, linear trend', P.green) +
+    kpi('Warming rate', '+' + k.warming_rate_per_decade, '°C/decade', 'Linear trend since 1970', P.cool) +
+    (k.sea_level_rate != null ? kpi('Sea-level rise', '+' + k.sea_level_rate, 'mm/yr', '30-year trend', P.cool) : '') +
+    kpi('CO₂-temperature link', k.co2_temp_correlation, 'r', 'Pearson, annual means', P.deep);
 }
 function renderAlerts(alerts){
   $('alerts').innerHTML = alerts.map(a => `<div class="alert ${a.severity}"><div class="dot"></div><div>
-    <b>${a.triggered ? (a.severity==='critical' ? 'CRITICAL: ' : 'ALERT: ') : 'Normal: '}${a.subject}</b>
+    <b>${a.triggered ? (a.severity === 'critical' ? 'CRITICAL: ' : 'ALERT: ') : 'Normal: '}${a.subject}</b>
     <span>${a.value} vs threshold ${a.threshold}</span></div></div>`).join('');
 }
+const hc = (id, opts) => Highcharts.chart(id, opts);
 
 function renderTemp(d){
-  const flagged = new Set(d.anomalies.flagged_years);
-  const years = d.annual.years;
-  const marks = years.map((y,i)=> flagged.has(y) ? [y, d.annual.global[i]] : null).filter(Boolean);
-  Highcharts.chart('chTemp', {
-    chart:{zoomType:'x'},
-    xAxis:{title:{text:'Year'}, tickInterval: years.length>60?10:5},
-    yAxis:{title:{text:'Anomaly (°C)'}, plotLines:[{value:0, color:C.muted, width:1, dashStyle:'Dash'}]},
-    tooltip:{valueSuffix:' °C', valueDecimals:2, shared:true},
-    series:[
-      {name:'Global', type:'line', data:years.map((y,i)=>[y,d.annual.global[i]]), color:C.hot, lineWidth:2.2, marker:{enabled:false}},
-      {name:'Northern Hemisphere', type:'line', data:years.map((y,i)=>[y,d.annual.nh[i]]), color:C.warm, lineWidth:1, marker:{enabled:false}, visible:false},
-      {name:'Southern Hemisphere', type:'line', data:years.map((y,i)=>[y,d.annual.sh[i]]), color:C.cool, lineWidth:1, marker:{enabled:false}, visible:false},
-      {name:'5-year average', type:'line', data:years.map((y,i)=>[y,d.annual.rolling[i]]), color:'#fff', lineWidth:2.5, dashStyle:'ShortDot', marker:{enabled:false}},
-      {name:'Statistical anomaly (>2σ)', type:'scatter', data:marks, color:C.hot, marker:{radius:6, symbol:'diamond', lineColor:'#fff', lineWidth:1.5}, tooltip:{valueSuffix:' °C'}}
+  const flagged = new Set(d.anomalies.flagged_years), y = d.annual.years;
+  const marks = y.map((yr, i) => flagged.has(yr) ? [yr, d.annual.global[i]] : null).filter(Boolean);
+  hc('chTemp', {
+    chart: {zoomType: 'x'}, xAxis: {title: {text: 'Year'}, tickInterval: y.length > 60 ? 10 : 5},
+    yAxis: {title: {text: 'Anomaly (°C)'}, plotLines: [{value: 0, color: P.faint, width: 1, dashStyle: 'Dash'}]},
+    tooltip: {valueSuffix: ' °C', valueDecimals: 2},
+    series: [
+      {name: 'Global', type: 'line', data: y.map((yr, i) => [yr, d.annual.global[i]]), color: P.hot, lineWidth: 2.2, marker: {enabled: false}},
+      {name: 'Northern Hemisphere', type: 'line', data: y.map((yr, i) => [yr, d.annual.nh[i]]), color: P.amber, lineWidth: 1, marker: {enabled: false}, visible: false},
+      {name: 'Southern Hemisphere', type: 'line', data: y.map((yr, i) => [yr, d.annual.sh[i]]), color: P.cool, lineWidth: 1, marker: {enabled: false}, visible: false},
+      {name: '5-year average', type: 'line', data: y.map((yr, i) => [yr, d.annual.rolling[i]]), color: P.ink, lineWidth: 2.5, dashStyle: 'ShortDot', marker: {enabled: false}},
+      {name: 'Statistical anomaly (>2σ)', type: 'scatter', data: marks, color: P.hot, marker: {radius: 6, symbol: 'diamond', lineColor: P.paper, lineWidth: 1.5}}
     ]
   });
 }
 function renderCo2(d){
-  Highcharts.chart('chCo2', {
-    chart:{zoomType:'x'},
-    xAxis:{type:'datetime'},
-    yAxis:{title:{text:'CO₂ (ppm)'}},
-    tooltip:{valueSuffix:' ppm', valueDecimals:1, xDateFormat:'%b %Y'},
-    series:[{name:'Monthly mean CO₂', type:'area', data:d.co2.monthly, color:C.green, lineWidth:1.6, marker:{enabled:false},
-      fillColor:{linearGradient:{x1:0,y1:0,x2:0,y2:1}, stops:[[0,'rgba(61,220,151,.35)'],[1,'rgba(61,220,151,0)']]}, threshold:null}]
-  });
+  hc('chCo2', {chart: {zoomType: 'x'}, xAxis: {type: 'datetime'}, yAxis: {title: {text: 'CO₂ (ppm)'}},
+    tooltip: {valueSuffix: ' ppm', valueDecimals: 1, xDateFormat: '%b %Y'},
+    series: [{name: 'Monthly mean CO₂', type: 'area', data: d.co2.monthly, color: P.green, lineWidth: 1.6, marker: {enabled: false}, threshold: null,
+      fillColor: {linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1}, stops: [[0, Highcharts.color(P.green).setOpacity(.35).get()], [1, Highcharts.color(P.green).setOpacity(0).get()]]}}]});
 }
 function renderAnomalies(a){
   $('anSub').textContent = `${a.count} years exceed 2σ above the 1951-1980 mean (${a.baseline_mean} °C, σ = ${a.baseline_std}).` + (a.first_year ? ` First: ${a.first_year}.` : '');
   $('anTable').innerHTML = '<table class="t"><tr><th>Year</th><th>Anomaly</th><th>z-score</th></tr>' +
-    a.top.map(r=>`<tr><td>${r.year}</td><td>+${r.anomaly} °C</td><td><span class="pill">${r.z}σ</span></td></tr>`).join('') + '</table>';
+    a.top.map(r => `<tr><td>${r.year}</td><td>+${r.anomaly} °C</td><td><span class="pill">${r.z}σ</span></td></tr>`).join('') + '</table>';
 }
 function renderForecast(f){
-  const lastHist = f.history[f.history.length-1];
-  const join = [lastHist];
-  Highcharts.chart('chFc', {
-    xAxis:{title:{text:'Year'}, plotLines:[{value:lastHist[0], color:C.muted, dashStyle:'Dash', width:1, label:{text:'now', style:{color:C.muted}}}]},
-    yAxis:{title:{text:'Anomaly (°C)'}},
-    tooltip:{valueSuffix:' °C', valueDecimals:2, shared:true},
-    series:[
-      {name:'Observed', type:'line', data:f.history, color:C.hot, marker:{enabled:false}, lineWidth:2},
-      {name:'Linear trend', type:'line', data:f.fit.map(p=>p).concat(f.future_years.map((y,i)=>[y,f.linear[i]])), color:'#fff', dashStyle:'Dash', lineWidth:1.5, marker:{enabled:false}},
-      {name:'Accelerating (quadratic)', type:'line', data:join.concat(f.future_years.map((y,i)=>[y,f.quadratic[i]])), color:C.warm, dashStyle:'ShortDash', lineWidth:2, marker:{enabled:false}},
-      {name:'95% band', type:'arearange', data:f.future_years.map((y,i)=>[y,f.lower[i],f.upper[i]]), color:C.cool, fillOpacity:.2, lineWidth:0, marker:{enabled:false}, enableMouseTracking:false}
+  const m = f.metrics, last = f.history[f.history.length - 1];
+  $('fcSub').textContent = `Selected model: ${m.selected}. Dashed lines show the alternatives; the band is the selected model's 95% range.`;
+  hc('chFc', {
+    xAxis: {title: {text: 'Year'}, plotLines: [{value: last[0], color: P.faint, dashStyle: 'Dash', width: 1, label: {text: 'now', style: {color: P.faint}}}]},
+    yAxis: {title: {text: 'Anomaly (°C)'}}, tooltip: {valueSuffix: ' °C', valueDecimals: 2},
+    series: [
+      {name: 'Observed', type: 'line', data: f.history, color: P.hot, marker: {enabled: false}, lineWidth: 2},
+      {name: 'Selected model', type: 'line', data: [last].concat(f.future_years.map((y, i) => [y, f.chosen[i]])), color: P.ink, lineWidth: 2.4, marker: {enabled: false}},
+      {name: 'Linear', type: 'line', data: [last].concat(f.future_years.map((y, i) => [y, f.linear[i]])), color: P.cool, dashStyle: 'Dash', lineWidth: 1.4, marker: {enabled: false}},
+      {name: 'Quadratic', type: 'line', data: [last].concat(f.future_years.map((y, i) => [y, f.quadratic[i]])), color: P.amber, dashStyle: 'ShortDash', lineWidth: 1.6, marker: {enabled: false}},
+      {name: 'Last 30 years', type: 'line', data: [last].concat(f.future_years.map((y, i) => [y, f.recent30[i]])), color: P.deep, dashStyle: 'Dot', lineWidth: 1.4, marker: {enabled: false}},
+      {name: '95% band', type: 'arearange', data: f.future_years.map((y, i) => [y, f.lower[i], f.upper[i]]), color: P.cool, fillOpacity: .18, lineWidth: 0, marker: {enabled: false}, enableMouseTracking: false}
     ]
   });
-  const m = f.metrics;
-  $('metrics').innerHTML = [
-    [m.slope_per_decade+' °C', 'trend per decade'], [m.r2, 'R² (fit)'],
-    [m.holdout_rmse+' °C', `holdout RMSE (${m.test_years})`], [m.residual_std+' °C', 'residual std. dev.'],
-    ['+'+m.projected_linear+' °C', '2050 linear'], ['+'+m.projected_quadratic+' °C', '2050 accelerating']
-  ].map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('');
+  const rows = Object.entries(m.scores).map(([k, v]) => [v + ' °C', 'backtest RMSE, ' + k]);
+  $('metrics').innerHTML = rows.concat([['+' + m.projected_best + ' °C', '2050, selected model'], [m.slope_per_decade + ' °C', 'trend per decade'],
+    ['+' + m.projected_linear + ' °C', '2050, linear'], ['+' + m.projected_quadratic + ' °C', '2050, quadratic']]).map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
 }
-function renderScatter(s, r){
+function renderScatter(s){
   const sc = s.fit;
-  $('corrSub').textContent = sc ? `Each point is a year. Slope: ${sc.slope} °C per ppm, R² = ${sc.r2}.` : 'Not enough years in range.';
-  Highcharts.chart('chScatter', {
-    chart:{zoomType:'xy'},
-    xAxis:{title:{text:'Annual mean CO₂ (ppm)'}, min:null},
-    yAxis:{title:{text:'Temperature anomaly (°C)'}},
-    tooltip:{shared:false, headerFormat:'', pointFormat:'<b>{point.year}</b><br>CO₂ {point.x} ppm<br>Anomaly {point.y} °C'},
-    series:[
-      {name:'Years', type:'scatter', data:s.points.map(p=>({x:p[0], y:p[1], year:p[2]})), color:C.warm, marker:{radius:4.5}},
-      ...(sc ? [{name:'Linear fit', type:'line', data:sc.line, color:'#fff', dashStyle:'Dash', marker:{enabled:false}, enableMouseTracking:false}] : [])
-    ]
-  });
+  $('corrSub').textContent = sc ? `Each point is a year. Slope ${sc.slope} °C per ppm, R² = ${sc.r2}.` : 'Not enough years in range.';
+  hc('chScatter', {chart: {zoomType: 'xy'}, xAxis: {title: {text: 'Annual mean CO₂ (ppm)'}}, yAxis: {title: {text: 'Temperature anomaly (°C)'}},
+    tooltip: {shared: false, headerFormat: '', pointFormat: '<b>{point.year}</b><br>CO₂ {point.x} ppm<br>Anomaly {point.y} °C'},
+    series: [{name: 'Years', type: 'scatter', data: s.points.map(p => ({x: p[0], y: p[1], year: p[2]})), color: P.amber, marker: {radius: 4.5}}]
+      .concat(sc ? [{name: 'Linear fit', type: 'line', data: sc.line, color: P.ink, dashStyle: 'Dash', marker: {enabled: false}, enableMouseTracking: false}] : [])});
 }
 function renderDecades(d){
-  Highcharts.chart('chDec', {
-    chart:{type:'column'},
-    xAxis:{categories:d.labels}, yAxis:{title:{text:'Mean anomaly (°C)'}},
-    tooltip:{valueSuffix:' °C', valueDecimals:2},
-    plotOptions:{column:{borderWidth:0, borderRadius:3}},
-    series:[{name:'Global', data:d.global.map(v=>({y:v, color:v<0?C.cool:C.hot}))}],
-    legend:{enabled:false}
-  });
+  hc('chDec', {xAxis: {categories: d.labels}, yAxis: [{title: {text: 'Mean anomaly (°C)'}}, {title: {text: 'Months > +1 °C (%)'}, opposite: true, gridLineWidth: 0}],
+    tooltip: {valueDecimals: 2}, plotOptions: {column: {borderWidth: 0, borderRadius: 3}},
+    series: [{name: 'Mean anomaly (°C)', type: 'column', data: d.global.map(v => ({y: v, color: v < 0 ? P.cool : P.hot}))},
+             {name: 'Months above +1 °C (%)', type: 'line', yAxis: 1, data: d.hot_months_pct, color: P.amber, marker: {radius: 4}}]});
 }
 function renderSeason(s){
-  Highcharts.chart('chSeason', {
-    xAxis:{categories:s.months}, yAxis:{title:{text:'Mean anomaly (°C)'}},
-    tooltip:{valueSuffix:' °C', valueDecimals:2},
-    series:[
-      {name:'1951-1980', type:'line', data:s.early, color:C.cool, lineWidth:2.5, marker:{radius:4}},
-      {name:s.recent_label, type:'line', data:s.recent, color:C.hot, lineWidth:2.5, marker:{radius:4}}
-    ]
-  });
+  hc('chSeason', {xAxis: {categories: s.months}, yAxis: {title: {text: 'Mean anomaly (°C)'}}, tooltip: {valueSuffix: ' °C', valueDecimals: 2},
+    series: [{name: '1951-1980', type: 'line', data: s.early, color: P.cool, lineWidth: 2.5, marker: {radius: 4}},
+             {name: s.recent_label, type: 'line', data: s.recent, color: P.hot, lineWidth: 2.5, marker: {radius: 4}}]});
 }
-
+function renderEmissions(e){
+  if (!e) return;
+  hc('chEm', {xAxis: {title: {text: 'Year'}}, yAxis: {title: {text: 'Mt CO₂'}}, tooltip: {valueSuffix: ' Mt', valueDecimals: 0},
+    series: [{name: 'World', type: 'area', data: e.world_years.map((y, i) => [y, e.world[i]]), color: P.amber, marker: {enabled: false},
+      fillColor: {linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1}, stops: [[0, Highcharts.color(P.amber).setOpacity(.35).get()], [1, Highcharts.color(P.amber).setOpacity(0).get()]]}}]});
+  $('emSub').textContent = `${e.latest_year}: annual emissions (bars) and tonnes per person (line).`;
+  hc('chTop', {xAxis: {categories: e.top.country}, yAxis: [{title: {text: 'Mt CO₂'}}, {title: {text: 't per person'}, opposite: true, gridLineWidth: 0}], tooltip: {valueDecimals: 1},
+    series: [{name: 'Emissions (Mt)', type: 'column', data: e.top.co2, color: P.teal, borderWidth: 0, borderRadius: 3},
+             {name: 'Per capita (t)', type: 'line', yAxis: 1, data: e.top.per_capita, color: P.hot, marker: {radius: 4}}]});
+  hc('chCum', {chart: {type: 'bar'}, xAxis: {categories: e.cumulative.country}, yAxis: {title: {text: 'Cumulative Mt CO₂'}}, legend: {enabled: false}, tooltip: {valueDecimals: 0, valueSuffix: ' Mt'},
+    series: [{name: 'Cumulative emissions', data: e.cumulative.value, color: P.deep, borderWidth: 0, borderRadius: 3}]});
+}
+function renderImpacts(i){
+  if (i.sea) hc('chSea', {xAxis: {title: {text: 'Year'}}, yAxis: {title: {text: 'mm'}}, tooltip: {valueSuffix: ' mm', valueDecimals: 1},
+    series: [{name: 'Sea level', type: 'area', threshold: null, data: i.sea.years.map((y, k) => [y, i.sea.values[k]]), color: P.cool, marker: {enabled: false},
+      fillColor: {linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1}, stops: [[0, Highcharts.color(P.cool).setOpacity(.3).get()], [1, Highcharts.color(P.cool).setOpacity(0).get()]]}}]});
+  if (i.glaciers) hc('chGl', {xAxis: {title: {text: 'Year'}}, yAxis: {title: {text: 'm w.e.'}}, tooltip: {valueSuffix: ' m w.e.', valueDecimals: 2},
+    series: [{name: 'Glacier mass balance', type: 'line', data: i.glaciers.years.map((y, k) => [y, i.glaciers.values[k]]), color: P.deep, lineWidth: 2.4, marker: {enabled: false}}]});
+  if (i.disasters) hc('chDis', {chart: {type: 'column'}, xAxis: {categories: i.disasters.years, tickInterval: 5}, yAxis: {title: {text: 'Events'}, stackLabels: {enabled: false}},
+    tooltip: {shared: true}, plotOptions: {column: {stacking: 'normal', borderWidth: 0}},
+    series: i.disasters.series.map(s => ({name: s.name, data: s.data}))});
+  if (i.forest) hc('chFor', {xAxis: {title: {text: 'Year'}}, yAxis: {title: {text: 'Million km²'}, min: null}, legend: {enabled: false}, tooltip: {valueDecimals: 2, valueSuffix: ' M km²'},
+    series: [{name: 'Forest area', type: 'line', data: i.forest.years.map((y, k) => [y, i.forest.values[k]]), color: P.green, lineWidth: 2.4, marker: {enabled: false}}]});
+}
+function renderRegions(r, cities){
+  if (r){
+    $('regSub').textContent = `Mean anomaly ${r.recent_label} against the 1990s, by band. The Arctic warms about ${r.arctic_ratio}× faster than the global average.`;
+    hc('chReg', {chart: {type: 'column'}, xAxis: {categories: r.labels, labels: {rotation: -35}}, yAxis: {title: {text: 'Anomaly (°C)'}}, tooltip: {valueSuffix: ' °C', valueDecimals: 2},
+      plotOptions: {column: {borderWidth: 0, borderRadius: 3}},
+      series: [{name: '1990s', data: r.nineties, color: P.cool}, {name: r.recent_label, data: r.recent, color: P.hot}]});
+  }
+  $('cityTable').innerHTML = cities ? '<tr><th>City</th><th>Trend / decade</th><th>Change</th><th>Mean now</th><th>Hottest day, early → now</th></tr>' +
+    cities.map(c => `<tr><td><b>${c.city}</b></td><td><span class="pill">${sgn(c.trend_per_decade)} °C</span></td><td>${sgn(c.change)} °C</td><td>${c.recent_mean} °C</td><td>${c.hot_early} → ${c.hot_recent} °C</td></tr>`).join('')
+    : '<tr><td class="muted">City data is not in the lake yet. Run <code>python manage.py ingest_climate_data</code>.</td></tr>';
+}
+function renderCorr(c){
+  const cell = v => {
+    if (v == null) return '<td class="cell muted">-</td>';
+    const a = Math.min(1, Math.abs(v)), rgb = v >= 0 ? '23,131,145' : '217,72,43';
+    return `<td class="cell" style="background:rgba(${rgb},${(a * .75).toFixed(2)});color:${a > .55 ? '#fff' : 'inherit'}">${v.toFixed(2)}</td>`;
+  };
+  $('corr').innerHTML = '<tr><th></th>' + c.labels.map(l => `<th>${l}</th>`).join('') + '</tr>' + c.matrix.map((row, i) => `<tr><th>${c.labels[i]}</th>${row.map(cell).join('')}</tr>`).join('');
+}
+function renderAll(d){
+  P = ES.palette();
+  renderKpis(d.kpis); renderAlerts(d.alerts); drawStripes(d.annual.years, d.annual.global);
+  renderTemp(d); renderCo2(d); renderAnomalies(d.anomalies); renderForecast(d.forecast); renderScatter(d.scatter); renderDecades(d.decades); renderSeason(d.seasonal);
+  renderEmissions(d.emissions); renderImpacts(d.impacts); renderRegions(d.regions, d.cities); renderCorr(d.correlation);
+}
 async function load(){
   const q = new URLSearchParams();
-  if(state.start) q.set('start', state.start);
-  if(state.end) q.set('end', state.end);
-  document.getElementById('grid').classList.add('loading');
-  const res = await fetch(DATA_URL + '?' + q);
-  if(!res.ok){ location.reload(); return; }
-  const d = lastData = await res.json();
-  document.getElementById('grid').classList.remove('loading');
-  $('start').value = d.meta.start; $('end').value = d.meta.end;
-  state = {start:d.meta.start, end:d.meta.end};
-  renderKpis(d.kpis); renderAlerts(d.alerts);
-  drawStripes(d.annual.years, d.annual.global);
-  renderTemp(d); renderCo2(d); renderAnomalies(d.anomalies); renderForecast(d.forecast);
-  renderScatter(d.scatter); renderDecades(d.decades); renderSeason(d.seasonal);
-  document.querySelectorAll('#presets button').forEach(b=>{
-    const p = b.dataset.p;
-    b.classList.toggle('on', p==='all' ? d.meta.start===d.meta.min_year : +p===d.meta.start);
-  });
+  if (state.start) q.set('start', state.start);
+  if (state.end) q.set('end', state.end);
+  $('grid').classList.add('loading');
+  let d;
+  try {
+    const res = await fetch(DATA_URL + '?' + q, {credentials: 'same-origin'});
+    if (res.redirected || !(res.headers.get('content-type') || '').includes('json')) { location.href = LOGIN_URL + '?next=/'; return; }
+    d = await res.json();
+  } catch (e) { $('grid').classList.remove('loading'); $('kpis').innerHTML = '<div class="card">Could not load data. Please reload the page.</div>'; return; }
+  $('grid').classList.remove('loading');
+  lastData = d; $('start').value = d.meta.start; $('end').value = d.meta.end; state = {start: d.meta.start, end: d.meta.end};
+  renderAll(d);
+  document.querySelectorAll('#presets button').forEach(b => { const p = b.dataset.p; b.classList.toggle('on', p === 'all' ? d.meta.start === d.meta.min_year : +p === d.meta.start); });
 }
-$('apply').onclick = () => { state = {start:$('start').value, end:$('end').value}; load(); };
-$('presets').onclick = e => {
-  const p = e.target.dataset && e.target.dataset.p; if(!p) return;
-  state = {start: p==='all' ? null : p, end:null}; load();
-};
-window.addEventListener('resize', () => { if(lastData) drawStripes(lastData.annual.years, lastData.annual.global); });
+$('apply').onclick = () => { state = {start: $('start').value, end: $('end').value}; load(); };
+$('presets').onclick = e => { const p = e.target.dataset && e.target.dataset.p; if (!p) return; state = {start: p === 'all' ? null : p, end: null}; load(); };
+window.addEventListener('resize', () => { if (lastData) drawStripes(lastData.annual.years, lastData.annual.global); });
+ES.onTheme(() => { if (lastData) renderAll(lastData); });
 load();
 </script>
 {% endblock %}
