@@ -1,0 +1,217 @@
+/* =========================================================
+   EarthScape site-wide design (every page). Loaded after
+   wow.css + greenery.css; replaces the galaxy look with the
+   green EarthScape system.
+   ========================================================= */
+body.eco{
+  --glass-strong: rgba(255,255,255,.96);
+  --surface:#ffffff;
+  --amber-600:#ca8a04; --amber-500:#eab308; --amber-200:#fef9c3;
+  --coral-600:#b91c1c; --coral-100:#fee2e2;
+  --teal-900:#0b3d2e; --teal-200:#dcfce7; --teal-100:#f0fdf4;
+  --panel-ink:#0b3d2e; --teal-deep:#14532d;
+  --shadow: 0 1px 2px rgba(11,61,46,.04), 0 10px 26px rgba(11,61,46,.07);
+  --shadow-lg: 0 4px 12px rgba(11,61,46,.06), 0 26px 50px rgba(11,61,46,.12);
+}
+body.eco p, body.eco li{ color: var(--ink-soft); }
+body.eco a{ color: var(--leaf); }
+body.eco .mono, body.eco code{ color: var(--forest); }
+
+/* header extras */
+body.eco .nav-pop, body.eco .mobile-menu, body.eco .palette{ background:#fff !important; box-shadow: var(--shadow-lg); }
+body.eco .nav-pop a, body.eco .mobile-menu a{ color: var(--ink) !important; }
+body.eco .icon-btn, body.eco .menu-btn{ background:#fff !important; color: var(--forest) !important; }
+body.eco .eyebrow{ background:#fff; color: var(--leaf) !important; border-color: var(--line); }
+body.eco .eyebrow::before{ background: var(--leaf-2) !important; box-shadow: 0 0 0 3px rgba(34,197,94,.2); }
+
+/* ---------- inner page hero: forest panel ---------- */
+body.eco .hero{
+  margin: 18px auto 0; max-width: calc(var(--maxw, 1180px) + 40px); width: calc(100% - 32px);
+  border-radius: 32px; overflow: hidden; color:#fff;
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgba(190,242,100,.28), transparent 60%),
+    radial-gradient(60% 80% at 0% 100%, rgba(34,197,94,.30), transparent 60%),
+    linear-gradient(150deg, #14532d, #0b3d2e 60%, #062a1f) !important;
+  box-shadow: 0 30px 60px rgba(11,61,46,.22);
+}
+body.eco .hero::before{
+  inset:auto !important; width: 360px !important; height: 360px !important; right: -80px !important; top: -120px !important;
+  border-radius: 50% !important; filter:none !important; animation: eco-bob 9s ease-in-out infinite !important;
+  background: radial-gradient(circle, rgba(190,242,100,.25), transparent 65%) !important;
+}
+body.eco .hero::after{ display:none !important; }
+body.eco .hero .isolines g{ stroke:#bef264 !important; opacity:.18 !important; }
+body.eco .hero h1{
+  background: linear-gradient(90deg,#ffffff,#d9f99d 50%,#ffffff) !important; background-size:200% 100% !important;
+  -webkit-background-clip:text !important; background-clip:text !important; -webkit-text-fill-color:transparent !important;
+  filter:none !important; font-family:"Outfit",sans-serif !important; font-weight:800;
+}
+body.eco .hero .lede, body.eco .hero p{ color:#d1fae5 !important; }
+body.eco .hero .eyebrow{ background: rgba(255,255,255,.12); color:#ecfccb !important; border-color: rgba(255,255,255,.2); }
+body.eco .hero .btn-ghost{ background: rgba(255,255,255,.1) !important; color:#fff !important; border-color: rgba(255,255,255,.35) !important; }
+body.eco .hero .btn-primary{ background:#fff !important; color: var(--forest) !important; box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+body.eco .hero .btn-primary::before{ display:none; }
+body.eco .hero-media img{ border-radius: 24px !important; box-shadow: 0 20px 40px rgba(0,0,0,.3) !important; animation:none !important; aspect-ratio:auto; }
+body.eco .hero-media::before, body.eco .hero-media::after{ display:none !important; }
+
+/* readout tiles inside hero */
+body.eco .readout-cell{
+  background: rgba(255,255,255,.07) !important; border:1px solid rgba(190,242,100,.2) !important;
+  box-shadow:none !important;
+}
+body.eco .readout-cell::before{ background: linear-gradient(90deg, transparent, #bef264, transparent) !important; background-size:200% 100% !important; }
+body.eco .readout-cell:hover{ box-shadow: 0 10px 24px rgba(0,0,0,.2) !important; border-color: rgba(190,242,100,.5) !important; }
+body.eco .ro-label{ color:#a7d7bd !important; }
+body.eco .ro-value, body.eco .tone-warm, body.eco .tone-alert, body.eco .tone-cool{ color:#bef264 !important; text-shadow:none !important; }
+body.eco .tone-alert{ color:#fca5a5 !important; }
+body.eco .tone-warm{ color:#fde047 !important; }
+
+/* ---------- headings ---------- */
+body.eco h1, body.eco h2, body.eco h3, body.eco h4{ font-family:"Outfit",sans-serif !important; color: var(--forest); }
+body.eco .section-head h2{
+  background: none !important; -webkit-text-fill-color: currentColor !important; color: var(--forest) !important; font-weight:800;
+}
+body.eco .section-head h2::after{ background: var(--eco-grad) !important; box-shadow:none !important; height:4px; width:56px; }
+body.eco .section--alt{ background: linear-gradient(180deg, transparent, #ecfdf0 30%, #ecfdf0 70%, transparent) !important; }
+
+/* ---------- cards & panels ---------- */
+body.eco .card, body.eco .side-card, body.eco .chart-card, body.eco .lesson-card, body.eco .quiz-card,
+body.eco .weather-card, body.eco .tool-panel, body.eco .sim-panel, body.eco .result-box, body.eco .objective-box,
+body.eco .signup-card, body.eco .login-card, body.eco .ds-card, body.eco .gloss-item, body.eco .worksheet,
+body.eco .complete-box, body.eco .fact{
+  background:#fff !important; border:1px solid var(--line) !important; border-radius: 22px !important;
+  box-shadow: var(--shadow) !important; color: var(--ink); backdrop-filter:none !important;
+}
+body.eco .card:hover, body.eco .lesson-card:hover, body.eco .gloss-item:hover{
+  transform: translateY(-6px); border-color: rgba(22,163,74,.4) !important; box-shadow: 0 22px 44px rgba(22,163,74,.15) !important;
+}
+body.eco .card::before, body.eco .lesson-card::before, body.eco .ds-card::before, body.eco .side-card::before,
+body.eco .login-card::before, body.eco .signup-card::before{
+  background: radial-gradient(300px circle at var(--mx) var(--my), rgba(34,197,94,.10), transparent 60%) !important;
+}
+body.eco .card .ico, body.eco .ob-ico{
+  background: linear-gradient(135deg,#dcfce7,#ecfccb) !important; color: var(--forest) !important; border-radius:14px; filter:none !important;
+}
+body.eco .card:hover .ico{ background: var(--eco-grad) !important; color:#fff !important; }
+body.eco .card h3, body.eco .card-link, body.eco .ct-title, body.eco .lc-title{ color: var(--forest) !important; }
+body.eco .tag{ background:#dcfce7 !important; color: var(--leaf) !important; border-color: rgba(22,163,74,.2) !important; }
+body.eco .lesson-badge{ background: var(--eco-grad) !important; color:#fff !important; }
+
+/* callouts */
+body.eco .callout{ background:#f0fdf4 !important; border:1px solid rgba(22,163,74,.2) !important; border-left: 5px solid var(--leaf) !important; border-radius: 18px !important; box-shadow:none !important; }
+body.eco .callout--alert{ background:#fef2f2 !important; border-color: rgba(185,28,28,.2) !important; border-left-color:#dc2626 !important; }
+body.eco .callout--try{ background:#fefce8 !important; border-color: rgba(202,138,4,.25) !important; border-left-color:#eab308 !important; }
+body.eco .callout-label, body.eco .ob-label{ color: var(--leaf) !important; }
+body.eco .fact-strip .fact{ border-top: 4px solid var(--leaf-2) !important; }
+body.eco .fact .fv{ color: var(--leaf) !important; }
+
+/* prose (lesson + topic pages) */
+body.eco .prose{ font-size:1.06rem; line-height:1.75; }
+body.eco .prose h2{ margin-top: 2.2rem; }
+body.eco .prose strong{ color: var(--forest); }
+body.eco .prose blockquote{ border-left:4px solid var(--leaf-2); background:#f0fdf4; padding: 12px 18px; border-radius: 0 14px 14px 0; }
+
+/* pagers */
+body.eco .pager-link{ background:#fff !important; border:1px solid var(--line) !important; border-radius:18px !important; transition: transform .2s, border-color .2s; }
+body.eco .pager-link:hover{ transform: translateY(-3px); border-color: var(--leaf) !important; }
+body.eco .pl-dir{ color: var(--leaf) !important; }
+body.eco .pl-title{ color: var(--forest) !important; }
+
+/* progress, quiz, checklist, simulator */
+body.eco .course-progress-track, body.eco .quiz-progress, body.eco .result-bar{ background:#dcfce7 !important; border-radius:999px; }
+body.eco .course-progress-track > *, body.eco .quiz-progress > *, body.eco .result-bar > *{ background: var(--eco-grad) !important; }
+body.eco .quiz-opt{ background:#fff !important; border:1.5px solid var(--line) !important; border-radius:14px !important; color: var(--ink) !important; }
+body.eco .quiz-opt:hover{ border-color: var(--leaf) !important; background:#f0fdf4 !important; }
+body.eco .quiz-explain{ background:#f0fdf4 !important; border-radius:14px; }
+body.eco .checklist li{ background:#fff !important; border:1px solid var(--line) !important; border-radius:14px !important; }
+body.eco input[type="checkbox"], body.eco input[type="radio"], body.eco input[type="range"]{ accent-color: var(--leaf); }
+body.eco .sim-preset{ background:#fff !important; border:1px solid var(--line) !important; color: var(--forest) !important; border-radius:999px !important; }
+body.eco .sim-preset:hover, body.eco .sim-preset.is-active{ background: var(--eco-grad) !important; color:#fff !important; }
+body.eco .sim-stat, body.eco .weather-stat{ background:#f0fdf4 !important; border-radius:14px; }
+
+/* tables */
+body.eco table th{ background:#f0fdf4 !important; color: var(--forest) !important; }
+body.eco .teacher-table th{ background: var(--forest) !important; color:#fff !important; }
+body.eco table td{ border-color: var(--line-soft) !important; color: var(--ink-soft); }
+
+/* ---------- buttons ---------- */
+body.eco .btn-primary, body.eco .btn-amber{ background: var(--eco-grad) !important; color:#fff !important; box-shadow: 0 10px 24px rgba(22,163,74,.3) !important; }
+body.eco .btn-primary:hover{ box-shadow: 0 14px 32px rgba(22,163,74,.42) !important; }
+body.eco .btn-ghost{ background:#fff !important; color: var(--forest) !important; border:1.5px solid var(--line) !important; }
+body.eco .btn-ghost:hover{ border-color: var(--leaf) !important; box-shadow: 0 8px 20px rgba(22,163,74,.15) !important; }
+
+/* ---------- forms ---------- */
+body.eco input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body.eco textarea, body.eco select, body.eco .form-group input{
+  background:#fff !important; color: var(--ink) !important; border:1.5px solid #d1e7d6 !important; border-radius:12px !important;
+}
+body.eco input::placeholder, body.eco textarea::placeholder{ color:#8aa596 !important; }
+body.eco input:focus, body.eco textarea:focus, body.eco select:focus, body.eco .form-group input:focus{
+  border-color: var(--leaf) !important; box-shadow: 0 0 0 4px rgba(34,197,94,.15) !important;
+}
+body.eco label, body.eco .form-group label{ color: var(--forest) !important; }
+body.eco .form-message{ background:#fef2f2 !important; color:#991b1b !important; border:1px solid #fecaca !important; }
+body.eco .form-message.ok, body.eco .form-message.success{ background:#f0fdf4 !important; color:#166534 !important; border-color:#bbf7d0 !important; }
+body.eco .errorlist{ color:#b91c1c; margin:4px 0 0; padding-left:18px; font-size:.85rem; }
+
+/* auth pages: split card with green side */
+body.eco .login-card, body.eco .signup-card{ position:relative; overflow:hidden; }
+body.eco .login-card::after, body.eco .signup-card::after{
+  content:""; position:absolute; top:0; left:0; right:0; height:6px; background: var(--eco-grad);
+}
+
+/* ---------- dashboard ---------- */
+body.eco .ds-stat{ background: linear-gradient(150deg,#15803d,#0b3d2e) !important; border:0 !important; color:#d1fae5 !important; }
+body.eco .ds-stat span{ color:#bef264 !important; text-shadow:none !important; font-family:"Outfit",sans-serif !important; }
+body.eco .ds-toolbar{ background:#fff !important; box-shadow: var(--shadow); }
+body.eco .ds-clear{ color: var(--leaf) !important; }
+body.eco .ds-alerts{ background:#fff7ed !important; border-color:#fed7aa !important; }
+body.eco .ds-alerts h3{ color:#c2410c !important; }
+body.eco .ds-alerts li{ color:#7c2d12; }
+body.eco .ds-admin{ background:#f5f3ff !important; border-color:#ddd6fe !important; }
+body.eco .ds-admin-grid > div{ background:#fff !important; border:1px solid #ede9fe; }
+body.eco .ds-badge.ok{ background:#dcfce7 !important; color:#15803d !important; }
+body.eco .ds-badge.warn{ background:#fef9c3 !important; color:#a16207 !important; }
+body.eco .ds-table th{ color: var(--ink-faint) !important; background:transparent !important; }
+
+/* misc */
+body.eco .muted, body.eco .source-note{ color: var(--ink-faint) !important; }
+body.eco .cursor-glow{ display:none !important; }
+body.eco .palette-backdrop{ background: rgba(11,61,46,.35) !important; }
+body.eco .skeleton{ background: linear-gradient(90deg,#ecfdf0,#dcfce7,#ecfdf0) !important; }
+body.eco .scroll-progress-bar{ background: var(--eco-grad) !important; }
+body.eco .readout-cell{ padding: 14px 18px !important; }
+body.eco .readout-inner{ padding-bottom: 6px; }
+
+/* Landing page: a restrained, dimensional hero rather than decorative clutter. */
+body.eco .eco-hero{
+  background:
+    radial-gradient(ellipse at 74% 40%, rgba(134,239,172,.2), transparent 34%),
+    linear-gradient(180deg, #f3fbf5 0%, #fff 100%);
+}
+body.eco .eco-art{ perspective: 1100px; isolation:isolate; }
+body.eco .eco-art::before{
+  content:""; position:absolute; z-index:-1; inset:12%;
+  border-radius:50%; background:radial-gradient(circle, rgba(20,184,106,.18), transparent 68%);
+  filter:blur(16px);
+}
+body.eco .eco-globe{
+  transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.2,.8,.2,1), filter .7s;
+}
+body.eco .eco-art:hover .eco-globe{
+  transform:translateY(-8px) rotateY(-7deg) rotateX(4deg);
+  filter:drop-shadow(0 42px 58px rgba(11,61,46,.3));
+}
+body.eco .eco-float{
+  border-color:rgba(22,101,52,.12);
+  box-shadow:0 18px 45px rgba(11,61,46,.12);
+}
+body.eco .eco-stats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+body.eco .eco-num{ font-variant-numeric:tabular-nums; }
+@media(max-width:700px){
+  body.eco .eco-stats-grid{ grid-template-columns:1fr; }
+}
+@media(prefers-reduced-motion:reduce){
+  body.eco .eco-globe{ transition:none; }
+}

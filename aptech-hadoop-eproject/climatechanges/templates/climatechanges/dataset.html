@@ -1,0 +1,167 @@
+{% extends './template.html' %}
+{% load static %}
+{% block title %}Dashboard · EarthScape{% endblock %}
+{% block body %}
+
+<main id="main">
+<section class="section">
+  <div class="wrap">
+
+    <div class="section-head">
+      <p class="eyebrow">Big data · Hadoop HDFS · signed in as {{ role }}</p>
+      <h2>Climate Dataset Explorer</h2>
+      <p class="lede">Climate-related disasters (EM-DAT, 1980–2024) and forest carbon stocks (FAO, 1992–2023), stored in Hadoop HDFS and read live through WebHDFS.</p>
+      {% if source == "hdfs" %}
+        <span class="ds-badge ok">● Live from HDFS · hdfs://localhost:9000/climate</span>
+      {% else %}
+        <span class="ds-badge warn">● HDFS offline · showing local copy (run hadoop\start_hdfs.cmd)</span>
+      {% endif %}
+    </div>
+
+    <form class="ds-toolbar" method="get">
+      <label for="country">View</label>
+      <select id="country" name="country" onchange="this.form.submit()">
+        <option value="">🌍 All countries</option>
+        {% for iso, name in country_list %}<option value="{{ iso }}" {% if iso == selected %}selected{% endif %}>{{ name }}</option>{% endfor %}
+      </select>
+      <noscript><button class="btn btn-ghost btn-sm" type="submit">Apply</button></noscript>
+      {% if selected %}<a class="ds-clear" href="{% url 'dataset' %}">✕ Clear</a>{% endif %}
+      <a class="btn btn-primary ds-export" href="?{% if selected %}country={{ selected }}&amp;{% endif %}export=csv">⬇ Download insights (CSV)</a>
+    </form>
+
+    {% if admin_stats %}
+    <div class="ds-admin">
+      <div class="ds-admin-head"><h3>🛡️ Administrator panel</h3><a href="/admin/" class="ds-clear">Open admin →</a></div>
+      <div class="ds-admin-grid">
+        <div><b>{{ admin_stats.users }}</b><small>registered users</small></div>
+        <div><b>{{ admin_stats.open_feedback }}</b><small>open support tickets</small></div>
+        <div class="ds-admin-list">
+          <small>Latest feedback</small>
+          {% for f in admin_stats.recent %}<p><span class="tag">{{ f.get_kind_display }}</span> {{ f.name }}: {{ f.message|truncatechars:60 }}</p>{% empty %}<p class="muted">No feedback yet.</p>{% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="ds-stats">
+      <div class="ds-stat"><span>{{ total_disasters }}</span>climate disasters recorded{% if sel_name %} in {{ sel_name }}{% endif %}</div>
+      <div class="ds-stat"><span>{{ n_countries }}</span>{% if sel_name %}country in view{% else %}countries{% endif %}</div>
+      <div class="ds-stat"><span>{{ n_rows }}</span>dataset rows</div>
+      <div class="ds-stat"><span>{{ hdfs_files|length }}</span>files in HDFS</div>
+    </div>
+
+    {% if alerts %}
+    <div class="ds-alerts">
+      <h3>⚠ Automated alerts <small>(threshold: z ≥ 2)</small></h3>
+      <ul>{% for a in alerts %}<li>{{ a }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <div class="ds-grid">
+      <div class="ds-card wide"><h3>Prediction: disasters per year + 5-year forecast (linear regression)</h3><canvas id="forecast"></canvas>
+        <p class="muted">Trend: {{ trend_slope }} disasters/year · correlation with time r = {{ correlation }} · {{ anomalies|length }} anomalies detected</p></div>
+    </div>
+    <br>
+
+    <div class="ds-grid">
+      <div class="ds-card wide"><h3>Climate disasters per year (all countries)</h3><canvas id="perYear"></canvas></div>
+      <div class="ds-card"><h3>Disasters by type, 1980–2024</h3><canvas id="byType"></canvas></div>
+      <div class="ds-card"><h3>World forest carbon stocks (million tonnes)</h3><canvas id="carbon"></canvas></div>
+      <div class="ds-card">
+        <h3>Top 10 countries by disasters</h3>
+        <table class="ds-table">
+          <thead><tr><th>#</th><th>Country</th><th>Disasters</th></tr></thead>
+          <tbody>{% for r in top %}<tr><td>{{ forloop.counter }}</td><td>{{ r.country }}</td><td>{{ r.total }}</td></tr>{% endfor %}</tbody>
+        </table>
+      </div>
+      <div class="ds-card">
+        <h3>Files stored in HDFS /climate</h3>
+        {% if hdfs_files %}
+        <table class="ds-table">
+          <thead><tr><th>File</th><th>Size</th><th>Replication</th></tr></thead>
+          <tbody>{% for f in hdfs_files %}<tr><td>{{ f.name }}</td><td>{{ f.size_kb }} KB</td><td>{{ f.replication }}</td></tr>{% endfor %}</tbody>
+        </table>
+        {% else %}
+        <p class="muted">HDFS isn't running. Start it with <code>hadoop\start_hdfs.cmd</code>, then refresh.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+{{ years|json_script:"d-years" }}
+{{ per_year|json_script:"d-peryear" }}
+{{ types|json_script:"d-types" }}
+{{ by_type|json_script:"d-bytype" }}
+{{ c_years|json_script:"d-cyears" }}
+{{ carbon_vals|json_script:"d-carbon" }}
+{{ future_years|json_script:"d-fyears" }}
+{{ forecast|json_script:"d-forecast" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  const j = id => JSON.parse(document.getElementById(id).textContent);
+  const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink-soft') || '#556';
+  Chart.defaults.color = ink.trim(); Chart.defaults.font.family = 'Inter, sans-serif';
+  const grid = { color: 'rgba(21,128,61,.08)' };
+
+  const ctx = document.getElementById('perYear').getContext('2d');
+  const g = ctx.createLinearGradient(0,0,0,300);
+  g.addColorStop(0,'rgba(34,197,94,.45)'); g.addColorStop(1,'rgba(34,197,94,.02)');
+  new Chart(ctx, { type:'line', data:{ labels:j('d-years'), datasets:[{ data:j('d-peryear'), borderColor:'#16a34a', backgroundColor:g, fill:true, tension:.35, pointRadius:0, borderWidth:2.5 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ x:{grid}, y:{grid, beginAtZero:true} } } });
+
+  new Chart(document.getElementById('byType'), { type:'doughnut',
+    data:{ labels:j('d-types'), datasets:[{ data:j('d-bytype'), backgroundColor:['#14532d','#16a34a','#22c55e','#84cc16','#eab308','#0d9488'], borderWidth:0 }]},
+    options:{ cutout:'62%', plugins:{legend:{position:'bottom'}} } });
+
+  new Chart(document.getElementById('carbon'), { type:'bar',
+    data:{ labels:j('d-cyears'), datasets:[{ data:j('d-carbon'), backgroundColor:'rgba(22,163,74,.8)', borderRadius:4 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false}}, y:{grid, beginAtZero:false} } } });
+  const yrs=j('d-years'), fy=j('d-fyears'), pv=j('d-peryear'), fc=j('d-forecast');
+  new Chart(document.getElementById('forecast'), { type:'line',
+    data:{ labels:yrs.concat(fy), datasets:[
+      { label:'Recorded', data:pv, borderColor:'#16a34a', tension:.3, pointRadius:2 },
+      { label:'Forecast', data:Array(yrs.length-1).fill(null).concat([pv[pv.length-1]]).concat(fc), borderColor:'#db2777', borderDash:[6,5], tension:.3, pointRadius:3 } ]},
+    options:{ scales:{ x:{grid}, y:{grid, beginAtZero:true} } } });
+})();
+</script>
+
+<style>
+.ds-badge{ display:inline-block; margin-top:14px; padding:6px 14px; border-radius:999px; font-size:.85rem; font-weight:600; }
+.ds-badge.ok{ background:rgba(16,185,129,.15); color:#10b981; }
+.ds-badge.warn{ background:rgba(245,158,11,.15); color:#d97706; }
+.ds-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:28px 0; }
+.ds-stat{ padding:20px; border-radius:18px; background:linear-gradient(160deg,#0c1a1d,#08373d); color:#b7cbc3; border:1px solid rgba(34,211,238,.25); font-size:.9rem; }
+.ds-stat span{ display:block; font-size:2rem; font-weight:700; color:#fff; font-family:'JetBrains Mono',monospace; text-shadow:0 0 18px rgba(34,211,238,.5); }
+.ds-alerts{ margin:0 0 22px; padding:18px 22px; border-radius:18px; background:rgba(244,114,182,.10); border:1px solid rgba(244,114,182,.35); }
+.ds-alerts h3{ margin:0 0 8px; color:#f9a8d4; }
+.ds-alerts li{ margin:4px 0; }
+.ds-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.ds-toolbar{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:24px; padding:14px 18px; border-radius:18px; background:var(--glass, rgba(13,25,58,.55)); border:1px solid var(--line); }
+.ds-toolbar label{ font-weight:600; color:var(--ink-soft); }
+.ds-toolbar select{ min-width:240px; padding:10px 12px; font:inherit; }
+.ds-export{ margin-left:auto; text-decoration:none; }
+.ds-clear{ color:var(--sky-soft, #7dd3fc); text-decoration:none; font-weight:600; }
+.ds-admin{ margin-top:18px; padding:20px 22px; border-radius:20px; border:1px solid rgba(129,140,248,.35); background:rgba(129,140,248,.10); }
+.ds-admin-head{ display:flex; justify-content:space-between; align-items:center; }
+.ds-admin-head h3{ margin:0; }
+.ds-admin-grid{ display:grid; grid-template-columns: 1fr 1fr 2fr; gap:14px; margin-top:14px; }
+.ds-admin-grid > div{ padding:14px; border-radius:14px; background:rgba(3,7,18,.35); }
+.ds-admin-grid b{ display:block; font-size:1.8rem; }
+.ds-admin-grid small{ color:var(--ink-faint); }
+.ds-admin-list p{ margin:6px 0 0; font-size:.88rem; }
+@media (max-width:800px){ .ds-admin-grid{ grid-template-columns:1fr 1fr; } .ds-admin-list{ grid-column:1/-1; } .ds-export{ margin-left:0; } }
+.ds-card{ padding:22px; border-radius:20px; background:var(--paper-raised); border:1px solid var(--line); box-shadow:var(--shadow); }
+.ds-card.wide{ grid-column:1/-1; }
+.ds-card h3{ margin:0 0 14px; font-size:1.05rem; }
+.ds-table{ width:100%; border-collapse:collapse; font-size:.92rem; }
+.ds-table th, .ds-table td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--line-soft); }
+.ds-table th{ color:var(--ink-faint); font-weight:600; }
+@media (max-width:800px){ .ds-stats{ grid-template-columns:1fr 1fr; } .ds-grid{ grid-template-columns:1fr; } }
+</style>
+
+{% endblock %}

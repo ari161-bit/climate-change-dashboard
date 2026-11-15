@@ -1,0 +1,76 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Climate Simulator · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Go further · Try it yourself</p>
+        <h1>The Climate Simulator</h1>
+        <p class="lede">Drag the CO2 slider and watch it happen: more CO2 molecules in the atmosphere band mean more heat gets bounced back to the surface instead of escaping to space. This is a simplified, illustrative model, not a forecast, built on the same logarithmic CO2-warming relationship climate scientists actually use.</p>
+        <div class="hero-ctas"><a href="/climatechanges/quiz.html" class="btn btn-primary">Next: take the quiz →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Today's CO2 level</span><span class="ro-value js-counter tone-warm" data-target="427" data-decimals="0" data-prefix="" data-suffix=" ppm">0</span></div><div class="readout-cell"><span class="ro-label">Pre-industrial baseline</span><span class="ro-value js-counter" data-target="280" data-decimals="0" data-prefix="" data-suffix=" ppm">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sim-panel reveal">
+      <div class="sim-stage">
+        <canvas id="sim-canvas" role="img" aria-label="Animated diagram of sunlight reaching the ground and re-radiating as heat, some of which is bounced back by greenhouse-gas molecules"></canvas>
+      </div>
+      <div class="sim-controls">
+        <div class="sim-slider-row">
+          <input type="range" id="sim-co2-slider" min="280" max="1000" step="1" value="427" aria-label="Atmospheric CO2, parts per million">
+          <span class="sim-ppm-readout" id="sim-ppm-readout">427 ppm</span>
+        </div>
+        <p class="sim-milestone" id="sim-milestone-label">Today (2025 Mauna Loa annual mean)</p>
+        <div class="sim-presets">
+          <button type="button" class="sim-preset" data-ppm="280">Pre-industrial (1850)</button>
+          <button type="button" class="sim-preset" data-ppm="427">Today (2025)</button>
+          <button type="button" class="sim-preset" data-ppm="450">1.5°C pathway (~450)</button>
+          <button type="button" class="sim-preset" data-ppm="560">Double CO2 (560)</button>
+          <button type="button" class="sim-preset" data-ppm="800">High-emissions 2100 (~800)</button>
+        </div>
+      </div>
+      <div class="sim-stats">
+        <div class="sim-stat"><div class="ss-l">CO2 level</div><div class="ss-v" id="sim-ppm-readout-2">—</div></div>
+        <div class="sim-stat"><div class="ss-l">Estimated warming</div><div class="ss-v" id="sim-warming-readout">—</div></div>
+        <div class="sim-stat"><div class="ss-l">Heat still escaping</div><div class="ss-v" id="sim-escape-readout">—</div></div>
+      </div>
+    </div>
+
+    <div class="callout callout--note reveal">
+      <span class="callout-label">How this simulator works</span>
+      <p>The warming estimate uses <strong>ΔT = TCR × log₂(CO2 ÷ 280)</strong>, the standard logarithmic relationship between CO2 concentration and warming, with TCR (Transient Climate Response) set to 1.8°C, inside the IPCC AR6 likely range. It is a genuine simplification of real climate science for a first-hand, hands-on feel, not a prediction of what will actually happen, real projections depend on how fast CO2 rises, ocean heat uptake, aerosols, and feedback loops the model above doesn't attempt to capture.</p>
+    </div>
+
+    <div class="callout callout--try reveal" style="text-align:center;">
+      <span class="callout-label">Compare it to the real record</span>
+      <p>The Data Explorer shows the actual measured CO2 curve and the live reading right now, and the 8-lesson course explains why the greenhouse effect works the way this simulator shows.</p>
+      <a href="/climatechanges/data-explorer.html" class="btn btn-ghost" style="margin-top:8px;">📊 Open the Data Explorer</a>
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/simulator.js"></script>
+{% endblock %}

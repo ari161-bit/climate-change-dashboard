@@ -1,0 +1,82 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Reduce, Reuse, Recycle · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Take Action · Habit</p>
+        <h1>Reduce, reuse, recycle, in that order</h1>
+        <p class="lede">The three Rs aren't interchangeable; they're a priority list. Reducing what you use in the first place beats reusing, which beats recycling, which still beats throwing away, and the order matters more than people realise.</p>
+        <div class="hero-ctas"><a href="/climatechanges/clean-energy.html" class="btn btn-primary">Next: clean energy →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Order of priority</span><span class="ro-value js-counter" data-target="3" data-decimals="0" data-prefix="" data-suffix=" Rs">0</span></div><div class="readout-cell"><span class="ro-label">Energy saved recycling aluminium vs. new</span><span class="ro-value js-counter tone-cool" data-target="90" data-decimals="0" data-prefix="" data-suffix="%+">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid grid-3 reveal">
+      <div class="card">
+        <span class="tag">1 · Best</span>
+        <div class="ico">🛍️</div>
+        <h3>Reduce</h3>
+        <p>The waste and emissions that never happen are the cheapest kind to deal with. Buy less, choose durable things over disposable ones, and question whether you need a new item at all.</p>
+      </div>
+      <div class="card">
+        <span class="tag">2 · Good</span>
+        <div class="ico">🔁</div>
+        <h3>Reuse</h3>
+        <p>Refill bottles, repair instead of replace, hand things down. Reuse keeps an item's embedded energy and materials working for longer before anything needs reprocessing.</p>
+      </div>
+      <div class="card">
+        <span class="tag">3 · Better than landfill</span>
+        <div class="ico">♻️</div>
+        <h3>Recycle</h3>
+        <p>When something truly can't be reduced or reused further, recycling turns it back into raw material, using far less energy than mining or manufacturing from scratch.</p>
+      </div>
+    </div>
+
+    <div class="layout-2col" style="margin-top:40px;">
+      <div class="prose reveal">
+        <h2>Why recycling actually cuts emissions</h2>
+        <p>Making things from raw materials, mining ore, refining oil into plastic, cutting down trees for paper, takes a lot of energy, almost always from fossil fuels. Recycling skips most of those early, energy-hungry steps. Recycled aluminium, for example, typically needs a small fraction of the energy that producing new aluminium from ore does. Multiply that across millions of cans, bottles and boxes, and the emissions saved add up fast.</p>
+        <h2 style="margin-top:1.4em;">A quick, kid-friendly sorting guide</h2>
+        <ul>
+          <li><strong>Paper &amp; cardboard</strong>, flatten boxes, keep them dry.</li>
+          <li><strong>Plastic bottles &amp; containers</strong>, rinse out food residue first.</li>
+          <li><strong>Glass &amp; metal cans</strong>, almost endlessly recyclable without losing quality.</li>
+          <li><strong>Organic waste</strong> (peels, leftovers), compost where possible instead of binning it; it cuts landfill methane.</li>
+          <li><strong>E-waste</strong> (batteries, old phones), never bin these; they need specialist handling.</li>
+        </ul>
+        <div class="callout callout--note">
+          <span class="callout-label">The Nigeria angle</span>
+          <p>Formal recycling infrastructure is still patchy in much of Nigeria, but a large informal economy of waste pickers and scrap dealers already recovers huge volumes of metal, plastic and paper for resale, an unglamorous but genuinely important climate contribution worth recognising.</p>
+        </div>
+      </div>
+      <aside class="side-card">
+        <h4>Try this at home or school</h4>
+        <p style="font-size:.88rem;">Set up three labelled boxes for a week, Reduce candidates (things you almost didn't need), Reuse, and Recycle. At the end of the week, see which box filled up fastest. It usually says a lot.</p>
+      </aside>
+    </div>
+<div class="topic-pager"><a class="pager-link prev" href="/climatechanges/carbon-footprint.html"><span class="pl-dir">← Previous</span><div class="pl-title">Your Carbon Footprint</div></a><a class="pager-link next" href="/climatechanges/clean-energy.html"><span class="pl-dir">Next →</span><div class="pl-title">Clean Energy</div></a></div></div></section>
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

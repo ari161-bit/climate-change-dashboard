@@ -1,0 +1,63 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}{{ ds.name }}{% endblock %}
+{% block crumb %}<a href="{% url 'console_data' %}">Data management</a> / dataset #{{ ds.pk }}{% endblock %}
+{% block heading %}{{ ds.name }}{% endblock %}
+{% block top_actions %}<span class="badge b-{{ ds.status }}">{{ ds.get_status_display }}</span>{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <div class="card kpi"><div class="label">{% if ds.file_format == 'tiff' %}Imagery files{% else %}Rows{% endif %}</div><div class="value">{% if ds.file_format == 'tiff' %}1{% else %}{{ ds.rows }}{% endif %}</div><div class="sub">{% if ds.file_format == 'tiff' %}GeoTIFF source · {{ ds.size_bytes|filesizeformat }}{% else %}{{ ds.columns }} columns · {{ ds.file_format|upper }}{% endif %}</div></div>
+  <div class="card kpi"><div class="label">{% if ds.file_format == 'tiff' %}Tabular gaps{% else %}Missing values{% endif %}</div><div class="value">{% if ds.file_format == 'tiff' %}—{% else %}{{ ds.missing_values }}{% endif %}</div><div class="sub">{% if ds.file_format == 'tiff' %}not applicable{% else %}across all cells{% endif %}</div></div>
+  <div class="card kpi"><div class="label">Duplicate rows</div><div class="value">{% if ds.file_format == 'tiff' %}—{% else %}{{ ds.duplicate_rows }}{% endif %}</div><div class="sub">{% if ds.file_format == 'tiff' %}not applicable{% else %}exact duplicates{% endif %}</div></div>
+  <div class="card kpi"><div class="label">Storage</div><div class="value" style="font-size:18px">{{ ds.storage_backend|default:"not stored" }}</div><div class="sub" style="word-break:break-all">{{ ds.storage_path|default:"Use “Store in HDFS”" }}</div></div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Actions</h3><p>{{ ds.get_kind_display }} · uploaded by {{ ds.uploaded_by.username|default:"-" }} on {{ ds.created|date:"d M Y H:i" }}</p></div></div>
+  <form method="post" class="btn-row">{% csrf_token %}
+    {% if ds.file_format != 'tiff' %}<button class="btn btn-primary" name="action" value="clean">Clean data</button>{% endif %}
+    <button class="btn btn-dark" name="action" value="store">Store in HDFS</button>
+    {% if p.importable_as_readings %}<button class="btn btn-ghost" name="action" value="import">Import as station readings</button>{% endif %}
+    <a class="btn btn-ghost" href="{% url 'console_dataset_download' ds.pk 'original' %}">Download original</a>
+    {% if ds.cleaned_file %}<a class="btn btn-ghost" href="{% url 'console_dataset_download' ds.pk 'clean' %}">Download cleaned</a>{% endif %}
+    {% if is_admin or ds.uploaded_by_id == user.id %}<button class="btn btn-danger" name="action" value="delete" data-confirm="Delete this dataset and its imported readings?">Delete</button>{% endif %}
+  </form>
+  {% if p.issues %}<p class="note" style="margin-top:12px"><b>Issues found:</b> {{ p.issues|join:"; " }}</p>{% endif %}
+  {% if p.cleaning %}<p class="note" style="margin-top:8px"><b>Cleaning result:</b> {{ p.cleaning.rows_before }} → {{ p.cleaning.rows_after }} rows ({{ p.cleaning.removed_rows }} removed: duplicates/empty), numeric gaps filled with the column median: {% for k, v in p.cleaning.filled_numeric.items %}{{ k }} ({{ v }}){% if not forloop.last %}, {% endif %}{% empty %}none{% endfor %}. Remaining missing: {{ p.cleaning.remaining_missing }}.</p>{% endif %}
+  {% if p.import %}<p class="note" style="margin-top:8px"><b>Imported:</b> {{ p.import.readings }} readings ({{ p.import.skipped }} skipped for bad dates), {{ p.import.alerts }} alerts raised.</p>{% endif %}
+  {% if p.importable_as_readings %}<p class="note" style="margin-top:8px"><b>Detected columns:</b> {% for k, v in p.column_mapping.items %}{{ k }} ← <code>{{ v }}</code>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+</div>
+
+{% if ds.file_format == 'tiff' %}
+<div class="card"><div class="card-h"><div><h3>Satellite imagery source</h3><p>Original GeoTIFF retained intact and encrypted. Store it in HDFS to add it to the climate data lake.</p></div></div><div class="stat-list"><div><span>Format</span><b>GeoTIFF / TIFF</b></div><div><span>Catalogued</span><b>Yes</b></div><div><span>Raster analysis</span><b>Not configured</b></div></div></div>
+{% else %}
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Column profile</h3><p>Type, missing values and range per column</p></div></div>
+    <div class="table-wrap"><table class="t">
+      <thead><tr><th>Column</th><th>Type</th><th class="num">Missing</th><th>Completeness</th><th class="num">Unique</th><th class="num">Min</th><th class="num">Max</th></tr></thead>
+      <tbody>{% for c in p.columns %}<tr><td><b>{{ c.name }}</b></td><td><code>{{ c.dtype }}</code></td><td class="num">{{ c.missing }}</td>
+        <td style="min-width:110px"><div class="bar"><i style="width:{{ c.missing_pct|floatformat:0 }}%;background:#f87171;float:right"></i></div><small>{{ c.missing_pct }}% empty</small></td>
+        <td class="num">{{ c.unique }}</td><td class="num">{{ c.min|default_if_none:"-" }}</td><td class="num">{{ c.max|default_if_none:"-" }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Description</h3></div></div>
+    <p>{{ ds.description|default:"No description." }}</p>
+    <div class="stat-list" style="margin-top:12px">
+      <div><span>Original file</span><b>{{ ds.original_filename }}</b></div>
+      <div><span>Size</span><b>{{ ds.size_bytes|filesizeformat }}</b></div>
+      <div><span>Format</span><b>{{ ds.file_format|upper }}</b></div>
+      <div><span>Status</span><b>{{ ds.get_status_display }}</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Data preview</h3><p>First 10 rows · empty cells highlighted</p></div></div>
+  <div class="table-wrap"><table class="t">
+    <thead><tr>{% for c in p.preview_columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for row in p.preview_rows %}<tr>{% for v in row %}<td {% if v is None %}style="background:#fef2f2"{% endif %}>{{ v|default_if_none:"∅" }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+</div>
+{% endif %}
+{% endblock %}

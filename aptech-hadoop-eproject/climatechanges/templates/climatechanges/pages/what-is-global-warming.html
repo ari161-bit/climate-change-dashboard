@@ -1,0 +1,126 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}What Is Global Warming? · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Start here · Learn</p>
+        <h1>What is global warming, really?</h1>
+        <p class="lede">Strip away the politics and the panic for a second: global warming is a physics problem. It's about what happens to heat once sunlight reaches Earth, and why a thin layer of gas, measured in parts per million, makes such an outsized difference.</p>
+        <div class="hero-ctas"><a href="/climatechanges/causes.html" class="btn btn-primary">Next: what causes it →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">CO2, pre-industrial (~1750)</span><span class="ro-value js-counter tone-cool" data-target="280" data-decimals="0" data-prefix="" data-suffix=" ppm">0</span></div><div class="readout-cell"><span class="ro-label">CO2, 2025 average</span><span class="ro-value js-counter tone-warm" data-target="427.4" data-decimals="1" data-prefix="" data-suffix=" ppm">0</span></div><div class="readout-cell"><span class="ro-label">Time CO2 lingers in the air</span><span class="ro-value js-counter" data-target="100" data-decimals="0" data-prefix="" data-suffix="+ yrs">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="layout-2col">
+      <div class="prose reveal">
+        <h2>The greenhouse effect, in one diagram</h2>
+        <p>Sunlight passes through the atmosphere fairly easily and warms the ground. The warmed Earth then radiates that energy back outward as heat (infrared radiation). Some of that heat escapes straight to space, but greenhouse gases like carbon dioxide (CO2), methane and water vapour absorb part of it and radiate it back down again, the way a blanket holds your body heat in rather than creating any heat of its own.</p>
+        <div class="callout callout--note" style="background:#fff;padding:18px;"><svg viewBox="0 0 700 430" style="width:100%;height:auto;" role="img" aria-label="Diagram of the greenhouse effect: sunlight enters the atmosphere, heat radiates from Earth's surface, and greenhouse gases trap part of that heat while some escapes to space.">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7F2EF"/><stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <marker id="arrowAmber" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#D9691A"/></marker>
+    <marker id="arrowCoral" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#C8432F"/></marker>
+    <marker id="arrowTeal" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0B5560"/></marker>
+  </defs>
+  <rect x="0" y="0" width="700" height="430" fill="url(#sky)"/>
+  <!-- space label zone -->
+  <text x="20" y="28" font-family="JetBrains Mono, monospace" font-size="11" fill="#6E7D75" letter-spacing="1">SPACE</text>
+  <line x1="0" y1="60" x2="700" y2="60" stroke="#CBD8CD" stroke-dasharray="4 5"/>
+  <!-- greenhouse gas band -->
+  <rect x="0" y="230" width="700" height="60" fill="#CFE6E1" opacity=".55"/>
+  <text x="500" y="222" font-family="JetBrains Mono, monospace" font-size="11" fill="#0A4641" letter-spacing="1">GREENHOUSE GAS LAYER</text>
+  <g fill="#16847A" opacity=".7">
+    <circle cx="80" cy="255" r="4"/><circle cx="140" cy="270" r="4"/><circle cx="210" cy="250" r="4"/>
+    <circle cx="280" cy="268" r="4"/><circle cx="350" cy="252" r="4"/><circle cx="420" cy="272" r="4"/>
+    <circle cx="490" cy="254" r="4"/><circle cx="560" cy="268" r="4"/><circle cx="620" cy="250" r="4"/>
+  </g>
+  <!-- sun -->
+  <circle cx="610" cy="70" r="30" fill="#EE8C3C"/>
+  <g stroke="#EE8C3C" stroke-width="3" stroke-linecap="round">
+    <line x1="610" y1="25" x2="610" y2="12"/><line x1="650" y1="40" x2="660" y2="30"/>
+    <line x1="665" y1="70" x2="680" y2="70"/><line x1="650" y1="100" x2="660" y2="110"/>
+  </g>
+  <!-- ground -->
+  <rect x="0" y="370" width="700" height="60" fill="#0A4641"/>
+  <text x="20" y="410" font-family="JetBrains Mono, monospace" font-size="11" fill="#CFE6E1" letter-spacing="1">EARTH'S SURFACE</text>
+  <!-- incoming sunlight -->
+  <line x1="560" y1="95" x2="380" y2="365" stroke="#D9691A" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <line x1="600" y1="100" x2="470" y2="365" stroke="#D9691A" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <line x1="500" y1="90" x2="280" y2="365" stroke="#D9691A" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <!-- outgoing heat from ground, trapped -->
+  <path d="M300,368 C290,330 300,290 290,260" fill="none" stroke="#C8432F" stroke-width="2.5" marker-end="url(#arrowCoral)"/>
+  <path d="M400,368 C410,330 398,290 408,260" fill="none" stroke="#C8432F" stroke-width="2.5" marker-end="url(#arrowCoral)"/>
+  <!-- heat bounced back down -->
+  <path d="M290,250 C270,280 275,330 260,368" fill="none" stroke="#C8432F" stroke-width="2" stroke-dasharray="2 5" marker-end="url(#arrowCoral)"/>
+  <path d="M408,248 C425,280 418,330 430,368" fill="none" stroke="#C8432F" stroke-width="2" stroke-dasharray="2 5" marker-end="url(#arrowCoral)"/>
+  <!-- heat that escapes to space -->
+  <path d="M500,368 C515,300 505,150 520,55" fill="none" stroke="#0B5560" stroke-width="2.5" marker-end="url(#arrowTeal)"/>
+  <!-- labels -->
+  <text x="170" y="150" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#11201C">Sunlight passes</text>
+  <text x="170" y="167" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#11201C">through easily</text>
+  <text x="20" y="340" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#C8432F">Some heat is</text>
+  <text x="20" y="357" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#C8432F">trapped &amp; bounced back</text>
+  <text x="530" y="120" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#0B5560">A little heat</text>
+  <text x="530" y="137" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#0B5560">escapes to space</text>
+</svg></div>
+        <p>That's a genuinely good thing in the right amount, without any greenhouse effect at all, Earth's average surface temperature would sit somewhere around &minus;18°C, far too cold for the world as we know it. The trouble starts when we keep adding far more of these gases than natural processes can absorb, thickening the "blanket" year after year.</p>
+
+        <h2 style="margin-top:1.6em;">Weather vs. climate vs. global warming</h2>
+        <p>These three get mixed up constantly, so here's the difference in one line each:</p>
+        <ul>
+          <li><strong>Weather</strong> is what's happening outside right now, today's rain, today's heat.</li>
+          <li><strong>Climate</strong> is the long-term pattern of weather in a place, usually averaged over 30 years.</li>
+          <li><strong>Global warming</strong> is the measured rise in Earth's average surface temperature over decades, caused mainly by human-added greenhouse gases, one driver reshaping climates everywhere, at different speeds and in different ways.</li>
+        </ul>
+        <p>A cold week somewhere doesn't disprove global warming any more than one hot afternoon proves it. It's the decades-long average that matters, and that average keeps climbing.</p>
+
+        <h2 style="margin-top:1.6em;">Why a few hundred parts per million matters so much</h2>
+        <p>"Parts per million" (ppm) sounds tiny, and in one sense it is: CO2 is still a small slice of the atmosphere, which is mostly nitrogen and oxygen. But greenhouse gases are disproportionately powerful at trapping heat for their size. Atmospheric CO2 has risen from about 280 ppm before the Industrial Revolution to roughly 427 ppm in 2025, about a 50% increase, and each extra molecule adds a little more trapped heat across the entire planet, all the time.</p>
+        <div class="callout callout--try">
+          <span class="callout-label">Try this · A 10-minute experiment</span>
+          <p>Place two thermometers in the sun: one inside a clear sealed jar, one left in the open air. Check both after 20 to 30 minutes. The jar traps heat the way greenhouse gases do; it almost always reads warmer. Scale that idea up to an entire planet, and you've got the core of this whole topic.</p>
+        </div>
+      </div>
+      <aside class="side-card">
+        <h4>On this page</h4>
+        <ul>
+          <li><a href="#main">The greenhouse effect</a></li>
+        </ul>
+        <h4 style="margin-top:22px;">Quick facts</h4>
+        <div class="fact-strip" style="flex-direction:column;">
+          <div class="fact"><div class="fv">~1859</div><div class="fl">First lab experiments on CO2 and heat (Eunice Foote, John Tyndall)</div></div>
+          <div class="fact"><div class="fv">−18°C</div><div class="fl">Earth's rough average temperature with no greenhouse effect at all</div></div>
+        </div>
+      </aside>
+    </div>
+    <div class="topic-pager"><span></span><a class="pager-link next" href="/climatechanges/causes.html"><span class="pl-dir">Next →</span><div class="pl-title">Causes of Global Warming</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

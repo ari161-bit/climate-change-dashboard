@@ -1,0 +1,65 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Settings{% endblock %}
+{% block heading %}Settings{% endblock %}
+{% block content %}
+<div class="grid g3">
+  <div class="card">
+    <div style="text-align:center;padding:10px 0">
+      <div class="es-avatar" style="width:72px;height:72px;font-size:28px;margin:0 auto 10px">{{ user.username|first|upper }}</div>
+      <h3>{{ customer.full_name|default:user.username }}</h3>
+      <p class="muted" style="margin:4px 0 10px">{{ user.email|default:"no email" }}</p>
+      <span class="badge {% if is_admin %}b-mixed{% else %}b-real{% endif %}">{{ role }}</span>
+    </div>
+    <div class="stat-list" style="margin-top:14px">
+      <div><span>Username</span><b>{{ user.username }}</b></div>
+      <div><span>Member since</span><b>{{ user.date_joined|date:"d M Y" }}</b></div>
+      <div><span>Last login</span><b>{{ user.last_login|date:"d M Y H:i"|default:"-" }}</b></div>
+    </div>
+  </div>
+  <div class="card span2">
+    <div class="card-h"><div><h3>Profile</h3><p>Update your contact details</p></div></div>
+    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="profile">
+      <div class="form-grid">{% for field in pform %}<div class="fg {% if field.name == 'address' %}full{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+        {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}</div>
+      <button class="btn btn-primary" style="margin-top:14px">Save profile</button>
+    </form>
+  </div>
+</div>
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Change password</h3><p>At least 8 characters, not too common, not all numbers</p></div></div>
+    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="password">
+      {% for field in wform %}<div class="fg" style="margin-bottom:10px"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+        {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
+      {% if wform.non_field_errors %}<ul class="errorlist">{% for e in wform.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      <button class="btn btn-dark">Change password</button>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Notifications &amp; access</h3></div></div>
+    <div class="stat-list">
+      <div><span>In-app alerts</span><b>On · bell icon + Alerts page</b></div>
+      <div><span>Alert thresholds</span><b>{% if is_admin %}<a href="{% url 'console_alerts' %}">Edit rules →</a>{% else %}Managed by administrators{% endif %}</b></div>
+      <div><span>Your role</span><b>{{ role }}</b></div>
+      {% if is_admin %}<div><span>Users &amp; roles</span><b><a href="{% url 'console_users' %}">User management →</a></b></div>
+      <div><span>Backups</span><b><a href="{% url 'console_processing' %}">Data processing →</a></b></div>{% endif %}
+    </div>
+  </div>
+</div>
+{% if is_admin %}
+<div class="card">
+  <div class="card-h"><div><h3>Scheduled maintenance notices</h3><p>Announce maintenance in advance: a banner appears on every page for every user until it ends</p></div></div>
+  <form method="post" class="form-grid">{% csrf_token %}<input type="hidden" name="action" value="maintenance">
+    <div class="fg"><label for="m-title">Title</label><input id="m-title" name="title" maxlength="150" placeholder="Database upgrade" required></div>
+    <div class="fg"><label for="m-msg">Message</label><input id="m-msg" name="message" placeholder="The console may be unavailable for 20 minutes."></div>
+    <div class="fg"><label for="m-start">Starts (UTC)</label><input id="m-start" type="datetime-local" name="starts_at" required></div>
+    <div class="fg"><label for="m-end">Ends (UTC)</label><input id="m-end" type="datetime-local" name="ends_at" required></div>
+    <div class="full"><button class="btn btn-primary">Publish notice</button></div>
+  </form>
+  {% if all_notices %}<div class="table-wrap" style="margin-top:14px"><table class="t"><thead><tr><th>Notice</th><th>Window (UTC)</th><th></th></tr></thead><tbody>
+    {% for n in all_notices %}<tr><td><b>{{ n.title }}</b><br><small>{{ n.message }}</small></td><td>{{ n.starts_at|date:"d M H:i" }} – {{ n.ends_at|date:"d M H:i" }}</td>
+      <td><form method="post">{% csrf_token %}<input type="hidden" name="action" value="end_maintenance"><input type="hidden" name="id" value="{{ n.id }}"><button class="btn btn-ghost btn-sm">Remove</button></form></td></tr>{% endfor %}
+  </tbody></table></div>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

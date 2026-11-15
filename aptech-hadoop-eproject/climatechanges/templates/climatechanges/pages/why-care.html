@@ -1,0 +1,87 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Why Should We Care? · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Learn · Stakes</p>
+        <h1>Why should you actually care?</h1>
+        <p class="lede">Because every system that feeds, waters, houses and employs people leans on a climate that's now shifting under it, and because the people who've contributed least to the problem are often the ones absorbing the most risk.</p>
+        <div class="hero-ctas"><a href="/climatechanges/carbon-footprint.html" class="btn btn-primary">Next: your footprint →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">WHO: heat-stress deaths/yr, est.</span><span class="ro-value js-counter tone-alert" data-target="489" data-decimals="0" data-prefix="" data-suffix="K">0</span></div><div class="readout-cell"><span class="ro-label">Of Nigeria's GDP from agriculture</span><span class="ro-value js-counter" data-target="31" data-decimals="0" data-prefix="" data-suffix="%">0</span></div><div class="readout-cell"><span class="ro-label">Of world pop. in climate-vulnerable regions</span><span class="ro-value js-counter tone-warm" data-target="3.3" data-decimals="1" data-prefix="" data-suffix="B+">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid grid-2 reveal" style="margin-bottom:30px;">
+      <div class="card">
+        <div class="ico">🌽</div>
+        <h3>Food &amp; farming</h3>
+        <p>Agriculture employs a huge share of people across Africa and contributes over 31% of Nigeria's GDP. Shifting rainfall, drought and flooding directly hit crop yields, prices, and household income.</p>
+      </div>
+      <div class="card">
+        <div class="ico">💧</div>
+        <h3>Water</h3>
+        <p>Some regions get hit with floods that contaminate drinking water and spark disease outbreaks; others face drought that dries up wells and rivers in the same year, sometimes the same country.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🏥</div>
+        <h3>Health</h3>
+        <p>Extreme heat is dangerous on its own, and floods increase waterborne diseases like cholera. Climate-related disasters strain already stretched health systems.</p>
+      </div>
+      <div class="card">
+        <div class="ico">💼</div>
+        <h3>Economy &amp; jobs</h3>
+        <p>Damaged farmland, disrupted supply chains and rebuilding costs after disasters all weigh on growth, money that could otherwise go toward schools, hospitals and infrastructure.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🦓</div>
+        <h3>Biodiversity</h3>
+        <p>Ecosystems that took millennia to balance are being asked to adjust in decades. Some species and habitats simply can't keep pace.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🧒</div>
+        <h3>The next generation</h3>
+        <p>Today's children will live through more decades of accumulating change than anyone reading this, which is exactly why this site is built to make sense to them too.</p>
+      </div>
+    </div>
+
+    <div class="layout-2col">
+      <div class="prose reveal">
+        <h2>The uncomfortable fairness problem</h2>
+        <p>Here's the part that doesn't get said often enough: Africa as a whole has contributed a small share of the greenhouse gases that built up in the atmosphere since the Industrial Revolution. Nigeria's own historic emissions are modest by global standards. Yet the impacts, floods like Mokwa, heat stress across the north, coastal erosion in Lagos, land hard, because so much of the economy and so many livelihoods depend directly on stable rainfall, farmland and coastlines.</p>
+        <p>This is the heart of what's often called <em>climate justice</em>: the places least responsible for causing the problem are frequently among the most exposed to its consequences, and the least equipped, financially, to absorb the shocks.</p>
+        <p>It's also exactly why local knowledge, local adaptation, and a new generation of African scientists, engineers and educators matter so much: this isn't a problem anyone elsewhere is going to solve <em>for</em> Nigeria. It has to be understood, and acted on, from here too.</p>
+      </div>
+      <aside class="side-card">
+        <h4>One honest caveat</h4>
+        <p style="font-size:.88rem;">These figures (WHO heat-related mortality estimate, global vulnerability count) are widely cited international estimates, not exact counts; real-world impacts are hard to measure precisely. Treat them as "this is roughly the scale we're talking about," not a perfectly exact tally.</p>
+      </aside>
+    </div>
+    <div class="topic-pager"><a class="pager-link prev" href="/climatechanges/effects.html"><span class="pl-dir">← Previous</span><div class="pl-title">Effects, Worldwide and at Home</div></a><a class="pager-link next" href="/climatechanges/carbon-footprint.html"><span class="pl-dir">Next →</span><div class="pl-title">Your Carbon Footprint</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

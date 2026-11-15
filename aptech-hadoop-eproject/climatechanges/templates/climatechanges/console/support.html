@@ -1,0 +1,30 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Support{% endblock %}
+{% block heading %}Feedback &amp; support{% endblock %}
+{% block content %}
+<div class="grid g3">
+  <div class="card">
+    <div class="card-h"><div><h3>New request</h3><p>Ask a question, report a problem or share feedback</p></div></div>
+    <form method="post">{% csrf_token %}
+      <div class="fg"><label for="{{ form.kind.id_for_label }}">Type</label>{{ form.kind }}</div>
+      <div class="fg" style="margin-top:10px"><label for="{{ form.subject.id_for_label }}">Subject</label>{{ form.subject }}</div>
+      <div class="fg" style="margin-top:10px"><label for="{{ form.message.id_for_label }}">Message</label>{{ form.message }}
+        {% if form.message.errors %}<ul class="errorlist">{% for e in form.message.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+      <button class="btn btn-primary" style="margin-top:14px">Submit request</button>
+    </form>
+  </div>
+  <div class="card span2">
+    <div class="card-h"><div><h3>{% if is_admin %}All support requests{% else %}My requests{% endif %}</h3><p>{% if is_admin %}Open a request to reply and change its status{% else %}Track the status of everything you've sent{% endif %}</p></div>
+      <div class="tabs"><a href="?" class="{% if not status %}on{% endif %}">All</a>{% for k, l in statuses %}<a href="?status={{ k }}" class="{% if status == k %}on{% endif %}">{{ l }}</a>{% endfor %}</div></div>
+    <div class="table-wrap"><table class="t">
+      <thead><tr><th>#</th><th>Request</th><th>Type</th>{% if is_admin %}<th>From</th>{% endif %}<th>Status</th><th>Updated</th></tr></thead>
+      <tbody>{% for r in items %}<tr>
+        <td><a href="{% url 'console_support_detail' r.pk %}">{{ r.pk }}</a></td>
+        <td><a href="{% url 'console_support_detail' r.pk %}"><b>{{ r.subject|default:r.message|truncatechars:60 }}</b></a>{% if r.admin_reply %}<br><small>💬 replied</small>{% endif %}</td>
+        <td>{{ r.get_kind_display }}</td>{% if is_admin %}<td>{{ r.name }}<br><small>{{ r.email }}</small></td>{% endif %}
+        <td><span class="badge b-{{ r.status }}">{{ r.get_status_display }}</span></td><td><small>{{ r.updated|date:"d M Y H:i" }}</small></td></tr>
+      {% empty %}<tr><td colspan="6"><div class="empty"><b>No requests yet</b></div></td></tr>{% endfor %}</tbody>
+    </table></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Effects of Global Warming · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">Learn · Impact</p>
+        <h1>Effects: worldwide, and a lot closer to home</h1>
+        <p class="lede">A warmer atmosphere doesn't just mean warmer days. It loads the dice toward heavier floods, longer droughts, melting ice and rising seas, and in 2025, Nigeria felt several of these firsthand.</p>
+        <div class="hero-ctas"><a href="/climatechanges/why-care.html" class="btn btn-primary">Next: why care →</a></div>
+      </div>
+      <div class="hero-media reveal"><img src="/static/images/photos/Auyo_village_flood_06-960.jpg" alt="Floodwaters surrounding a village in Auyo, Jigawa State, Nigeria"><span class="credit">Auyo village flood · Sani Maikatanga, Wikimedia Commons (CC BY-SA 4.0)</span></div>
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">2025: warmest years on record</span><span class="ro-value js-counter tone-alert" data-target="3" data-decimals="0" data-prefix="" data-suffix="rd">0</span></div><div class="readout-cell"><span class="ro-label">Arctic sea ice, 2025</span><span class="ro-value js-counter tone-cool" data-target="2" data-decimals="0" data-prefix="" data-suffix="nd-lowest ever">0</span></div><div class="readout-cell"><span class="ro-label">Nigerians at flood risk, 2025</span><span class="ro-value js-counter tone-warm" data-target="15" data-decimals="0" data-prefix="" data-suffix="M+">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Around the world</p>
+      <h2>What a warmer planet is already doing</h2>
+    </div>
+    <div class="grid grid-3 reveal">
+      <div class="card"><div class="ico">🌡️</div><h3>Rising temperatures</h3><p>2025 was Earth's third-warmest year on record, about 1.3°C above the 1850 to 1900 average. The ten warmest years on record have all occurred since 2015.</p></div>
+      <div class="card"><div class="ico">🧊</div><h3>Melting ice, rising seas</h3><p>Arctic sea ice in 2025 was the second-lowest on record. Melting ice sheets and warming, expanding seawater are pushing sea levels upward year after year.</p></div>
+      <div class="card"><div class="ico">🌪️</div><h3>Fiercer weather</h3><p>Warmer air holds more moisture and warmer oceans fuel stronger storms, 2025 saw 101 named storms worldwide, above the recent average of 88.</p></div>
+      <div class="card"><div class="ico">🌊</div><h3>Warming, more acidic oceans</h3><p>Oceans absorb most of the planet's extra heat. 2025 was the fifth straight year of record-high upper-ocean heat content, bad news for coral reefs and fisheries.</p></div>
+      <div class="card"><div class="ico">🌾</div><h3>Disrupted growing seasons</h3><p>Shifting rainfall and longer dry spells throw off planting and harvest timing for farmers who depend on predictable seasons.</p></div>
+      <div class="card"><div class="ico">🦋</div><h3>Pressure on ecosystems</h3><p>Species are shifting ranges, breeding times and migration patterns, some faster than ecosystems around them can adjust.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Closer to home</p>
+      <h2>Nigeria in 2025: a hard year, on both ends of the water cycle</h2>
+      <p class="lede">Climate change doesn't just bring more rain or less rain, in Nigeria's case, 2025 brought devastating amounts of both, in different regions, sometimes in the same season.</p>
+    </div>
+    <div class="layout-2col reveal">
+      <div class="prose">
+        <p><strong>Floods.</strong> Nigeria's federal flood outlook flagged more than 1,200 communities across 30 of its 36 states as high-risk in 2025, and roughly 15 million Nigerians were estimated to be at risk. The worst single event struck Mokwa, in Niger State, in late May, among the deadliest flash floods the area has seen in decades, destroying homes, farmland, schools and a bridge that cut communities off from help. Nationwide flood data later in the year showed children made up the largest single group affected.</p>
+        <p><strong>Heat and drought.</strong> At the same time, northern and central states faced severe heat stress as NiMet issued warnings as temperatures climbed past 40°C across 18 states, reaching as high as 42°C in cities like Yola and Kebbi. Delayed rains disrupted planting across several states, deepening food insecurity that the World Food Programme projected could affect tens of millions of people into 2026.</p>
+        <p><strong>Coastlines.</strong> Along Lagos and other coastal communities, rising seas and storm surges are accelerating erosion, threatening homes and infrastructure built right up to the waterline.</p>
+      </div>
+      <aside class="side-card">
+        <h4>2025 Nigeria, by the numbers</h4>
+        <div class="fact-strip" style="flex-direction:column;">
+          <div class="fact"><div class="fv">30/36</div><div class="fl">States flagged at high flood risk</div></div>
+          <div class="fact"><div class="fv">42°C</div><div class="fl">Peak heat recorded in northern cities</div></div>
+          <div class="fact"><div class="fv">35M</div><div class="fl">People projected at risk of severe food insecurity into 2026</div></div>
+        </div>
+      </aside>
+    </div>
+    <div class="callout callout--alert reveal">
+      <span class="callout-label">Why this matters beyond the headlines</span>
+      <p>None of this means Nigeria caused the problem: the country's historic contribution to global emissions is small. But geography and economics mean the impacts land hard anyway. That tension is exactly what the next page digs into.</p>
+    </div>
+    <div class="topic-pager"><a class="pager-link prev" href="/climatechanges/causes.html"><span class="pl-dir">← Previous</span><div class="pl-title">Causes of Global Warming</div></a><a class="pager-link next" href="/climatechanges/why-care.html"><span class="pl-dir">Next →</span><div class="pl-title">Why Should We Care?</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

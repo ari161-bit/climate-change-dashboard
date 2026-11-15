@@ -1,0 +1,75 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}About · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Meet your guide</p>
+        <h1>Babatunde Ayoola Awoyemi</h1>
+        <p class="lede">Physicist, STEM educator, and Lead Consultant at Techbase Consultant Services in Ibadan, Nigeria, and the person who built this whole guide, twice.</p>
+        <div class="hero-ctas"><a href="https://babatundeawo.github.io/" class="btn btn-primary" target="_blank" rel="noopener">View my full portfolio →</a><a href="https://github.com/babatundeawo" class="btn btn-ghost" target="_blank" rel="noopener">GitHub →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Base</span><span class="ro-value">Ibadan, Nigeria</span></div><div class="readout-cell"><span class="ro-label">Field</span><span class="ro-value tone-cool">Atmospheric Physics</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="layout-2col">
+      <div>
+        <div class="avatar-frame reveal">
+          <img src="/static/images/profile/babatunde.jpg" alt="Babatunde Ayoola Awoyemi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="initials" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">BA</div>
+        </div>
+        <ul class="credential-list">
+          <li><span class="dot"></span> B.Sc. Physics, University of Ibadan (2014)</li>
+          <li><span class="dot"></span> M.Sc. Atmospheric Physics, University of Ibadan (2019)</li>
+          <li><span class="dot"></span> Research: satellite (MODIS/CERES) &amp; ground-based solar radiation modelling</li>
+          <li><span class="dot"></span> Published researcher, direct solar irradiance estimation under all-sky conditions (2020)</li>
+          <li><span class="dot"></span> Lead Consultant, Techbase Consultant Services</li>
+          <li><span class="dot"></span> Volunteer STEM educator, RCCG Kingdom Diplomats Youth Church</li>
+        </ul>
+      </div>
+      <div class="prose reveal">
+        <h2>From a classroom slide deck to an open learning project</h2>
+        <p>Years ago, I put together a presentation on global warming for a student to use in class. He never came back for it, and the files sat untouched for a long time. Rebuilding it felt like the right way to put that work to use, not as a one-off assignment, but as something anyone curious about climate change could explore, learn from, and act on.</p>
+        <p>My own background is in atmospheric physics, I studied how sunlight and heat move through the atmosphere, and how satellites like MODIS and CERES help us measure it from space. That's part of why this site leans on real instrument-style numbers wherever it can, rather than vague claims: it's how I was trained to think about the atmosphere in the first place.</p>
+        <p>Outside of climate and physics, I run <strong>Techbase Consultant Services</strong>, where I work across IT consultancy, web development, robotics, and, closest to my heart, STEM education for young people across Nigeria. I also teach and help build curriculum at my church, and spend a fair amount of free time on photography, football, and long drives.</p>
+        <h2 style="margin-top:1.2em;">A few other things I've built</h2>
+        <div class="project-strip">
+          <a href="https://babatundeawo.github.io/ai-prompt-library/" target="_blank" rel="noopener"><span>AI Prompt Library: 200+ curated, searchable prompts</span><span>↗</span></a>
+          <a href="https://babatundeawo.github.io/ai-studio-android-guide/" target="_blank" rel="noopener"><span>AI Studio Android Guide</span><span>↗</span></a>
+          <a href="https://babatundeawo.github.io/career-engine-guide/" target="_blank" rel="noopener"><span>Personal AI Career Engine: a guided career-building system</span><span>↗</span></a>
+          <a href="https://techbaseng.github.io/" target="_blank" rel="noopener"><span>Techbase STEM Academy: courses, Scratch &amp; robotics lessons</span><span>↗</span></a>
+        </div>
+        <a href="https://babatundeawo.github.io/" target="_blank" rel="noopener" class="btn btn-amber" style="margin-top:20px;width:100%;justify-content:center;">🔗 See everything I've built, My Portfolio →</a>
+        <div class="callout callout--note" style="margin-top:28px;">
+          <span class="callout-label">A note for whoever's reading this</span>
+          <p>If you're a teacher, student, or just someone who stumbled in here, this site is free to use, copy and remix for learning. If it helps you explain climate change to someone else, it's done its job.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; worker-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#0b3d2e">
+<title>{% block title %}Console{% endblock %} · EarthScape</title>
+<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/console.css' %}?v=1">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% block head %}{% endblock %}
+</head>
+<body>
+<div class="es-app">
+  <aside class="es-side" aria-label="Main navigation">
+    <a class="es-brand" href="{% url 'console_overview' %}">
+      <span class="es-logo">ES</span>
+      <span><b>EarthScape</b><small>Climate Intelligence Platform</small></span>
+    </a>
+    <nav class="es-nav">
+      <div class="es-nav-label">Monitor</div>
+      <a href="{% url 'console_overview' %}" class="{% if section == 'overview' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a>
+      <a href="{% url 'console_analytics' %}" class="{% if section == 'analytics' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>Climate Analytics</a>
+      <div class="es-nav-label">Data</div>
+      <a href="{% url 'console_data' %}" class="{% if section == 'data' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>Data Management</a>
+      <a href="{% url 'console_processing' %}" class="{% if section == 'processing' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Data Processing</a>
+      <div class="es-nav-label">Intelligence</div>
+      <a href="{% url 'console_predictions' %}" class="{% if section == 'predictions' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Predictions</a>
+      <a href="{% url 'console_anomalies' %}" class="{% if section == 'anomalies' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><circle cx="18.5" cy="5.5" r="2.5" fill="currentColor"/></svg>Anomaly Detection</a>
+      <a href="{% url 'console_alerts' %}" class="{% if section == 'alerts' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>Alerts<span class="num" id="es-side-count" {% if not unread_alerts %}style="display:none"{% endif %}>{{ unread_alerts }}</span></a>
+      <a href="{% url 'console_reports' %}" class="{% if section == 'reports' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>Reports</a>
+      <div class="es-nav-label">Account</div>
+      <a href="{% url 'console_support' %}" class="{% if section == 'support' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Support</a>
+      <a href="{% url 'console_settings' %}" class="{% if section == 'settings' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Settings</a>
+      <a href="{% url 'console_help' %}" class="{% if section == 'help' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Help Center</a>
+      {% if is_admin %}<a href="{% url 'console_users' %}" class="{% if section == 'users' %}on{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>User Management</a>{% endif %}
+    </nav>
+    <div class="es-side-foot">
+      <a href="{% url 'index' %}">← Public website</a><br>
+      <span>Signed in as {{ role }}</span>
+    </div>
+  </aside>
+
+  <div class="es-main">
+    <header class="es-top">
+      <button class="es-icon-btn es-menu-btn" id="es-menu" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div>
+        <div class="crumb">{% block crumb %}EarthScape Console{% endblock %}</div>
+        <h1>{% block heading %}{% endblock %}</h1>
+      </div>
+      <div class="es-top-right">
+        {% block top_actions %}{% endblock %}
+        <div style="position:relative">
+          <button class="es-icon-btn" data-toggle="es-bell" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="es-dot" id="es-bell-count" {% if not unread_alerts %}style="display:none"{% endif %}>{{ unread_alerts }}</span>
+          </button>
+          <div class="es-pop" id="es-bell" role="menu">
+            <h4>Unread alerts ({{ unread_alerts }})</h4>
+            {% for a in latest_alerts %}
+              <a class="item" href="{% url 'console_alerts' %}?state=unread"><span class="sev {{ a.severity }}"></span><span>{{ a.title }}<br><small>{{ a.created|timesince }} ago</small></span></a>
+            {% empty %}<div class="empty" style="padding:14px"><b>All caught up</b>No unread alerts.</div>{% endfor %}
+            <a class="item" href="{% url 'console_alerts' %}" style="justify-content:center;font-weight:600;color:var(--green)">View all alerts →</a>
+          </div>
+        </div>
+        <div style="position:relative">
+          <div class="es-user" data-toggle="es-usermenu" role="button" tabindex="0">
+            <span class="es-avatar">{{ user.username|first|upper }}</span>
+            <span class="who"><b>{{ user.get_full_name|default:user.username }}</b><small>{{ role }}</small></span>
+          </div>
+          <div class="es-pop" id="es-usermenu" style="width:220px">
+            <a class="item" href="{% url 'console_settings' %}">Profile &amp; settings</a>
+            <a class="item" href="{% url 'console_support' %}">My support requests</a>
+            {% if is_admin %}<a class="item" href="{% url 'console_users' %}">User management</a><a class="item" href="/admin/">Django admin</a>{% endif %}
+            <a class="item" href="{% url 'index' %}">Public website</a>
+            <a class="item" href="{% url 'logout' %}" style="color:var(--red)">Log out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="es-content fade-in" id="main">
+      {% for n in maintenance_notices %}<div class="msg warning" role="status"><div><b>🛠 Scheduled maintenance: {{ n.title }}</b> · {{ n.starts_at|date:"D d M, H:i" }} – {{ n.ends_at|date:"D d M, H:i" }} (UTC){% if n.message %}<br>{{ n.message }}{% endif %}</div></div>{% endfor %}
+      {% if messages %}<div class="msgs">{% for m in messages %}<div class="msg {{ m.tags|default:'info' }}" role="status">{{ m }}</div>{% endfor %}</div>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+<script src="{% static 'js/console.js' %}?v=1"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

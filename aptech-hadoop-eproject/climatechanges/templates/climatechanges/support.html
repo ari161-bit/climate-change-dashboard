@@ -1,0 +1,39 @@
+{% extends './template.html' %}
+{% block title %}Support · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Feedback &amp; support</p>
+      <h2>How can we help?</h2>
+      <p class="lede">Ask for assistance, report an issue, or send feedback to the EarthScape team.</p>
+    </div>
+    <div class="login-card" style="max-width:720px;margin:0 auto;padding:32px;">
+      {% if sent %}<div class="form-message ok">Thanks! Your message was received. We'll reply by email.</div>{% endif %}
+      <form method="POST" class="support-form">
+        {% csrf_token %}
+        <div class="sp-grid">
+          <div class="form-group"><label for="name">Name</label><input id="name" name="name" maxlength="100" required value="{{ user.first_name|default:user.username|default:'' }}"></div>
+          <div class="form-group"><label for="email">Email</label><input id="email" name="email" type="email" maxlength="100" required value="{{ user.email|default:'' }}"></div>
+        </div>
+        <div class="form-group"><label for="kind">Type</label>
+          <select id="kind" name="kind">{% for v, l in types %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+        </div>
+        <div class="form-group"><label for="message">Message</label><textarea id="message" name="message" rows="6" required></textarea></div>
+        <button class="btn btn-primary" type="submit" style="border:0;cursor:pointer;margin-top:18px;">Send →</button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+<style>
+.support-form .form-group{ display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+.support-form label{ font-weight:600; }
+.support-form input, .support-form select, .support-form textarea{ width:100%; box-sizing:border-box; padding:12px 14px; font:inherit; }
+.sp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.sp-grid .form-group{ margin-top:0; }
+.form-message{ padding:12px 15px; border-radius:10px; margin-bottom:10px; }
+@media (max-width:600px){ .sp-grid{ grid-template-columns:1fr; } }
+</style>
+{% endblock %}

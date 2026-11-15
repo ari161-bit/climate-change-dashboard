@@ -1,0 +1,105 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Data Explorer · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Go further · Data</p>
+        <h1>The Data Explorer</h1>
+        <p class="lede">Three real, sourced datasets, visualised: the long climb of atmospheric CO2, the warmest years on record, and how fast renewables are growing, plus Nigeria's own 2025 flood numbers.</p>
+        <div class="hero-ctas"><a href="/climatechanges/quiz.html" class="btn btn-primary">Next: take the quiz →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label" id="hero-co2-label">CO2, Mauna Loa, 2025 average</span><span class="ro-value js-counter tone-warm" id="hero-co2-value" data-target="427.4" data-decimals="1" data-prefix="" data-suffix=" ppm">0</span><span class="live-badge" id="hero-co2-badge" hidden>Live</span></div><div class="readout-cell"><span class="ro-label">3 warmest years on record</span><span class="ro-value js-counter tone-alert" data-target="2023" data-decimals="0" data-prefix="" data-suffix=" to 2025">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="chart-card reveal">
+      <h3>🌤️ Today's weather</h3>
+      <p class="chart-meta">Live, right now, defaults to Ibadan, or search any city</p>
+      <div id="weather-mount"></div>
+      <p class="source-note">Weather data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (free, no key, CC BY 4.0). One important distinction: this is <strong>weather</strong>, today, one place. The charts below are <strong>climate</strong>, decades, the whole planet. A hot or rainy day here says nothing about global warming on its own; see <a href="/climatechanges/what-is-global-warming.html">Weather vs. Climate</a>.</p>
+    </div>
+
+    <div class="chart-card reveal">
+      <h3>📡 Live right now</h3>
+      <p class="chart-meta">Fetched fresh on every visit, this is the site checking its own knowledge base against the real, current data</p>
+      <div class="live-readings" id="live-readings"><p class="chart-meta">Live figures are loading&hellip;</p></div>
+      <p class="source-note">Source: <a href="https://global-warming.org/" target="_blank" rel="noopener">global-warming.org</a>'s free API, itself republishing NOAA Mauna Loa CO2 and NASA GISTEMP global temperature data. This is the only panel on this page that updates itself. The charts and figures below it are annual/full-year data, so they'll keep reading "2025" until 2026 itself is over and NOAA publishes a final 2026 figure, that's normal, not stale.</p>
+    </div>
+
+    <div class="chart-card reveal">
+      <h3>Atmospheric CO2 is still climbing</h3>
+      <p class="chart-meta">Annual mean CO2 concentration, Mauna Loa Observatory, Hawaii (parts per million)</p>
+      <div class="chart-wrap"><canvas id="chart-co2"></canvas></div>
+      <p class="source-note">Source: NOAA Global Monitoring Laboratory, Mauna Loa Observatory annual mean CO2 records.</p>
+    </div>
+
+    <div class="chart-card reveal">
+      <h3>2023, 2024 and 2025: the three warmest years on record</h3>
+      <p class="chart-meta">Global surface temperature anomaly vs. the 20th-century (1901 to 2000) average</p>
+      <div class="chart-wrap"><canvas id="chart-warm"></canvas></div>
+      <p class="source-note">Source: NOAA National Centers for Environmental Information (NCEI), annual global climate reports. The ten warmest years on record have all occurred since 2015.</p>
+    </div>
+
+    <div class="chart-card reveal">
+      <h3>Renewables are closing in on coal</h3>
+      <p class="chart-meta">Share of global electricity generation from renewable sources</p>
+      <div style="display:grid;gap:14px;margin-top:10px;">
+        <div><div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;margin-bottom:4px;"><span>~2015</span><span>23%</span></div><div class="result-bar" style="background:var(--line-soft);"><span style="width:23%;background:var(--teal-200);"></span></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;margin-bottom:4px;"><span>2024</span><span>32%</span></div><div class="result-bar" style="background:var(--line-soft);"><span style="width:32%;"></span></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;margin-bottom:4px;"><span>2025</span><span>34%</span></div><div class="result-bar" style="background:var(--line-soft);"><span style="width:34%;"></span></div></div>
+      </div>
+      <p class="source-note">Source: International Energy Agency, Global Energy Review 2026, electricity supply.</p>
+    </div>
+
+    <div class="chart-card reveal">
+      <h3>Nigeria, 2025: a year of climate extremes</h3>
+      <div class="fact-strip" style="margin-top:6px;">
+        <div class="fact"><div class="fv">30 / 36</div><div class="fl">states flagged at high flood risk</div></div>
+        <div class="fact"><div class="fv">~15M</div><div class="fl">Nigerians estimated at flood risk</div></div>
+        <div class="fact"><div class="fv">42°C</div><div class="fl">peak heat recorded in the north</div></div>
+        <div class="fact"><div class="fv">35M</div><div class="fl">people projected at food-insecurity risk into 2026</div></div>
+      </div>
+      <p class="source-note">Sources: Nigeria's 2025 Annual Flood Outlook (NIHSA/NEMA), NiMet heat advisories, WFP food security projections.</p>
+    </div>
+
+    <div class="chart-card reveal">
+      <h3>🇳🇬 Nigeria at a glance: the longer trend</h3>
+      <p class="chart-meta">One extreme year matters less than the direction of travel. Here's what Nigeria's own weather agency has tracked over decades.</p>
+      <div class="fact-strip" style="margin-top:6px;">
+        <div class="fact"><div class="fv">+0.8°C</div><div class="fl">average annual warming, 1960s to 2006</div></div>
+        <div class="fact"><div class="fv">+1.1 to 2.5°C</div><div class="fl">projected further warming by 2060</div></div>
+        <div class="fact"><div class="fv">0.4 to 1.0m</div><div class="fl">projected sea-level rise by 2100</div></div>
+        <div class="fact"><div class="fv">7M</div><div class="fl">people hit by the 2012 floods, the last comparable event before 2025</div></div>
+      </div>
+      <p class="source-note">Sources: Nigerian Meteorological Agency (NiMet); UNEP/GRID Interactive Country Fiches, "Climate change · Nigeria"; 2012 flood impact figures from Nigeria's post-disaster needs assessment. These are historical and projected figures, not live data, unlike the panel above them.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/weather.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/static/js/charts.js"></script>
+<script src="/static/js/live-data.js"></script>
+{% endblock %}

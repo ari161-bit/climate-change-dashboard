@@ -1,0 +1,66 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}The 8-Lesson Course · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Guided course</p>
+        <h1>The 8-Lesson Course</h1>
+        <p class="lede">The same site, walked through in order, one objective and one worksheet per lesson. Built for classrooms, but just as good for exploring solo at your own pace.</p>
+        <div class="hero-ctas"><a href="/climatechanges/lesson-1.html" class="btn btn-primary">Start Lesson 1 →</a><a href="/climatechanges/for-teachers.html" class="btn btn-ghost">For teachers</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Lessons</span><span class="ro-value js-counter" data-target="8" data-decimals="0" data-prefix="" data-suffix="">0</span></div><div class="readout-cell"><span class="ro-label">Total time, roughly</span><span class="ro-value js-counter tone-cool" data-target="2" data-decimals="0" data-prefix="" data-suffix=" hrs">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap" style="max-width:820px;">
+    <div class="course-progress-wrap reveal">
+      <div class="course-progress-top">
+        <span><span id="course-progress-count">0</span> of 8 lessons complete</span>
+        <span style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="/climatechanges/checkin.html" class="btn btn-amber btn-sm">Check in with teacher →</a>
+          <a href="/climatechanges/class-dashboard.html" class="btn btn-ghost btn-sm">View class dashboard →</a>
+          <button class="btn btn-ghost btn-sm" id="reset-progress-btn" type="button">Reset progress</button>
+        </span>
+      </div>
+      <div class="course-progress-track"><span id="course-progress-bar"></span></div>
+    </div>
+    <ol class="lesson-list reveal">
+      <a class="lesson-card reveal" href="/climatechanges/lesson-1.html" data-lesson="1"><span class="ln">1</span><div><div class="lc-title">The Greenhouse Effect</div><div class="lc-obj">Explain, in your own words, why greenhouse gases cause warming. &middot; 15 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-2.html" data-lesson="2"><span class="ln">2</span><div><div class="lc-title">Causes of Global Warming</div><div class="lc-obj">List the top human causes of greenhouse gas emissions, in order of scale. &middot; 15 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-3.html" data-lesson="3"><span class="ln">3</span><div><div class="lc-title">Effects: Worldwide and at Home</div><div class="lc-obj">Describe at least three effects of global warming, including one local to Nigeria. &middot; 18 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-4.html" data-lesson="4"><span class="ln">4</span><div><div class="lc-title">Why Should We Care?</div><div class="lc-obj">Explain the climate justice problem in your own words. &middot; 15 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-5.html" data-lesson="5"><span class="ln">5</span><div><div class="lc-title">Your Carbon Footprint</div><div class="lc-obj">Calculate and interpret your own rough carbon footprint. &middot; 15 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-6.html" data-lesson="6"><span class="ln">6</span><div><div class="lc-title">Reduce, Reuse, Recycle</div><div class="lc-obj">Apply the three Rs, in priority order, to real examples. &middot; 15 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-7.html" data-lesson="7"><span class="ln">7</span><div><div class="lc-title">Clean Energy</div><div class="lc-obj">Compare two renewable energy sources and explain why Nigeria suits solar. &middot; 15 min</div></div><span class="lesson-check">Start →</span></a>
+<a class="lesson-card reveal" href="/climatechanges/lesson-8.html" data-lesson="8"><span class="ln">8</span><div><div class="lc-title">Taking Action</div><div class="lc-obj">Commit to and track real personal or community climate actions. &middot; 20 min</div></div><span class="lesson-check">Start →</span></a>
+    </ol>
+    <div class="callout callout--note reveal" style="margin-top:30px;">
+      <span class="callout-label">How this differs from free exploration</span>
+      <p>The <a href="/climatechanges/what-is-global-warming.html">Learn</a> and <a href="/climatechanges/action-hub.html">Take Action</a> pages are still there for browsing freely in any order. This course is the same material, just sequenced with objectives, worksheets and a finish line, useful for a classroom, a homeschool unit, or anyone who wants a clear start-to-end path.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/progress.js"></script>
+{% endblock %}

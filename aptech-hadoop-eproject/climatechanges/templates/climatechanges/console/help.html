@@ -1,0 +1,155 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Help Center{% endblock %}
+{% block heading %}Help center{% endblock %}
+{% block content %}
+<div class="card filters" style="gap:8px">
+  <div class="tabs">
+    <a href="#guide" class="on">User guide</a><a href="#tutorials">Tutorials</a><a href="#faq">FAQs</a>
+    <a href="#standards">Data standards</a><a href="#security">Security &amp; privacy</a><a href="#devdocs">Developer docs</a>
+  </div>
+  <input type="search" id="help-search" placeholder="Search help…" style="margin-left:auto;min-width:240px" aria-label="Search help">
+</div>
+
+<div class="card help-sec" id="guide">
+  <div class="card-h"><div><h3>User guide</h3><p>What each section of the console does</p></div></div>
+  <div class="grid g2">
+    <div class="note"><b>Overview</b>: headline climate indicators (global temperature change, average temperature, rainfall, humidity, CO₂, anomalies, processing statistics), a trend + forecast chart and the latest alerts. Use the filter bar to narrow by dates, region, country and variable.</div>
+    <div class="note"><b>Climate Analytics</b>: interactive charts for temperature trends, historical vs predicted values, a world anomaly map, rainfall by station, humidity by region, CO₂ and regional comparisons. Hover for exact values; scroll to zoom the map.</div>
+    <div class="note"><b>Data Management</b>: upload CSV/JSON tables or GeoTIFF imagery. Tables are profiled (missing values, duplicates, column types) with a preview and can be cleaned or imported as readings. GeoTIFF files are encrypted and catalogued as source imagery; both tables and imagery can be stored in HDFS.</div>
+    <div class="note"><b>Data Processing</b>: runs MapReduce jobs (locally or on Hadoop), ML training, anomaly scans and alert evaluation; shows HDFS and MongoDB status, CPU/memory/disk use, request timings, logs and backups.</div>
+    <div class="note"><b>Predictions</b>: temperature models compared on years they never saw, the forecast with its uncertainty band, and the rainfall model compared with a seasonal baseline.</div>
+    <div class="note"><b>Anomaly Detection</b>: unusual temperatures by country (z-score), unusual station readings (Isolation Forest) and correlations, including temperature vs climate disasters.</div>
+    <div class="note"><b>Alerts</b>: every alert with severity and read/unread status. The bell in the top bar shows how many are unread. Administrators set the thresholds.</div>
+    <div class="note"><b>Reports</b>: six report types (summary, temperature, rainfall, anomalies, predictions, regional) as PDF or CSV.</div>
+    <div class="note"><b>Support</b>: send a question, report a problem or give feedback, and follow its status until it is resolved.</div>
+    <div class="note"><b>Settings</b>: profile and password. Administrators also manage users and roles, and schedule maintenance notices.</div>
+  </div>
+  <p class="note" style="margin-top:12px"><b>Roles.</b> <b>Climate Analyst</b>: everything above except user management, alert-threshold editing, maintenance notices, backups and log viewing. <b>Administrator</b>: everything.</p>
+</div>
+
+<div class="card help-sec" id="tutorials">
+  <div class="card-h"><div><h3>Tutorials</h3><p>Step by step</p></div></div>
+  <div class="grid g2">
+    <div>
+      <h4 style="margin-bottom:8px">1 · Upload and clean a station dataset</h4>
+      <ol class="steps">
+        <li>Open <a href="{% url 'console_data' %}">Data Management</a>.</li>
+        <li>Choose <code>sample_data/station_readings_sample.csv</code>, type <i>Weather station records</i>, then <b>Upload &amp; validate</b>.</li>
+        <li>Check the profile: 4 missing values and 2 duplicate rows are reported.</li>
+        <li>Click <b>Clean data</b>: duplicates are removed and numeric gaps filled with the column median.</li>
+        <li>Click <b>Import as station readings</b>: the readings appear in dashboards and are checked against alert rules (the 46.5 °C reading raises an alert).</li>
+        <li>Click <b>Store in HDFS</b>: the cleaned file is written to <code>/climate/clean/station/year=…/month=…/</code>.</li>
+      </ol>
+    </div>
+    <div>
+      <h4 style="margin-bottom:8px">2 · Run a Hadoop MapReduce job</h4>
+      <ol class="steps">
+        <li>Start Hadoop with <code>hadoop\start_hdfs.cmd</code> (keep its windows open).</li>
+        <li>Open <a href="{% url 'console_processing' %}">Data Processing</a>; HDFS should show <b>Online</b>.</li>
+        <li>Choose <i>Climate disasters per year on Hadoop</i> and click <b>Run job</b> (about 15 s).</li>
+        <li>The job page shows the engine <code>hadoop-streaming</code>, the output chart and the HDFS output path.</li>
+      </ol>
+      <h4 style="margin:16px 0 8px">3 · Get a forecast report</h4>
+      <ol class="steps">
+        <li>Open <a href="{% url 'console_predictions' %}">Predictions</a> and pick a country or region.</li>
+        <li>Read the model comparison (lower RMSE = better).</li>
+        <li>Open <a href="{% url 'console_reports' %}">Reports</a>, choose <i>Prediction results</i>, then <b>PDF</b>.</li>
+      </ol>
+    </div>
+    <div>
+      <h4 style="margin-bottom:8px">4 · Set a heat alert (administrators)</h4>
+      <ol class="steps">
+        <li>Open <a href="{% url 'console_alerts' %}">Alerts</a> → <i>Add a new rule</i>.</li>
+        <li>Variable <i>Temperature</i>, <i>above</i>, threshold <code>38</code>, severity <i>Critical</i>.</li>
+        <li>Click <b>Evaluate rules now</b>; new readings are checked automatically.</li>
+      </ol>
+    </div>
+    <div>
+      <h4 style="margin-bottom:8px">5 · Send real-time sensor data</h4>
+      <ol class="steps">
+        <li>POST JSON to <code>/climatechanges/api/ingest/</code> with header <code>X-API-Token</code>.</li>
+        <li>Example body: <code>{"station":"Dakar","timestamp":"2026-11-01T12:00:00Z","temperature":31.2,"rainfall":0,"humidity":61}</code></li>
+        <li>The reading is stored (SQL + MongoDB), shown on dashboards and checked against alert rules immediately.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card help-sec" id="faq">
+  <div class="card-h"><div><h3>Frequently asked questions</h3></div></div>
+  <details><summary>What does the “sample data” badge mean?</summary><p>The project ships with real temperature, disaster and carbon datasets, but not real station rainfall/humidity history. Those station readings are generated for demonstration and are always labelled <i>sample data</i>. Upload real station data or pull live data to replace them.</p></details>
+  <details><summary>Which numbers are real?</summary><p>Temperature change (FAO, 1961-2023), climate disasters (EM-DAT, 1980-2024), forest carbon (FAO), CO₂ (NOAA Mauna Loa) and live weather (Open-Meteo). Each chart shows a badge.</p></details>
+  <details><summary>Why does HDFS show “offline”?</summary><p>Hadoop isn't running. Start it with <code>hadoop\start_hdfs.cmd</code>. Until then the app stores files in a local staging folder with the same layout and runs jobs on its built-in MapReduce engine, and it tells you so.</p></details>
+  <details><summary>How accurate are the predictions?</summary><p>See the Predictions page. Every model is tested on data it did not train on (the last 10 years for temperature). The MAE, RMSE and R² shown are measured, not estimated.</p></details>
+  <details><summary>Which file formats can I upload?</summary><p>CSV and JSON (a list of records, or an object containing one), up to 20 MB. Station data is detected automatically from column names such as <code>station</code>, <code>date</code>, <code>temperature</code>, <code>rainfall</code>/<code>precipitation</code>, <code>humidity</code>.</p></details>
+  <details><summary>Are my uploads safe?</summary><p>Uploaded and cleaned files are encrypted on disk (AES with an integrity check) and can only be downloaded by signed-in users. Backups are encrypted too.</p></details>
+  <details><summary>How do I mark all alerts as read?</summary><p>Alerts → <b>Mark all read</b>. Read status is per user.</p></details>
+  <details><summary>I forgot my password.</summary><p>Ask an administrator to reset it from the Django admin (Users), then change it yourself in Settings.</p></details>
+  <details><summary>Where can I see the data in MongoDB?</summary><p>Open MongoDB Compass, connect to <code>mongodb://127.0.0.1:27017</code> and open the <code>earthscape</code> database.</p></details>
+  <details><summary>How do I open the data in Tableau?</summary><p>Reports → <i>Tableau / BI extract</i> downloads ready-to-use CSV tables; see <code>docs/TABLEAU_GUIDE.md</code>.</p></details>
+</div>
+
+<div class="card help-sec" id="standards">
+  <div class="card-h"><div><h3>Environmental data standards</h3><p>How EarthScape follows common climate-data conventions</p></div></div>
+  <div class="table-wrap"><table class="t">
+    <thead><tr><th>Aspect</th><th>Standard / convention</th><th>In EarthScape</th></tr></thead>
+    <tbody>
+      <tr><td>Units</td><td>SI / CF conventions</td><td>temperature °C (<code>degC</code>), rainfall mm, humidity %, CO₂ ppm; units in every API response and report</td></tr>
+      <tr><td>Time</td><td>ISO 8601, UTC</td><td>all timestamps stored in UTC, exported as ISO 8601 (e.g. <code>2026-11-01T12:00:00+00:00</code>)</td></tr>
+      <tr><td>Location</td><td>WGS 84 (EPSG:4326), GeoJSON</td><td>latitude/longitude in decimal degrees; MongoDB stores a GeoJSON <code>Point</code></td></tr>
+      <tr><td>Countries</td><td>ISO 3166-1 alpha-2/alpha-3</td><td>datasets keep ISO2/ISO3 codes; maps use ISO-3</td></tr>
+      <tr><td>Temperature anomaly</td><td>WMO baseline practice</td><td>change vs 1951-1980 climatology (FAO definition)</td></tr>
+      <tr><td>Provenance</td><td>ISO 19115 lineage / FAIR principles</td><td>every reading keeps its <code>source</code>; every chart shows real/sample status and the data source</td></tr>
+      <tr><td>Big-data layout</td><td>Hive-style partitioning</td><td><code>/climate/&lt;zone&gt;/&lt;kind&gt;/year=YYYY/month=MM/</code> in HDFS</td></tr>
+      <tr><td>Data licences</td><td>source terms</td><td>FAO data CC BY-NC-SA 3.0 IGO; EM-DAT via IMF Climate Change Dashboard; Open-Meteo CC BY 4.0; NOAA public domain</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="card help-sec" id="security">
+  <div class="card-h"><div><h3>Security &amp; privacy</h3></div></div>
+  <div class="grid g2">
+    <div class="stat-list">
+      <div><span>Passwords</span><b>PBKDF2-SHA256 hashing + strength rules</b></div>
+      <div><span>Files at rest</span><b>Fernet encryption (AES-128 + HMAC)</b></div>
+      <div><span>Backups</span><b>encrypted .zip.enc</b></div>
+      <div><span>In transit</span><b>HTTPS/TLS via Apache (see deploy/), HSTS, secure cookies</b></div>
+    </div>
+    <div class="stat-list">
+      <div><span>Access</span><b>role-based; every page and API checks login</b></div>
+      <div><span>Forms</span><b>CSRF protection, input validation</b></div>
+      <div><span>Audit</span><b>logins, uploads, downloads, role changes logged</b></div>
+      <div><span>Personal data</span><b>only name, email, optional address; admins can delete accounts (GDPR / NDPR right to erasure)</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="card help-sec" id="devdocs">
+  <div class="card-h"><div><h3>Developer documentation</h3></div></div>
+  <div class="stat-list">
+    <div><span>Project documentation (architecture, DFDs, flowcharts, database, ML, tests)</span><b><code>docs/PROJECT_DOCUMENTATION.md</code></b></div>
+    <div><span>Setup, assumptions</span><b><code>README.md</code> · <code>ReadMe.docx</code></b></div>
+    <div><span>Impala / Hive tables over HDFS</span><b><code>hadoop/impala_tables.sql</code></b></div>
+    <div><span>Tableau</span><b><code>docs/TABLEAU_GUIDE.md</code></b></div>
+    <div><span>R analysis (RStudio)</span><b><code>analysis/climate_analysis.R</code></b></div>
+    <div><span>Jupyter notebook</span><b><code>notebooks/ml_exploration.ipynb</code></b></div>
+    <div><span>Apache load balancer + HTTPS</span><b><code>deploy/</code></b></div>
+    <div><span>REST API</span><b><code>/api/summary/ · /api/series/ · /api/alerts/unread/ · /api/ingest/ · /api/health/</code></b></div>
+  </div>
+</div>
+<style>
+.help-sec{ scroll-margin-top:90px; }
+.steps{ margin:0; padding-left:20px; display:grid; gap:6px; font-size:13.5px; }
+details{ border-bottom:1px solid var(--line-2); padding:10px 2px; }
+details p{ margin:8px 0 2px; color:var(--ink-2); font-size:13.5px; }
+.hidden-by-search{ display:none !important; }
+</style>
+{% endblock %}
+{% block scripts %}<script>
+document.getElementById("help-search").addEventListener("input", function(){
+  var q = this.value.toLowerCase().trim();
+  document.querySelectorAll(".help-sec .note, .help-sec details, .help-sec tr, .help-sec li").forEach(function(el){
+    el.classList.toggle("hidden-by-search", q && el.textContent.toLowerCase().indexOf(q) < 0);
+  });
+});
+</script>{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}User Management{% endblock %}
+{% block heading %}User management{% endblock %}
+{% block content %}
+<form class="card filters" method="get">
+  <div class="f" style="flex:1"><label for="q">Search users</label><input id="q" name="q" value="{{ q }}" placeholder="username, email or name"></div>
+  <button class="btn btn-primary">Search</button>
+</form>
+<div class="card">
+  <div class="card-h"><div><h3>Users</h3><p>Assign roles and activate or deactivate accounts</p></div></div>
+  <div class="table-wrap"><table class="t">
+    <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Last login</th><th>Actions</th></tr></thead>
+    <tbody>{% for r in rows %}<tr>
+      <td><b>{{ r.u.username }}</b><br><small>{{ r.u.get_full_name }}</small></td><td>{{ r.u.email|default:"-" }}</td>
+      <td><span class="badge {% if r.role == 'Administrator' %}b-mixed{% else %}b-real{% endif %}">{{ r.role }}</span></td>
+      <td>{% if r.u.is_active %}<span class="badge b-ok">active</span>{% else %}<span class="badge b-failed">disabled</span>{% endif %}</td>
+      <td><small>{{ r.u.date_joined|date:"d M Y" }}</small></td><td><small>{{ r.u.last_login|date:"d M Y H:i"|default:"never" }}</small></td>
+      <td>{% if r.u != user %}
+        <form method="post" class="btn-row">{% csrf_token %}<input type="hidden" name="user_id" value="{{ r.u.id }}">
+          <select name="role" aria-label="role">{% for ro in roles %}<option {% if ro == r.role %}selected{% endif %}>{{ ro }}</option>{% endfor %}</select>
+          <button class="btn btn-ghost btn-sm" name="action" value="role">Set role</button>
+          {% if r.u.is_active %}<button class="btn btn-danger btn-sm" name="action" value="deactivate" data-confirm="Deactivate {{ r.u.username }}?">Deactivate</button>
+          {% else %}<button class="btn btn-ghost btn-sm" name="action" value="activate">Activate</button>{% endif %}
+        </form>{% else %}<small class="muted">you</small>{% endif %}</td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+</div>
+{% endblock %}
