@@ -11,7 +11,7 @@
     "api/index.py": {
       "maxDuration": 60,
       "includeFiles": "{aptech-hadoop-eproject/**}",
-      "excludeFiles": "{**/*.rar,.git/**,.claude/**,**/__pycache__/**,**/db.sqlite3,**/logs/**,**/keys/data.key}"
+      "excludeFiles": "{media/**,myshop/**,product_images/**,category_images/**,climate/**,docs/**,deploy/**,public/**,node_modules/**,.venv/**,aptech-hadoop-eproject/docs/**,aptech-hadoop-eproject/**/*.doc,aptech-hadoop-eproject/**/*.docx,**/*.rar,.git/**,.claude/**,**/__pycache__/**,**/tests/**,**/db.sqlite3,**/logs/**,**/keys/data.key}"
     }
   }
 }
