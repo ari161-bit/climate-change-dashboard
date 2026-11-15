@@ -63,3 +63,64 @@
 @media(max-width:760px){.observatory-hero{grid-template-columns:1fr;padding:30px 24px 23px;}.observatory-copy{padding-bottom:0}.observatory-copy h2{font-size:clamp(39px,9vw,56px);}.observatory-visual{min-height:280px;}.observatory-earth{width:min(65%,270px);}.orbit{width:78%;}.observatory-chip-top{right:10%;top:5%;}.observatory-chip-bottom{right:5%;bottom:6%;}.visual-index{left:7%;bottom:10%;}.observatory-foot{position:relative;left:auto;right:auto;bottom:auto;margin-top:8px;}}
 @media(max-width:480px){.observatory-hero{padding:25px 18px 18px;border-radius:21px}.observatory-copy>p{font-size:13px}.observatory-actions{align-items:stretch;flex-direction:column}.observatory-actions a{justify-content:space-between}.observatory-provenance{font-size:8px}.observatory-visual{min-height:230px}.observatory-chip{padding:8px}.observatory-chip-top{right:1%}.observatory-chip-bottom{right:0;bottom:3%}.observatory-earth{width:min(67%,220px)}.orbit{width:82%}.visual-index{left:0;bottom:11%}.observatory-foot{font-size:7px;flex-wrap:wrap}.observatory-foot span:last-child{margin-left:auto}}
 @media(prefers-reduced-motion:reduce){.observatory-actions a,.observatory-hero+.grid .card.kpi{transition:none}}
+
+/* Spacious overview: fewer competing metrics, calmer chart hierarchy. */
+.es-content{max-width:1600px;padding:clamp(24px,3vw,48px) clamp(20px,4vw,64px) 64px;gap:30px}
+.grid{gap:22px}
+.card{padding:25px}
+.overview-filters{border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+.overview-filters summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 22px;cursor:pointer;list-style:none}
+.overview-filters summary::-webkit-details-marker{display:none}
+.overview-filters summary>span:first-child{display:grid;gap:3px}
+.overview-filters summary b{color:var(--ink);font-size:13px}
+.overview-filters summary small{color:var(--ink-3);font-size:12px}
+.filter-toggle{color:var(--green);font-size:12px;font-weight:700}
+.filter-toggle span{display:inline-block;margin-left:6px;transition:transform .2s}
+.overview-filters[open] .filter-toggle span{transform:rotate(180deg)}
+.overview-filters .filters{margin:0;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;padding:19px 22px 22px;gap:14px}
+.observatory-hero{min-height:340px;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);padding:42px 50px 38px;border-radius:23px;background:radial-gradient(ellipse at 80% 45%,#4475d033,transparent 38%),radial-gradient(ellipse at 22% 90%,#25c7bf1c,transparent 38%),linear-gradient(120deg,#0b1728,#111e35 58%,#172644)}
+.observatory-hero:before{opacity:.11;background-size:72px 72px}
+.observatory-hero:after{width:450px;height:450px;right:0;top:-30%;box-shadow:0 0 0 58px #a8d4f007,0 0 0 118px #a8d4f006}
+.observatory-copy{max-width:580px;padding:0}
+.observatory-eyebrow{font-size:10px;letter-spacing:.14em}
+.observatory-copy h2{font-size:clamp(42px,4.3vw,62px);margin:20px 0 15px;line-height:1.01}
+.observatory-copy>p{max-width:470px;font-size:14px;line-height:1.8}
+.observatory-actions{margin-top:25px;gap:12px}
+.observatory-actions a{min-height:45px;padding:0 17px;border-radius:9px;font-size:12px}
+.observatory-visual{min-height:255px}
+.observatory-earth{width:min(75%,260px);box-shadow:0 0 0 8px #8ccfff0a,0 0 45px #587cf033,0 20px 55px #0008}
+.observatory-chip,.orbit,.visual-index,.observatory-foot{display:none}
+.signal-card{position:absolute;z-index:2;right:0;bottom:4%;display:grid;gap:5px;min-width:190px;padding:14px 17px;border:1px solid #a8c4e538;border-radius:12px;background:#0a1728e8;box-shadow:0 14px 34px #0005;backdrop-filter:blur(10px)}
+.signal-card>span{color:#9cb1cc;font-size:8px;font-weight:700;letter-spacing:.1em}
+.signal-card strong{color:#f5f8ff;font:600 31px/1.15 "Outfit",sans-serif;letter-spacing:-.04em}
+.signal-card strong small{color:#94aaff;font:500 14px "Inter",sans-serif}
+.signal-period{color:#879cb8;font-size:10px}
+.overview-section{display:grid;gap:16px}
+.section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;padding:0 2px}
+.section-kicker{display:block;margin-bottom:6px;color:var(--green);font-size:9px;font-weight:800;letter-spacing:.16em}
+.section-heading h2{font:600 22px/1.25 "Outfit","Inter",sans-serif;letter-spacing:-.02em}
+.section-note{color:var(--ink-3);font-size:11px}
+.overview-kpis .card{min-height:148px;padding:24px 25px}
+.overview-kpis .kpi .label{font-size:11px;letter-spacing:.035em}
+.overview-kpis .kpi .value{margin:13px 0 8px;font-size:32px}
+.overview-kpis .kpi .sub{font-size:11px;line-height:1.6}
+.overview-main-grid{align-items:stretch}
+.overview-chart-card{padding:26px 28px}
+.overview-chart-card .card-h{margin-bottom:18px}
+.overview-chart-card .card-h h3,.overview-alert-card .card-h h3,.overview-monthly .card-h h3{font-size:17px}
+.overview-chart-card .chart.tall{height:390px}
+.overview-alert-card{display:flex;flex-direction:column;padding:25px 23px}
+.overview-alert-card .card-h{margin-bottom:14px}
+.overview-alert-card .alert-row{padding:15px 0;border-bottom:1px solid var(--line-2)}
+.overview-alert-card .alert-row p{margin:5px 0;color:var(--ink-2);font-size:11px;line-height:1.55}
+.overview-alert-card .empty{margin:4px 0 18px;padding:22px 14px}
+.overview-alert-card .text-link{margin-top:auto;padding-top:20px;font-size:11px;font-weight:700}
+.overview-monthly{padding:27px 29px}
+.overview-monthly .card-h{margin-bottom:20px}
+.overview-monthly .chart{height:300px}
+.overview-footnote{display:flex;align-items:center;flex-wrap:wrap;gap:10px 22px;padding:18px 2px 0;border-top:1px solid var(--line);color:var(--ink-3);font-size:10px}
+.overview-footnote>span:first-child{color:var(--ink-2);font-size:9px;font-weight:800;letter-spacing:.12em}
+.overview-footnote a{margin-left:auto;font-weight:700}
+@media(max-width:1050px){.observatory-hero{padding:36px}.signal-card{right:-5px}.overview-chart-card .chart.tall{height:340px}}
+@media(max-width:760px){.es-content{gap:24px}.observatory-hero{grid-template-columns:1fr;gap:12px;padding:30px 25px 24px}.observatory-copy h2{font-size:clamp(40px,9vw,55px)}.observatory-visual{min-height:240px}.observatory-earth{width:210px}.signal-card{right:2%;bottom:2%}.section-heading{align-items:flex-start;flex-direction:column;gap:5px}.overview-main-grid{grid-template-columns:1fr}.overview-chart-card .chart.tall{height:300px}.overview-footnote a{margin-left:0}}
+@media(max-width:480px){.observatory-hero{padding:25px 19px 18px}.observatory-actions{align-items:stretch}.observatory-actions a{justify-content:space-between}.observatory-visual{min-height:205px}.observatory-earth{width:175px}.signal-card{right:0;bottom:0;min-width:158px;padding:11px 12px}.signal-card strong{font-size:26px}.overview-filters summary{padding:15px}.overview-filters .filters{padding:16px}.overview-kpis .card{min-height:130px}.overview-chart-card,.overview-monthly{padding:20px 17px}.overview-chart-card .chart.tall{height:250px}.overview-monthly .chart{height:240px}.overview-footnote{gap:9px 15px}}
