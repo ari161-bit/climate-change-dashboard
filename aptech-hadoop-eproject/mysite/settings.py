@@ -11,21 +11,26 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 from pathlib import Path
+import os
+import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+ON_VERCEL = bool(os.environ.get("VERCEL"))
+RUNTIME_DIR = Path(os.environ.get("EARTHSCAPE_RUNTIME_DIR", "/tmp/earthscape" if ON_VERCEL else BASE_DIR))
+RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n)yr^gtup9(zw0s+%c)6o26+ky@9y^#busi%=)z73+*s2o#x)c'
+SECRET_KEY = os.environ.get("EARTHSCAPE_SECRET_KEY", os.environ.get("DJANGO_SECRET_KEY", secrets.token_urlsafe(48) if ON_VERCEL else 'django-insecure-n)yr^gtup9(zw0s+%c)6o26+ky@9y^#busi%=)z73+*s2o#x)c'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not ON_VERCEL
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".vercel.app"] if ON_VERCEL else ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -42,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,7 +84,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': RUNTIME_DIR / 'db.sqlite3' if ON_VERCEL else BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -117,7 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'   # collectstatic target (served by Apache in production)
 
 # Default primary key field type
@@ -137,10 +143,10 @@ LOGIN_REDIRECT_URL = "console_overview"
 
 # Uploaded datasets
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = RUNTIME_DIR / "media" if ON_VERCEL else BASE_DIR / "media"
 DATA_DIR = BASE_DIR / "data"
-BACKUP_DIR = BASE_DIR / "backups"
-HDFS_STAGING_DIR = BASE_DIR / "data" / "hdfs_staging"   # local stand-in when HDFS is not running
+BACKUP_DIR = RUNTIME_DIR / "backups" if ON_VERCEL else BASE_DIR / "backups"
+HDFS_STAGING_DIR = RUNTIME_DIR / "hdfs_staging" if ON_VERCEL else BASE_DIR / "data" / "hdfs_staging"
 MAX_UPLOAD_MB = 20
 DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
@@ -153,7 +159,7 @@ HADOOP = {
 }
 
 # Token for the real-time ingestion API (POST /climatechanges/api/ingest/)
-INGEST_API_TOKEN = os.environ.get("EARTHSCAPE_INGEST_TOKEN", "dev-ingest-token-change-me")
+INGEST_API_TOKEN = os.environ.get("EARTHSCAPE_INGEST_TOKEN", "" if ON_VERCEL else "dev-ingest-token-change-me")
 
 # Security hardening that is safe in development too
 SESSION_COOKIE_HTTPONLY = True
@@ -169,7 +175,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Logging: console + rotating file in logs/
-LOG_DIR = BASE_DIR / "logs"
+LOG_DIR = RUNTIME_DIR / "logs" if ON_VERCEL else BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 LOGGING = {
     "version": 1,
@@ -190,11 +196,11 @@ LOGGING = {
 MONGODB = {
     "URI": os.environ.get("EARTHSCAPE_MONGO_URI", "mongodb://127.0.0.1:27017"),
     "DB": os.environ.get("EARTHSCAPE_MONGO_DB", "earthscape"),
-    "ENABLED": os.environ.get("EARTHSCAPE_MONGO_ENABLED", "1") == "1",
+    "ENABLED": os.environ.get("EARTHSCAPE_MONGO_ENABLED", "0" if ON_VERCEL else "1") == "1",
 }
 
 # Encryption in transit: set EARTHSCAPE_HTTPS=1 when serving behind HTTPS (Apache/IIS TLS, see deploy/)
-if os.environ.get("EARTHSCAPE_HTTPS") == "1":
+if ON_VERCEL or os.environ.get("EARTHSCAPE_HTTPS") == "1":
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
@@ -205,6 +211,10 @@ if os.environ.get("EARTHSCAPE_HTTPS") == "1":
 
 # Production switches via environment (never commit real secrets)
 SECRET_KEY = os.environ.get("EARTHSCAPE_SECRET_KEY", SECRET_KEY)
+if ON_VERCEL:
+    CSRF_TRUSTED_ORIGINS = ["https://*.vercel.app"]
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 if os.environ.get("EARTHSCAPE_DEBUG") == "0":
     DEBUG = False
     ALLOWED_HOSTS = os.environ.get("EARTHSCAPE_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")

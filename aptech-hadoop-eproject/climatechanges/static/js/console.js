@@ -2,18 +2,18 @@
 (function () {
   "use strict";
 
-  var C = { green: "#16a34a", green2: "#22c55e", forest: "#0b3d2e", lime: "#84cc16", mint: "rgba(34,197,94,.14)",
-            pink: "#db2777", amber: "#d97706", blue: "#2563eb", violet: "#7c3aed", teal: "#0d9488", grid: "rgba(15,42,31,.06)" };
-  var PALETTE = [C.green, C.blue, C.amber, C.violet, C.teal, C.pink, C.forest, C.lime];
+  var C = { green: "#45dbc5", green2: "#72ead5", forest: "#112b42", lime: "#b792ff", mint: "rgba(69,219,197,.16)",
+            pink: "#ff718b", amber: "#ffbc68", blue: "#60b8ff", violet: "#ba91ff", teal: "#43d3d7", grid: "rgba(170,198,230,.12)" };
+  var PALETTE = [C.green, C.blue, C.violet, C.amber, C.teal, C.pink, "#8ea6c7", C.lime];
   window.ES = { colors: C, palette: PALETTE };
 
   if (window.Chart) {
     Chart.defaults.font.family = "Inter, system-ui, sans-serif";
     Chart.defaults.font.size = 12;
-    Chart.defaults.color = "#6f8a7c";
+    Chart.defaults.color = "#91a6c1";
     Chart.defaults.plugins.legend.labels.usePointStyle = true;
     Chart.defaults.plugins.legend.labels.boxWidth = 8;
-    Chart.defaults.plugins.tooltip.backgroundColor = "#0b3d2e";
+    Chart.defaults.plugins.tooltip.backgroundColor = "#071321";
     Chart.defaults.plugins.tooltip.padding = 10;
     Chart.defaults.plugins.tooltip.cornerRadius = 8;
     Chart.defaults.maintainAspectRatio = false;
@@ -51,7 +51,7 @@
       d.tension = d.tension === undefined ? 0.3 : d.tension;
       if (d.fill === true) {
         var g = el.getContext("2d").createLinearGradient(0, 0, 0, el.clientHeight || 300);
-        g.addColorStop(0, "rgba(34,197,94,.22)"); g.addColorStop(1, "rgba(34,197,94,0)");
+        g.addColorStop(0, "rgba(69,219,197,.22)"); g.addColorStop(1, "rgba(69,219,197,0)");
         d.backgroundColor = g; d.fill = "origin";
       }
     });
@@ -75,7 +75,7 @@
   ES.scatter = function (id, points, opts) {
     var el = document.getElementById(id);
     if (!el || !window.Chart) return null;
-    var ds = [{ label: (opts && opts.label) || "points", data: points, backgroundColor: "rgba(22,163,74,.55)", pointRadius: 4 }];
+    var ds = [{ label: (opts && opts.label) || "points", data: points, backgroundColor: "rgba(69,219,197,.7)", pointRadius: 4 }];
     if (opts && opts.diagonal) {
       ds.push({ type: "line", label: "perfect prediction", data: opts.diagonal, borderColor: C.pink, borderDash: [6, 5],
                 pointRadius: 0, borderWidth: 1.5 });
@@ -102,7 +102,7 @@
       margin: { l: 0, r: 0, t: 0, b: 0 }, paper_bgcolor: "rgba(0,0,0,0)",
       geo: { showframe: false, showcoastlines: false, projection: { type: "natural earth" },
              bgcolor: "rgba(0,0,0,0)", showocean: true, oceancolor: "#f3f8f2", landcolor: "#e7efe6", lakecolor: "#f3f8f2" },
-      font: { family: "Inter, sans-serif", color: "#3d5a4c" }
+      font: { family: "Inter, sans-serif", color: "#aebfd4" }
     }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["select2d", "lasso2d"],
          topojsonURL: "https://cdn.jsdelivr.net/npm/plotly.js@2.35.2/dist/topojson/" });
   };

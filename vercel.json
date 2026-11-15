@@ -1,4 +1,5 @@
 {
+  "buildCommand": "python vercel_build.py",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -8,8 +9,8 @@
   "functions": {
     "api/index.py": {
       "maxDuration": 60,
-      "includeFiles": "{myshop/**,climate/**,mysite/**,deploy/demo.sqlite3,media/world_real_estate_data.xls,media/product_images/**,media/category_images/**}",
-      "excludeFiles": "{**/*.rar,.git/**,.claude/**,media/world_real_estate_data2.xls,product_images/**,category_images/**,**/__pycache__/**}"
+      "includeFiles": "{aptech-hadoop-eproject/**}",
+      "excludeFiles": "{**/*.rar,.git/**,.claude/**,**/__pycache__/**,**/db.sqlite3,**/logs/**,**/keys/data.key}"
     }
   }
 }

@@ -17,7 +17,7 @@ MAGIC = b"gAAAAA"   # every Fernet token starts with this (version byte, base64)
 
 
 def key_path():
-    return Path(settings.BASE_DIR) / "keys" / "data.key"
+    return Path(getattr(settings, "RUNTIME_DIR", settings.BASE_DIR)) / "keys" / "data.key"
 
 
 def _get():

@@ -8,3 +8,4 @@ pymongo==4.10.1
 cryptography==44.0.0
 psutil==6.1.0
 waitress==3.0.2
+whitenoise==6.9.0
