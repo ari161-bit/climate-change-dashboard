@@ -1,5 +1,6 @@
 {
   "buildCommand": "python vercel_build.py",
+  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/(.*)",
