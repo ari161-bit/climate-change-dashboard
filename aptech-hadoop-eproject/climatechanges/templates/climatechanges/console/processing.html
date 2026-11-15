@@ -1,0 +1,94 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Data Processing{% endblock %}
+{% block heading %}Data processing{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <div class="card kpi {% if hdfs.online %}hero{% endif %}"><div class="label">Hadoop HDFS</div>
+    <div class="value" style="font-size:22px">{% if hdfs.online %}<span class="dot-live" style="display:inline-block"></span> Online{% else %}Offline{% endif %}</div>
+    <div class="sub">{{ hdfs.detail }}</div></div>
+  <div class="card kpi"><div class="label">Jobs run</div><div class="value">{{ totals.n }}</div><div class="sub">{{ totals.recs|default:0 }} records processed · avg {{ totals.ms|floatformat:0|default:0 }} ms</div></div>
+  <div class="card kpi"><div class="label">Stored readings</div><div class="value">{{ readings }}</div><div class="sub">database: {{ db_mb }} MB</div></div>
+  <div class="card kpi"><div class="label">API performance (24 h)</div><div class="value">{{ perf.avg }} <small>ms avg</small></div><div class="sub">p95 {{ perf.p95 }} ms · {{ perf.requests }} requests · {{ perf.errors }} errors</div></div>
+</div>
+
+{% if not hdfs.online %}
+<div class="msg warning"><div><b>HDFS is not running, so nothing is being written to Hadoop right now.</b> MapReduce jobs run on the built-in local engine (same split → map → shuffle → reduce steps, parallel map tasks), and “Store in HDFS” saves files to the local staging folder <code>{{ staging }}</code>, which mirrors the HDFS layout. Start Hadoop with <code>hadoop\start_hdfs.cmd</code>; the jobs can then run on the cluster with the Hadoop Streaming command shown on each job.</div></div>
+{% endif %}
+
+<div class="grid g3">
+  <div class="card span2">
+    <div class="card-h"><div><h3>Run a processing job</h3><p>MapReduce aggregations, ML training, anomaly scan, correlations and alert evaluation</p></div></div>
+    <form method="post" class="btn-row" style="align-items:end">{% csrf_token %}
+      <input type="hidden" name="action" value="run">
+      <div class="fg" style="flex:1;min-width:260px"><label for="job_type">Job</label>
+        <select id="job_type" name="job_type">{% for k, v in job_types %}<option value="{{ k }}">{{ v }}</option>{% endfor %}</select></div>
+      <button class="btn btn-primary" type="submit">Run job</button>
+    </form>
+    <form method="post" class="btn-row" style="margin-top:12px">{% csrf_token %}
+      <button class="btn btn-ghost" name="action" value="pull_live">Pull live data (Open-Meteo weather + NOAA CO₂)</button>
+      {% if is_admin %}<button class="btn btn-ghost" name="action" value="backup">Create backup now</button>{% endif %}
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>HDFS contents: /climate</h3></div></div>
+    {% if hdfs.files %}<div class="stat-list">{% for f in hdfs.files %}<div><span>{{ f.name }}</span><b>{% if f.type == 'DIRECTORY' %}folder{% else %}{{ f.size|filesizeformat }}{% endif %}</b></div>{% endfor %}</div>
+    {% else %}<div class="empty"><b>{% if hdfs.online %}Empty{% else %}Not connected{% endif %}</b>{{ hdfs.detail }}</div>{% endif %}
+  </div>
+</div>
+
+<div class="grid g3">
+  <div class="card">
+    <div class="card-h"><div><h3>MongoDB document store</h3><p>{{ mongo.detail }}</p></div><span class="badge {% if mongo.online %}b-real{% else %}b-warning{% endif %}">{% if mongo.online %}online{% else %}offline{% endif %}</span></div>
+    {% if mongo.online %}<div class="stat-list">{% for k, v in mongo.counts.items %}<div><span><code>{{ mongo.db }}.{{ k }}</code></span><b>{{ v }}</b></div>{% endfor %}</div>
+    <p class="note" style="margin-top:10px">Open <b>MongoDB Compass</b> → <code>mongodb://127.0.0.1:27017</code> → database <code>{{ mongo.db }}</code>. Re-sync anytime: <code>python manage.py sync_mongodb</code></p>
+    {% else %}<div class="empty"><b>Not connected</b>Start the MongoDB service, then run <code>python manage.py sync_mongodb</code>.</div>{% endif %}
+  </div>
+  <div class="card span2">
+    <div class="card-h"><div><h3>Resource utilisation</h3><p>This server · sampled every minute while the app is used · app uptime {{ res.uptime_min }} min</p></div></div>
+    <div class="grid g4" style="gap:12px">
+      <div><small>CPU ({{ res.cpu_count }} cores)</small><div class="kpi"><div class="value" style="font-size:22px">{{ res.cpu_pct }}%</div></div><div class="bar"><i style="width:{{ res.cpu_pct }}%"></i></div></div>
+      <div><small>Memory {{ res.mem_used_gb }}/{{ res.mem_total_gb }} GB</small><div class="kpi"><div class="value" style="font-size:22px">{{ res.mem_pct }}%</div></div><div class="bar"><i style="width:{{ res.mem_pct }}%"></i></div></div>
+      <div><small>Disk ({{ res.disk_free_gb }} GB free)</small><div class="kpi"><div class="value" style="font-size:22px">{{ res.disk_pct }}%</div></div><div class="bar"><i style="width:{{ res.disk_pct }}%"></i></div></div>
+      <div><small>EarthScape process</small><div class="kpi"><div class="value" style="font-size:22px">{{ res.process_mb|floatformat:0 }} MB</div></div><small>{{ res.threads }} threads</small></div>
+    </div>
+    {% if res_chart.labels %}<div class="chart short" style="margin-top:14px"><canvas id="c-res"></canvas></div>{% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Job history</h3><p>Every run is recorded with its engine, input, record counts and duration</p></div></div>
+  <div class="table-wrap"><table class="t">
+    <thead><tr><th>#</th><th>Job</th><th>Engine</th><th>Status</th><th class="num">Records in</th><th class="num">Out</th><th class="num">Map tasks</th><th class="num">Skipped</th><th class="num">Duration</th><th>When</th></tr></thead>
+    <tbody>{% for j in jobs %}<tr>
+      <td><a href="{% url 'console_job' j.pk %}">{{ j.pk }}</a></td><td><a href="{% url 'console_job' j.pk %}">{{ j.get_job_type_display }}</a></td>
+      <td><code>{{ j.engine }}</code></td><td><span class="badge b-{{ j.status }}">{{ j.status }}</span></td>
+      <td class="num">{{ j.records_in }}</td><td class="num">{{ j.records_out }}</td><td class="num">{{ j.map_tasks|default:"-" }}</td><td class="num">{{ j.skipped_records }}</td>
+      <td class="num">{{ j.duration_ms }} ms</td><td><small>{{ j.created|date:"d M H:i" }} · {{ j.started_by.username|default:"system" }}</small></td></tr>
+    {% empty %}<tr><td colspan="10"><div class="empty"><b>No jobs yet</b></div></td></tr>{% endfor %}</tbody>
+  </table></div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Performance monitoring</h3><p>Slowest console/API endpoints, last 24 hours</p></div></div>
+    {% if perf.slow %}<div class="stat-list">{% for s in perf.slow %}<div><span><code>{{ s.path }}</code> <small>×{{ s.n }}</small></span><b>{{ s.avg|floatformat:0 }} ms</b></div>{% endfor %}</div>
+    {% else %}<div class="empty"><b>No requests recorded yet</b></div>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Reliability</h3><p>Backups, logs and scaling</p></div></div>
+    <div class="stat-list">
+      <div><span>Latest backups</span><b>{% for b in backups %}{{ b }}<br>{% empty %}none yet{% endfor %}</b></div>
+      <div><span>Scheduled backup</span><b><code>python manage.py backup_earthscape</code></b></div>
+      <div><span>Log file</span><b><code>logs/earthscape.log</code></b></div>
+    </div>
+    {% if log_tail %}<details style="margin-top:12px"><summary>Recent log lines (admin)</summary><pre class="code">{% for l in log_tail %}{{ l }}
+{% endfor %}</pre></details>{% endif %}
+  </div>
+</div>
+{{ res_chart|json_script:"d-res" }}
+{% endblock %}
+{% block scripts %}<script>
+(function(){ var d = ES.data("d-res"); if (!d || !d.labels.length) return;
+  ES.line("c-res", d.labels, [{ label: "CPU %", data: d.cpu }, { label: "Memory %", data: d.mem }, { label: "Disk %", data: d.disk }], { y: "%" });
+})();
+</script>{% endblock %}

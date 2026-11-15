@@ -112,6 +112,10 @@ flowchart LR
 
 The brief names Hadoop, HDFS, Impala and Tableau. Those are built for clusters and terabytes; this data is about 300 KB. The same architecture is kept (partitioned storage, map/reduce processing, a query layer, interactive visualisation) at a scale that runs on a laptop and on serverless hosting. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) has the data-flow diagrams, workflows, data model and security design.
 
+### Aptech eProject implementation using the requested Hadoop stack
+
+The self-contained [`aptech-hadoop-eproject/`](aptech-hadoop-eproject/) folder contains a second implementation aligned to the original brief's Django, Hadoop HDFS, Hadoop Streaming, MongoDB, Impala and Tableau requirements. It has its own setup guide, application, sample data and project report; see its [README](aptech-hadoop-eproject/README.md) to run it independently.
+
 ## Requirements coverage
 
 | Brief | Where it is met |

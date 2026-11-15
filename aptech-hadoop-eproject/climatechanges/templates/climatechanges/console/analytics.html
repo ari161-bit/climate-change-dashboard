@@ -1,0 +1,90 @@
+{% extends 'climatechanges/console/base.html' %}
+{% load es_tags %}
+{% block title %}Climate Analytics{% endblock %}
+{% block heading %}Climate analytics{% endblock %}
+{% block head %}<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>{% endblock %}
+{% block content %}
+{% include 'climatechanges/console/_filters.html' with show_fao=True %}
+
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Temperature trend: {{ charts.temp.country }}</h3><p>Annual change vs 1951-1980 (°C). Date filter narrows the years.</p></div><span class="badge b-real">real (FAO)</span></div>
+    <div class="chart"><canvas id="c-temp"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Historical vs predicted</h3><p>{% if charts.hvp %}Model: {{ charts.hvp.model }} · 95% band ±{{ charts.hvp.band }} °C{% endif %}</p></div><span class="badge b-real">real + model</span></div>
+    {% if charts.hvp %}<div class="chart"><canvas id="c-hvp"></canvas></div>{% else %}<div class="empty"><b>Not enough history for this series</b></div>{% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Climate anomaly map, {{ charts.map.year }}</h3><p>Temperature change vs each country's 1951-1980 average. Hover for values; scroll to zoom.</p></div><span class="badge b-real">real (FAO)</span></div>
+  <div id="m-anom" class="map"></div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Rainfall comparison by station</h3><p>Mean and maximum rainfall per reading (mm)</p></div><span class="badge {{ data_label|databadge }}">{{ data_label }}</span></div>
+    {% if charts.rain.stations %}<div class="chart"><canvas id="c-rain"></canvas></div>{% else %}<div class="empty"><b>No rainfall readings match the filters</b></div>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Humidity analysis by region</h3><p>Monthly mean relative humidity (%)</p></div><span class="badge {{ data_label|databadge }}">{{ data_label }}</span></div>
+    {% if charts.humidity %}<div class="chart"><canvas id="c-hum"></canvas></div>{% else %}<div class="empty"><b>No humidity readings match the filters</b></div>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>CO₂ concentration trend</h3><p>{{ charts.co2.source }} (ppm)</p></div><span class="badge {{ charts.co2.label|databadge }}">{{ charts.co2.label }}</span></div>
+    {% if charts.co2.values %}<div class="chart"><canvas id="c-co2"></canvas></div>{% else %}<div class="empty"><b>No CO₂ data yet</b>Use “Pull live data” in Data Processing.</div>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Regional comparison</h3><p>Average temperature change by decade (°C)</p></div><span class="badge b-real">real (FAO)</span></div>
+    <div class="chart"><canvas id="c-reg"></canvas></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Historical climate patterns</h3><p>Decade averages and long-term warming rate per region · {{ patterns.source }}</p></div></div>
+  <div class="table-wrap"><table class="t heat">
+    <thead><tr><th style="text-align:left">Region</th>{% for d in patterns.decades %}<th>{{ d }}s</th>{% endfor %}<th>°C / decade</th></tr></thead>
+    <tbody>{% for r in patterns.rows %}<tr><td style="text-align:left"><b>{{ r.region }}</b></td>
+      {% for v in r.values %}<td style="background:{{ v|heat }}">{% if v is None %}-{% else %}{{ v|floatformat:2 }}{% endif %}</td>{% endfor %}
+      <td><b>{{ r.per_decade|floatformat:3 }}</b></td></tr>{% endfor %}</tbody>
+  </table></div>
+</div>
+
+{{ charts|json_script:"d-charts" }}
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var d = ES.data("d-charts");
+  ES.line("c-temp", d.temp.years, [{ label: d.temp.country, data: d.temp.values, fill: true }], { y: "°C" });
+  if (d.hvp) {
+    var labels = d.hvp.years.concat(d.hvp.future);
+    var pad = d.hvp.future.map(function(){ return null; });
+    var fc = d.hvp.years.map(function(){ return null; }); fc[fc.length-1] = d.hvp.fitted[d.hvp.fitted.length-1];
+    ES.line("c-hvp", labels, [
+      { label: "Observed", data: d.hvp.actual.concat(pad), borderColor: ES.colors.green, pointRadius: 2 },
+      { label: "Model fit", data: d.hvp.fitted.concat(pad), borderColor: ES.colors.blue, borderWidth: 1.5 },
+      { label: "Forecast", data: fc.concat(d.hvp.forecast), borderColor: ES.colors.pink, borderDash: [6,5] },
+      { label: "Upper 95%", data: fc.concat(d.hvp.forecast.map(function(v){ return +(v + d.hvp.band).toFixed(3); })), borderColor: "rgba(219,39,119,.25)", borderWidth: 1, fill: "+1", backgroundColor: "rgba(219,39,119,.07)" },
+      { label: "Lower 95%", data: fc.concat(d.hvp.forecast.map(function(v){ return +(v - d.hvp.band).toFixed(3); })), borderColor: "rgba(219,39,119,.25)", borderWidth: 1 }
+    ], { y: "°C" });
+  }
+  ES.map("m-anom", d.map.iso3, d.map.values, d.map.names, { unit: "°C", label: "change vs 1951-1980 (°C)", zmid: 1, zmin: -1, zmax: 3.5 });
+  if (d.rain.stations.length) ES.bar("c-rain", d.rain.stations, [
+    { label: "Mean (mm)", data: d.rain.mean, backgroundColor: ES.colors.green },
+    { label: "Max (mm)", data: d.rain.max, backgroundColor: "rgba(37,99,235,.55)" }], { y: "mm" });
+  var regs = Object.keys(d.humidity);
+  if (regs.length) {
+    var months = d.humidity[regs[0]].months;
+    regs.forEach(function(r){ if (d.humidity[r].months.length > months.length) months = d.humidity[r].months; });
+    ES.line("c-hum", months, regs.map(function(r){
+      var map = {}; d.humidity[r].months.forEach(function(m, i){ map[m] = d.humidity[r].values[i]; });
+      return { label: r, data: months.map(function(m){ return map[m] === undefined ? null : map[m]; }), spanGaps: true };
+    }), { y: "%" });
+  }
+  if (d.co2.values.length) ES.line("c-co2", d.co2.labels, [{ label: "CO₂ ppm", data: d.co2.values, fill: true, borderColor: ES.colors.forest }], { y: "ppm" });
+  ES.bar("c-reg", d.regional.decades, d.regional.rows.map(function(r){ return { label: r.region, data: r.values }; }), { y: "°C" });
+})();
+</script>
+{% endblock %}

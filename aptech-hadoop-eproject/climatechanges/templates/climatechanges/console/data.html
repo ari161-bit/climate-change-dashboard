@@ -1,0 +1,55 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Data Management{% endblock %}
+{% block heading %}Data management{% endblock %}
+{% block content %}
+<div class="grid g3">
+  <div class="card span2">
+    <div class="card-h"><div><h3>Upload a dataset</h3><p>Historical datasets, weather-station records, sensor data or satellite sources · CSV/JSON tables or GeoTIFF imagery · max {{ max_mb }} MB</p></div></div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="fg full">{{ form.file }}{% if form.file.errors %}<ul class="errorlist">{% for e in form.file.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="fg"><label for="{{ form.name.id_for_label }}">Dataset name</label>{{ form.name }}<span class="helptext">Optional: defaults to the file name</span></div>
+        <div class="fg"><label for="{{ form.kind.id_for_label }}">Type</label>{{ form.kind }}</div>
+        <div class="fg full"><label for="{{ form.description.id_for_label }}">Description</label>{{ form.description }}</div>
+      </div>
+      <div class="btn-row" style="margin-top:14px"><button class="btn btn-primary" type="submit">Upload &amp; validate</button></div>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>What happens on upload</h3></div></div>
+    <div class="stat-list">
+      <div><span>1. File type, size and content checked</span><b>✓</b></div>
+      <div><span>2. Tables parsed; GeoTIFF sources catalogued</span><b>✓</b></div>
+      <div><span>3. Table gaps and duplicate rows profiled</span><b>✓</b></div>
+      <div><span>4. Table preview available</span><b>✓</b></div>
+      <div><span>Then: clean/import tables or store either source in HDFS</span><b>→</b></div>
+    </div>
+    <p class="note" style="margin-top:12px"><b>Real-time ingestion:</b> sensors can POST JSON to <code>/climatechanges/api/ingest/</code> with an <code>X-API-Token</code> header{% if ingest_token_hint %} (token starts <code>{{ ingest_token_hint }}</code>, set it with the <code>EARTHSCAPE_INGEST_TOKEN</code> environment variable){% endif %}. Live weather can be pulled from Data Processing.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Readings by source</h3><p>Every reading records where it came from, so real and sample data are never mixed up</p></div></div>
+  <div class="btn-row">{% for s in source_counts %}<span class="badge {% if s.source == 'sample' %}b-sample{% else %}b-real{% endif %}">{{ s.source }}: {{ s.n }}</span>{% empty %}<span class="muted">No readings yet.</span>{% endfor %}</div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Upload history</h3><p>{{ page.paginator.count }} datasets</p></div></div>
+  {% if page.object_list %}
+  <div class="table-wrap"><table class="t">
+    <thead><tr><th>Dataset</th><th>Type</th><th class="num">Rows</th><th class="num">Cols</th><th class="num">Missing</th><th class="num">Duplicates</th><th>Status</th><th>Storage</th><th>Uploaded</th></tr></thead>
+    <tbody>{% for d in page %}
+      <tr><td><a href="{% url 'console_dataset' d.pk %}"><b>{{ d.name }}</b></a><br><small>{{ d.original_filename }} · {{ d.size_bytes|filesizeformat }}</small></td>
+        <td>{{ d.get_kind_display }}</td><td class="num">{% if d.file_format == 'tiff' %}—{% else %}{{ d.rows }}{% endif %}</td><td class="num">{% if d.file_format == 'tiff' %}—{% else %}{{ d.columns }}{% endif %}</td>
+        <td class="num">{{ d.missing_values }}</td><td class="num">{{ d.duplicate_rows }}</td>
+        <td><span class="badge b-{{ d.status }}">{{ d.get_status_display }}</span></td>
+        <td>{% if d.storage_backend %}<span class="badge {% if d.storage_backend == 'hdfs' %}b-real{% else %}b-warning{% endif %}">{{ d.storage_backend }}</span>{% else %}<small>-</small>{% endif %}</td>
+        <td><small>{{ d.created|date:"d M Y H:i" }}<br>{{ d.uploaded_by.username|default:"-" }}</small></td></tr>
+    {% endfor %}</tbody></table></div>
+  <div class="pager">{% if page.has_previous %}<a class="btn btn-ghost btn-sm" href="?page={{ page.previous_page_number }}">← Prev</a>{% endif %}
+    <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-ghost btn-sm" href="?page={{ page.next_page_number }}">Next →</a>{% endif %}</div>
+  {% else %}<div class="empty"><b>No datasets uploaded yet</b>Try <code>sample_data/station_readings_sample.csv</code> from the project folder.</div>{% endif %}
+</div>
+{% endblock %}

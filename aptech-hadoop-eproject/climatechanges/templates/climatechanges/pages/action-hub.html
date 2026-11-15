@@ -1,0 +1,92 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Action Hub · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Take Action · Checklist</p>
+        <h1>The Action Hub</h1>
+        <p class="lede">Reading about climate change is step one. This page is step two: a real, tickable list of things you can actually do at school, at home, and in your community, starting today.</p>
+        <div class="hero-ctas"><a href="/climatechanges/data-explorer.html" class="btn btn-primary">Next: explore the data →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Actions on this page</span><span class="ro-value js-counter" data-target="16" data-decimals="0" data-prefix="" data-suffix="">0</span></div><div class="readout-cell"><span class="ro-label">Cost to start most of them</span><span class="ro-value js-counter tone-cool" data-target="0" data-decimals="0" data-prefix="₦" data-suffix="">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="impact-meter reveal">
+      <span class="im-count"><span id="impact-count">0</span> / <span id="impact-total">16</span></span>
+      <span class="muted">actions checked off, come back any time and keep going.</span>
+    </div>
+
+    <div class="explore-group reveal">
+      <h4>🏫 At school</h4>
+      <ul class="checklist">
+        <li><input type="checkbox"><div><div class="ct-title">Start or join a climate / eco club</div><div class="ct-desc">Even three or four students meeting monthly can run real projects.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Run a school recycling or composting point</div><div class="ct-desc">Start with one bin and one habit, paper, plastic or food waste.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Teach this topic to a younger class</div><div class="ct-desc">Explaining something is one of the fastest ways to really learn it.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Ask for a school garden or tree-planting day</div><div class="ct-desc">Trees absorb CO2 as they grow, and shade cuts cooling costs too.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="explore-group reveal">
+      <h4>🏠 At home</h4>
+      <ul class="checklist">
+        <li><input type="checkbox"><div><div class="ct-title">Turn off lights, fans and chargers when not in use</div><div class="ct-desc">Small, but it's the easiest habit to start today.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Try one no-generator evening a week</div><div class="ct-desc">See how far solar lanterns or daylight hours stretch it.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Start a kitchen compost or food-waste habit</div><div class="ct-desc">Cuts methane from landfill and can feed a garden.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Walk, cycle or share transport for short trips</div><div class="ct-desc">The single biggest lever in most personal footprints.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="explore-group reveal">
+      <h4>🤝 In your community</h4>
+      <ul class="checklist">
+        <li><input type="checkbox"><div><div class="ct-title">Join or organise a community clean-up</div><div class="ct-desc">Cleared drains flood less, directly relevant after 2025's floods.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Support local recycling or scrap collectors</div><div class="ct-desc">They're already doing real climate work, value it.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Share what you learn here with family or friends</div><div class="ct-desc">Understanding spreads faster than almost anything else.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Back local tree-planting or green spaces</div><div class="ct-desc">Green cover helps with flooding, heat and air quality together.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="explore-group reveal">
+      <h4>🗳️ As a future leader / voter</h4>
+      <ul class="checklist">
+        <li><input type="checkbox"><div><div class="ct-title">Follow what NiMet and NEMA say about local risk</div><div class="ct-desc">Early warnings only help if people actually read them.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Ask questions about local flood and waste planning</div><div class="ct-desc">Good infrastructure decisions reduce disaster damage hugely.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Consider a STEM, climate or environmental path</div><div class="ct-desc">Africa needs more of its own scientists and engineers on this.</div></div></li>
+        <li><input type="checkbox"><div><div class="ct-title">Keep learning, re-take the quiz in a few weeks</div><div class="ct-desc">See how much more sticks the second time around.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="callout callout--try reveal" style="text-align:center;">
+      <span class="callout-label">Want a printable copy?</span>
+      <p>Use your browser's print option to save this checklist as a PDF or paper copy for school or home.</p>
+      <button class="btn btn-ghost print-btn" onclick="window.print()" style="margin-top:8px;">🖨️ Print this page</button>
+    </div>
+    <div class="topic-pager"><a class="pager-link prev" href="/climatechanges/clean-energy.html"><span class="pl-dir">← Previous</span><div class="pl-title">Clean Energy</div></a><a class="pager-link next" href="/climatechanges/data-explorer.html"><span class="pl-dir">Next →</span><div class="pl-title">Explore the Data</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/checklist.js"></script>
+{% endblock %}

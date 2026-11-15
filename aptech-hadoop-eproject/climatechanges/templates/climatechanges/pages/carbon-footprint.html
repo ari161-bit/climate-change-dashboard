@@ -1,0 +1,106 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Carbon Footprint Calculator · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Take Action · Tool</p>
+        <h1>What's your carbon footprint?</h1>
+        <p class="lede">A carbon footprint adds up the greenhouse gases linked to your everyday choices, mainly travel, electricity and food, into one rough number. This calculator gives you an honest estimate in about two minutes. It's a learning tool, not a scientific audit.</p>
+        <div class="hero-ctas"><a href="/climatechanges/recycle.html" class="btn btn-primary">Next: reduce, reuse, recycle →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Rough world average</span><span class="ro-value js-counter" data-target="4.7" data-decimals="1" data-prefix="" data-suffix=" t CO2e/yr">0</span></div><div class="readout-cell"><span class="ro-label">Biggest single lever, most people</span><span class="ro-value js-counter tone-warm" data-target="1" data-decimals="0" data-prefix="" data-suffix=" = transport">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="layout-2col">
+      <div class="reveal">
+        <form id="footprint-form" class="tool-panel">
+          <div class="field">
+            <label>Weekly distance by car or motorcycle <span class="field-val"><span id="cf-distance-val">50</span> km/week</span></label>
+            <input type="range" id="cf-distance" min="0" max="400" value="50" step="5">
+          </div>
+          <div class="field">
+            <label>Main way you get around</label>
+            <select name="transport_mode">
+              <option value="walk_cycle">Mostly walk or cycle</option>
+              <option value="bus">Mostly public transport / bus</option>
+              <option value="motorcycle" selected>Motorcycle / okada</option>
+              <option value="car_petrol">Car (petrol)</option>
+              <option value="car_diesel">Car (diesel)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Flights in a typical year</label>
+            <div class="radio-row">
+              <label><input type="radio" name="flights" value="none" checked> None</label>
+              <label><input type="radio" name="flights" value="short"> 1 to 2 short flights</label>
+              <label><input type="radio" name="flights" value="long"> 3+ / long-haul</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Household electricity use</label>
+            <select name="electricity">
+              <option value="low">Low, lights &amp; small appliances mainly</option>
+              <option value="medium" selected>Medium, fridge, fans, regular appliances</option>
+              <option value="high">High, AC, many appliances, large household</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Backup generator use</label>
+            <div class="radio-row">
+              <label><input type="radio" name="generator" value="none" checked> Rarely / never</label>
+              <label><input type="radio" name="generator" value="occasional"> Occasionally</label>
+              <label><input type="radio" name="generator" value="frequent"> Frequently</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Typical diet</label>
+            <div class="radio-row">
+              <label><input type="radio" name="diet" value="plant"> Mostly plant-based</label>
+              <label><input type="radio" name="diet" value="balanced" checked> Balanced / mixed</label>
+              <label><input type="radio" name="diet" value="meat"> Meat with most meals</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div>
+        <div class="result-box reveal" id="cf-result">
+          <div class="rb-value"><span id="cf-result-value">0</span></div>
+          <div class="rb-label">estimated tonnes CO2e / year</div>
+          <div class="result-bar"><span id="cf-result-bar" style="width:0%"></span></div>
+          <p id="cf-result-note" style="color:#D7E4DD;font-size:.85rem;margin-top:14px;text-align:left;"></p>
+        </div>
+        <div class="callout callout--note" style="margin-top:20px;">
+          <span class="callout-label">Reading this honestly</span>
+          <p>This is a simplified estimate using broad, illustrative factors, it's built to teach you which choices move the number most, not to be an exact personal audit. Transport distance, flights and generator use tend to shift it the most.</p>
+        </div>
+      </div>
+    </div>
+    <div class="topic-pager"><a class="pager-link prev" href="/climatechanges/why-care.html"><span class="pl-dir">← Previous</span><div class="pl-title">Why Should We Care?</div></a><a class="pager-link next" href="/climatechanges/recycle.html"><span class="pl-dir">Next →</span><div class="pl-title">Reduce, Reuse, Recycle</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/calculator.js"></script>
+{% endblock %}

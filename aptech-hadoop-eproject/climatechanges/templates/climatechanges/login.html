@@ -1,0 +1,88 @@
+{% extends './template.html' %}
+{% load static %}
+{% block title %}Login · EarthScape{% endblock %}
+{% block body %}
+
+<main id="main">
+<section class="section">
+  <div class="wrap">
+
+    <div class="section-head">
+      <p class="eyebrow">Join our community</p>
+      <h2>Login</h2>
+      <p class="lede">
+        Sign up to explore our global warming guide, learn about climate change,
+        and discover how you can help protect our planet.
+      </p>
+    </div>
+
+    <div class="login-card">
+      <form method="POST" action="{% url 'login' %}" class="login-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="form-message {% if message.tags == 'error' %}{% else %}ok{% endif %}" role="alert">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        {% if error %}
+          <div class="form-message" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <div class="login-row">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" maxlength="50"
+                   value="{{ username|default:'' }}" placeholder="Choose a username"
+                   autocomplete="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" minlength="8"
+                   placeholder="At least 8 characters" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn btn-primary login-button">Login →</button>
+        </div>
+
+        <p class="login-text">
+          Don't have an account? <a href="{% url 'signup' %}">Sign up</a>
+        </p>
+      </form>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<style>
+.login-card{
+  max-width: 880px; margin: 0 auto; padding: 36px;
+  background: var(--paper-raised); border: 1px solid var(--line);
+  border-radius: 20px; box-shadow: var(--shadow-lg);
+}
+.login-row{
+  display: grid; grid-template-columns: 1fr 1fr auto;
+  gap: 18px; align-items: end;
+}
+.form-group{ display:flex; flex-direction:column; gap:8px; }
+.form-group label{ font-weight:600; color:var(--ink); font-size:.92rem; }
+.form-group input{
+  width:100%; box-sizing:border-box; padding:13px 14px;
+  border:1px solid var(--line); border-radius:10px; font:inherit;
+  background: var(--paper); color: var(--ink);
+}
+.form-group input:focus{ outline:2px solid var(--teal-500); outline-offset:1px; border-color:var(--teal-500); }
+.login-button{ border:0; cursor:pointer; font:inherit; padding:13px 28px; white-space:nowrap; }
+.login-text{ text-align:center; margin-top:22px; color:var(--ink-soft); }
+.login-text a{ color:var(--teal-500); font-weight:600; }
+.form-message{ padding:12px 15px; margin-bottom:18px; border-radius:10px; background:var(--coral-100); color:var(--coral-600); }
+.form-message.ok{ background:var(--teal-100); color:var(--teal-700); }
+@media (max-width: 700px){
+  .login-card{ padding:22px 16px; }
+  .login-row{ grid-template-columns:1fr; }
+}
+</style>
+
+{% endblock %}

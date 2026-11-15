@@ -1,0 +1,246 @@
+{% extends './template.html' %}
+{% load static %}
+{% block title %}EarthScape · Climate Intelligence for a Greener Planet{% endblock %}
+{% block bodyclass %}eco-home{% endblock %}
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="cinematic-intro" id="cinematic-intro" hidden aria-hidden="true">
+    <div class="intro-orbit" aria-hidden="true"></div>
+    <div class="intro-content">
+      <p class="intro-kicker">Planetary intelligence / EarthScape</p>
+      <div class="intro-word" aria-label="EarthScape">
+        <span>E</span><span>A</span><span>R</span><span>T</span><span>H</span><span class="intro-lime">S</span><span class="intro-lime">C</span><span class="intro-lime">A</span><span class="intro-lime">P</span><span class="intro-lime">E</span>
+      </div>
+      <p class="intro-subtitle">Climate Intelligence Agency</p>
+      <div class="intro-rule" aria-hidden="true"></div>
+      <p class="intro-tagline">A clearer view of our changing planet</p>
+    </div>
+    <button class="intro-skip" type="button" id="intro-skip">Skip introduction <span aria-hidden="true">↗</span></button>
+</div>
+
+<main id="main" class="eco-main">
+  <!-- ============ HERO ============ -->
+  <section class="eco-hero">
+    <div class="wrap eco-hero-grid">
+      <div class="eco-hero-copy">
+        <p class="eco-chip"><span class="eco-dot"></span> Climate intelligence / <span class="eco-mono">EST. 2024</span></p>
+        <h1>The future is not a forecast.<br>It's a <em>decision.</em></h1>
+        <p class="eco-lede">
+          One planet. Millions of signals. A clearer picture of what is changing, where it is happening, and what comes next.
+        </p>
+        <div class="eco-ctas">
+          <a href="{% url 'console_overview' %}" class="eco-btn eco-btn-solid">Explore platform <span>↗</span></a>
+          <a href="{% url 'about' %}" class="eco-btn eco-btn-line">Discover our mission</a>
+        </div>
+        <ul class="eco-trust">
+          <li><b>{{ land_total }}</b> recorded disasters</li>
+          <li><b>{{ land_country_count }}</b> reporting countries</li>
+          <li><b>{{ land_first_year }}–{{ land_last_year }}</b> annual coverage</li>
+        </ul>
+      </div>
+
+      <!-- Animated globe with data orbit -->
+      <div class="eco-art" aria-hidden="true">
+        <svg viewBox="0 0 480 480" class="eco-globe">
+          <defs>
+            <radialGradient id="g-sea" cx="40%" cy="35%" r="70%">
+              <stop offset="0%" stop-color="#5eead4"/><stop offset="60%" stop-color="#0f766e"/><stop offset="100%" stop-color="#064e3b"/>
+            </radialGradient>
+            <linearGradient id="g-land" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#bef264"/><stop offset="100%" stop-color="#16a34a"/>
+            </linearGradient>
+            <linearGradient id="g-leaf" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#86efac"/><stop offset="100%" stop-color="#15803d"/>
+            </linearGradient>
+            <clipPath id="clip-globe"><circle cx="240" cy="240" r="150"/></clipPath>
+          </defs>
+          <circle cx="240" cy="240" r="200" class="eco-ring r1"/>
+          <circle cx="240" cy="240" r="225" class="eco-ring r2"/>
+          <circle cx="240" cy="240" r="150" fill="url(#g-sea)"/>
+          <g clip-path="url(#clip-globe)" class="eco-continents">
+            <path d="M120 170 C150 130 210 140 220 175 C230 210 190 215 185 245 C180 275 140 280 120 250 C100 225 100 195 120 170Z" fill="url(#g-land)"/>
+            <path d="M260 120 C300 110 350 135 355 170 C360 200 330 205 320 230 C305 265 270 250 265 220 C258 185 235 140 260 120Z" fill="url(#g-land)"/>
+            <path d="M230 290 C260 280 300 295 310 325 C320 355 290 380 255 375 C220 370 205 340 210 315 C212 300 218 294 230 290Z" fill="url(#g-land)"/>
+            <path d="M400 230 C420 240 430 280 410 300 C395 315 375 300 380 275 C384 255 385 225 400 230Z" fill="url(#g-land)"/>
+          </g>
+          <circle cx="240" cy="240" r="150" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+          <!-- sprout on top of the planet -->
+          <g class="eco-sprout">
+            <path d="M240 92 C240 70 240 55 240 40" stroke="#166534" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M240 62 C210 60 192 40 190 18 C215 18 236 34 240 62Z" fill="url(#g-leaf)"/>
+            <path d="M240 50 C268 46 285 26 286 4 C262 6 243 22 240 50Z" fill="url(#g-leaf)"/>
+          </g>
+          <!-- orbiting data satellites -->
+          <g class="eco-orbit">
+            <circle cx="440" cy="240" r="9" fill="#fde047"/>
+            <circle cx="40" cy="240" r="6" fill="#86efac"/>
+          </g>
+        </svg>
+        <div class="eco-float f1"><span>◷</span><div><b>{{ land_first_year }}–{{ land_last_year }}</b><small>observed disaster record</small></div></div>
+        <div class="eco-float f2"><span>◎</span><div><b>{{ land_country_count }} countries</b><small>country-level coverage</small></div></div>
+        <div class="eco-float f3"><span>↗</span><div><b>Evidence-led</b><small>trends &amp; projections</small></div></div>
+      </div>
+    </div>
+
+    <svg class="eco-hills" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 90 C240 30 420 130 720 80 C1000 35 1200 120 1440 70 L1440 160 L0 160Z" class="h1"/>
+      <path d="M0 120 C300 80 520 150 820 110 C1080 80 1260 140 1440 110 L1440 160 L0 160Z" class="h2"/>
+    </svg>
+  </section>
+
+  <!-- ============ LIVE ============ -->
+  <section class="eco-section eco-live-sec">
+    <div class="wrap">
+      <div class="eco-head">
+        <p class="eco-chip">Real-time + predictive</p>
+        <h2>What's happening now, and what's next</h2>
+        <p>Live conditions streamed from Open-Meteo, next to a forecast trained on 45 years of disaster records.</p>
+      </div>
+      <div class="eco-live">
+        <div class="eco-weather" id="eco-weather">
+          <div class="eco-w-top">
+            <div>
+              <small class="eco-w-label"><span class="eco-dot"></span> Live now</small>
+              <h3 id="w-city">Lagos</h3>
+            </div>
+            <div class="eco-w-cities" role="group" aria-label="Choose city">
+              <button type="button" data-city="Lagos" data-lat="6.45" data-lon="3.39" class="on">Lagos</button>
+              <button type="button" data-city="Abuja" data-lat="9.06" data-lon="7.50">Abuja</button>
+              <button type="button" data-city="London" data-lat="51.51" data-lon="-0.13">London</button>
+              <button type="button" data-city="Delhi" data-lat="28.61" data-lon="77.21">Delhi</button>
+            </div>
+          </div>
+          <div class="eco-w-main"><span id="w-icon">&#9925;</span><b id="w-temp">--&deg;</b></div>
+          <div class="eco-w-grid">
+            <div><small>Feels like</small><b id="w-feels">--</b></div>
+            <div><small>Humidity</small><b id="w-hum">--</b></div>
+            <div><small>Wind</small><b id="w-wind">--</b></div>
+            <div><small>Rain</small><b id="w-rain">--</b></div>
+          </div>
+          <small class="eco-w-upd" id="w-upd">Connecting to weather stations...</small>
+        </div>
+
+        <div class="eco-forecast">
+          <div class="eco-f-head">
+            <div><small>Climate disasters per year, worldwide</small><h3>{{ land_latest }} in {{ land_last_year }} &rarr; <span>{{ land_forecast }}</span> trend estimate for {{ land_forecast_year }}</h3></div>
+            <span class="eco-pill">+{{ land_slope }} / year</span>
+          </div>
+          <svg viewBox="0 0 600 180" class="eco-spark" preserveAspectRatio="none" role="img" aria-label="Recorded annual disaster totals and five-year linear trend estimate">
+            <defs><linearGradient id="sp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity=".35"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>
+            <line x1="0" y1="60" x2="600" y2="60" class="g"/><line x1="0" y1="120" x2="600" y2="120" class="g"/>
+            <polygon points="{{ spark_area }}" fill="url(#sp-fill)"/>
+            <polyline points="{{ spark_recorded }}" class="rec"/>
+            <polyline points="{{ spark_forecast }}" class="fc"/>
+            <circle cx="{{ spark_now.0 }}" cy="{{ spark_now.1 }}" r="5" class="now"/>
+            <circle cx="{{ spark_last.0 }}" cy="{{ spark_last.1 }}" r="5" class="end"/>
+          </svg>
+          <div class="eco-f-axis"><span style="left:0">{{ land_first_year }}</span><span style="left:40.8%">2000</span><span style="left:89.8%">{{ land_last_year }}</span><span style="left:100%">{{ land_forecast_year }}</span></div>
+          <div class="eco-f-legend"><span><i class="l-rec"></i> Recorded</span><span><i class="l-fc"></i> Linear trend estimate</span>
+            <a href="{% url 'console_overview' %}">Full analysis &rarr;</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATA COVERAGE ============ -->
+  <section class="eco-stats">
+    <div class="wrap eco-stats-grid">
+      <div class="eco-stat"><span class="eco-num js-counter" data-target="{{ land_total }}">0</span><small>recorded disasters in the source dataset</small></div>
+      <div class="eco-stat"><span class="eco-num js-counter" data-target="{{ land_country_count }}">0</span><small>countries with reported records</small></div>
+      <div class="eco-stat"><span class="eco-num">{{ land_first_year }}–{{ land_last_year }}</span><small>historical annual coverage</small></div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="eco-section">
+    <div class="wrap">
+      <div class="eco-head">
+        <p class="eco-chip">How EarthScape works</p>
+        <h2>From raw readings to real decisions</h2>
+        <p>Five steps, running on a distributed big-data pipeline.</p>
+      </div>
+      <ol class="eco-flow">
+        <li><span class="eco-step">01</span><div class="eco-ico">🛰️</div><h3>Ingest</h3><p>Satellite, weather-station and sensor data in CSV and other climate formats, historical and live.</p></li>
+        <li><span class="eco-step">02</span><div class="eco-ico">🗄️</div><h3>Store on HDFS</h3><p>Hadoop's distributed file system keeps every dataset safe, replicated and ready to scale.</p></li>
+        <li><span class="eco-step">03</span><div class="eco-ico">⚙️</div><h3>MapReduce</h3><p>Parallel jobs crunch decades of records, skipping gaps and broken rows gracefully.</p></li>
+        <li><span class="eco-step">04</span><div class="eco-ico">🧠</div><h3>Machine learning</h3><p>Regression forecasts the trend; z-scores flag anomalies; correlation shows what moves together.</p></li>
+        <li><span class="eco-step">05</span><div class="eco-ico">🔔</div><h3>Alert &amp; act</h3><p>Thresholds trigger alerts so analysts and administrators can respond fast.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="eco-section eco-section-tint">
+    <div class="wrap">
+      <div class="eco-head">
+        <p class="eco-chip">Explore</p>
+        <h2>Everything in one green workspace</h2>
+      </div>
+      <div class="eco-cards">
+        <a class="eco-card big" href="{% url 'console_overview' %}">
+          <div class="eco-ico">📊</div>
+          <h3>Climate Intelligence Dashboard</h3>
+          <p>Disasters per year, five-year forecast, anomaly alerts, forest carbon and the countries most at risk, read straight from Hadoop.</p>
+          <span class="eco-more">Open dashboard →</span>
+        </a>
+        <a class="eco-card" href="/climatechanges/data-explorer.html"><div class="eco-ico">🌦️</div><h3>Live Data Explorer</h3><p>Real-time weather plus CO₂, temperature and renewables charts.</p><span class="eco-more">Explore →</span></a>
+        <a class="eco-card" href="/climatechanges/simulator.html"><div class="eco-ico">🧪</div><h3>Climate Simulator</h3><p>Slide CO₂ up and down and watch the planet respond.</p><span class="eco-more">Try it →</span></a>
+        <a class="eco-card" href="/climatechanges/course.html"><div class="eco-ico">🎓</div><h3>8-Lesson Course</h3><p>From the greenhouse effect to taking action, with a certificate.</p><span class="eco-more">Start →</span></a>
+        <a class="eco-card" href="/climatechanges/carbon-footprint.html"><div class="eco-ico">👣</div><h3>Carbon Footprint</h3><p>Estimate your own footprint in two minutes.</p><span class="eco-more">Calculate →</span></a>
+        <a class="eco-card" href="{% url 'support' %}"><div class="eco-ico">💬</div><h3>Support &amp; Feedback</h3><p>Ask for help, report an issue or share an idea.</p><span class="eco-more">Contact →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="eco-cta-wrap">
+    <div class="wrap">
+      <div class="eco-cta">
+        <div>
+          <h2>Every degree counts. Every tree counts.</h2>
+          <p>Join EarthScape and turn climate data into climate action.</p>
+        </div>
+        <div class="eco-ctas">
+          {% if user.is_authenticated %}
+            <a href="{% url 'console_overview' %}" class="eco-btn eco-btn-light">Go to dashboard →</a>
+          {% else %}
+            <a href="{% url 'signup' %}" class="eco-btn eco-btn-light">Create free account →</a>
+            <a href="{% url 'login' %}" class="eco-btn eco-btn-ghost">Log in</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+<script>
+(function(){
+  var codes={0:["\u2600\ufe0f","Clear sky"],1:["\ud83c\udf24\ufe0f","Mainly clear"],2:["\u26c5","Partly cloudy"],3:["\u2601\ufe0f","Overcast"],45:["\ud83c\udf2b\ufe0f","Fog"],48:["\ud83c\udf2b\ufe0f","Fog"],51:["\ud83c\udf26\ufe0f","Drizzle"],53:["\ud83c\udf26\ufe0f","Drizzle"],55:["\ud83c\udf26\ufe0f","Drizzle"],61:["\ud83c\udf27\ufe0f","Rain"],63:["\ud83c\udf27\ufe0f","Rain"],65:["\ud83c\udf27\ufe0f","Heavy rain"],80:["\ud83c\udf26\ufe0f","Showers"],81:["\ud83c\udf27\ufe0f","Showers"],82:["\u26c8\ufe0f","Violent showers"],95:["\u26c8\ufe0f","Thunderstorm"],96:["\u26c8\ufe0f","Thunderstorm"],99:["\u26c8\ufe0f","Thunderstorm"]};
+  function $(id){ return document.getElementById(id); }
+  function load(btn){
+    document.querySelectorAll('.eco-w-cities button').forEach(function(b){ b.classList.toggle('on', b===btn); });
+    $('w-city').textContent = btn.dataset.city; $('w-upd').textContent = 'Updating...';
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + btn.dataset.lat + '&longitude=' + btn.dataset.lon +
+      '&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation,weather_code';
+    fetch(url).then(function(r){ return r.json(); }).then(function(d){
+      var c = d.current, w = codes[c.weather_code] || ["\ud83c\udf0d","Weather"];
+      $('w-icon').textContent = w[0]; $('w-temp').textContent = Math.round(c.temperature_2m) + '\u00b0C';
+      $('w-feels').textContent = Math.round(c.apparent_temperature) + '\u00b0C'; $('w-hum').textContent = c.relative_humidity_2m + '%';
+      $('w-wind').textContent = Math.round(c.wind_speed_10m) + ' km/h'; $('w-rain').textContent = c.precipitation + ' mm';
+      $('w-upd').textContent = w[1] + ' \u00b7 updated ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }).catch(function(){ $('w-upd').textContent = 'Live feed unavailable (offline?)'; });
+  }
+  document.querySelectorAll('.eco-w-cities button').forEach(function(b){ b.addEventListener('click', function(){ load(b); }); });
+  var first = document.querySelector('.eco-w-cities button.on');
+  if (first){ load(first); setInterval(function(){ load(document.querySelector('.eco-w-cities button.on')); }, 300000); }
+})();
+</script>
+<script src="{% static 'js/cinematic-home.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Check In With Your Teacher · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Guided course · Check in</p>
+        <h1>Check in with your teacher</h1>
+        <p class="lede">This sends your name and lesson progress to your teacher as a GitHub Issue, free, and nothing leaves this page until you choose to submit it on GitHub yourself.</p>
+        <div class="hero-ctas"><a href="/climatechanges/course.html" class="btn btn-ghost">← Back to course</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Cost</span><span class="ro-value js-counter tone-cool" data-target="0" data-decimals="0" data-prefix="₦" data-suffix="">0</span></div><div class="readout-cell"><span class="ro-label">Where it goes</span><span class="ro-value">GitHub Issues</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap" style="max-width:640px;">
+    <div class="callout callout--alert reveal" id="checkin-setup-warning">
+      <span class="callout-label">Setup needed (for the site owner)</span>
+      <p>This check-in form isn't connected to a repo yet. Open <code>js/checkin.js</code> and change <code>GITHUB_REPO</code> to your real <code>owner/repo-name</code>, then this message disappears automatically.</p>
+    </div>
+
+    <div class="callout callout--note reveal">
+      <span class="callout-label">Before you start</span>
+      <p>You'll need a free GitHub account to actually submit this (most students who code already have one). Consider using just your first name and last initial, e.g. "Ada O.", rather than your full name, since this can be visible publicly.</p>
+    </div>
+
+    <form id="checkin-form" class="tool-panel reveal">
+      <div class="field">
+        <label for="checkin-name">Your name (or first name + initial)</label>
+        <input type="text" id="checkin-name" placeholder="e.g. Ada O." required>
+      </div>
+
+      <div class="field">
+        <label for="checkin-class">Class / school code <span class="muted" style="font-weight:400;">(optional, ask your teacher)</span></label>
+        <input type="text" id="checkin-class" placeholder="e.g. KBI-JSS2 or TECHBASE-SAT-AM">
+      </div>
+
+      <div class="checkin-progress-box">
+        <strong style="font-size:.9rem;"><span id="checkin-progress-count">0</span> of 8 lessons complete on this device</strong>
+        <ul id="checkin-progress-list"></ul>
+      </div>
+
+      <div class="field">
+        <label for="checkin-note">Anything you want to tell your teacher? (optional)</label>
+        <textarea id="checkin-note" placeholder="e.g. I found Lesson 3 really interesting!"></textarea>
+      </div>
+
+      <button type="submit" id="checkin-submit" class="btn btn-primary" style="width:100%;justify-content:center;">Open my check-in on GitHub →</button>
+    </form>
+
+    <p id="checkin-result" class="callout callout--try" style="margin-top:18px;"></p>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/progress.js"></script>
+<script src="/static/js/checkin.js"></script>
+{% endblock %}

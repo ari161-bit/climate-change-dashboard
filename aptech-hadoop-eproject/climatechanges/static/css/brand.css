@@ -1,0 +1,123 @@
+/* =========================================================
+   Global Warming Explorer, brand layer
+   Loaded after styles.css. Direction: a calm, editorial field
+   instrument. Serif display type for authority, a precise sans
+   for reading, mono for readouts; spruce-teal as the anchor and
+   a single ember accent reserved for "heat".
+   Edit the tokens below to retheme the whole site.
+   ========================================================= */
+
+:root{
+  /* semantic colors */
+  --success: #1F7A4D;
+  --warning: #B7791F;
+  --error:   #B42318;
+  --info:    #1D6FA5;
+
+  /* spacing scale */
+  --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem;
+  --space-5: 1.5rem; --space-6: 2rem;  --space-7: 3rem;   --space-8: 4.5rem;
+
+  /* radius + borders */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+
+  /* z-index scale */
+  --z-base: 1; --z-raised: 10; --z-header: 50; --z-overlay: 80; --z-modal: 100;
+
+  /* motion */
+  --dur-fast: 150ms; --dur-base: 250ms; --dur-slow: 600ms;
+
+  /* fluid type scale */
+  --step-0: clamp(1rem, .96rem + .2vw, 1.08rem);
+  --step-1: clamp(1.15rem, 1.08rem + .35vw, 1.3rem);
+  --step-2: clamp(1.4rem, 1.25rem + .75vw, 1.8rem);
+  --step-3: clamp(1.8rem, 1.5rem + 1.5vw, 2.5rem);
+  --step-4: clamp(2.3rem, 1.7rem + 3vw, 4rem);
+}
+[data-theme="dark"]{
+  --success: #4ADE9B; --warning: #F2B35C; --error: #F28B82; --info: #7CC4F0;
+}
+
+/* ---- typography ---- */
+body{ font-size:var(--step-0); line-height:1.65; font-feature-settings:"ss01","cv11"; text-rendering:optimizeLegibility; }
+h1,h2,h3{ font-optical-sizing:auto; letter-spacing:-.022em; text-wrap:balance; }
+h1{ font-size:var(--step-4); font-weight:600; line-height:1.04; letter-spacing:-.03em; }
+h2{ font-size:var(--step-3); font-weight:600; }
+h3{ font-size:var(--step-2); font-weight:600; }
+p, li{ text-wrap:pretty; }
+.lede{ font-size:var(--step-1); line-height:1.55; color:var(--ink-soft); }
+.eyebrow{ letter-spacing:.14em; font-weight:600; }
+
+/* ---- surfaces ---- */
+.card, .tool-panel, .quiz-card, .side-card{
+  border-radius:var(--radius);
+  border-color:var(--line-soft);
+}
+.hero{ border-bottom:0; }
+.hero-media{ border-radius:calc(var(--radius) + 6px); }
+.hero h1{ background:linear-gradient(180deg, var(--ink) 40%, var(--teal-700)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+@supports not (background-clip:text){ .hero h1{ background:none; -webkit-text-fill-color:currentColor; } }
+
+/* ---- buttons: pill, confident ---- */
+.btn{ border-radius:var(--radius-pill); font-weight:600; min-height:44px; padding-inline:1.4em; }
+.btn-primary{ background:linear-gradient(180deg, var(--teal-500), var(--teal-700)); box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 6px 16px -8px var(--teal-700); }
+.btn-amber{ background:linear-gradient(180deg, var(--amber-500), var(--amber-600)); }
+.btn-sm{ min-height:44px; }
+
+/* ---- header ---- */
+.site-header.is-scrolled{ box-shadow:0 1px 0 var(--line-soft), 0 12px 30px -20px rgba(0,0,0,.25); }
+.brand .mark{ border-radius:12px; }
+
+/* ---- links in prose: animated underline ---- */
+main p a:not(.btn), main li a:not(.btn){
+  text-decoration:underline; text-decoration-color:var(--teal-200); text-underline-offset:.2em; text-decoration-thickness:1.5px;
+  transition:text-decoration-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+main p a:not(.btn):hover, main li a:not(.btn):hover{ text-decoration-color:currentColor; color:var(--teal-700); }
+
+/* ---- polish ---- */
+::selection{ background:var(--amber-200); color:var(--ink); }
+html{ scrollbar-color:var(--teal-500) transparent; scrollbar-width:thin; scroll-padding-top:84px; }
+img{ height:auto; }
+.hero-media img, .card img{ height:100%; }
+.scroll-progress-bar{ background:linear-gradient(90deg, var(--teal-500), var(--amber-500)); }
+
+/* ---- accessibility ---- */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .quiz-opt:focus-visible, summary:focus-visible{
+  outline:3px solid var(--amber-500); outline-offset:3px; box-shadow:none; border-radius:6px;
+}
+@media (pointer:coarse){
+  .icon-btn, .nav-link, .mobile-menu a, .az-jump a{ min-height:44px; min-width:44px; }
+}
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+@media (forced-colors: active){
+  .btn-primary, .btn-amber{ border:1px solid ButtonText; }
+}
+
+/* ---- print: clean handouts for the classroom ---- */
+@media print{
+  .site-header, .site-footer, .scroll-progress, .back-to-top, .palette-backdrop, .install-toast, .hero .isolines, .cursor-glow{ display:none !important; }
+  body{ padding-top:0; background:#fff; color:#000; font-size:11pt; }
+  .hero h1{ -webkit-text-fill-color:#000; background:none; }
+  a{ text-decoration:underline; }
+  .card, .callout{ break-inside:avoid; box-shadow:none; }
+}
+
+/* ---- header fit: tighten the desktop nav on mid-width laptops ---- */
+@media (min-width:1100px) and (max-width:1439px){
+  .nav-cta .btn-ghost{ display:none; }
+  .nav-desktop{ gap:0; }
+  .nav-desktop > a, .nav-desktop .nav-link, .nav-desktop button{ padding-inline:.55em; font-size:.88rem; }
+}
+
+/* ---- logo mark: spruce gradient, matches favicon ---- */
+.brand .mark{ background:linear-gradient(135deg, var(--teal-500), var(--teal-900)); box-shadow:0 2px 10px -3px rgba(8,55,61,.5), inset 0 0 0 1px rgba(255,255,255,.12); }
+
+/* ---- header layout: the logo takes only the space it needs, links get the rest ---- */
+.brand{ flex:0 1 auto; }
+.nav-desktop{ flex:1 1 auto; justify-content:flex-end; }

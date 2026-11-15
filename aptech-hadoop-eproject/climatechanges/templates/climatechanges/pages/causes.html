@@ -1,0 +1,80 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Causes of Global Warming · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">Learn · Source</p>
+        <h1>What's actually causing global warming?</h1>
+        <p class="lede">Almost all of the extra greenhouse gas behind today's warming comes from human activity since the 1800s, mainly the everyday business of making electricity, growing food, manufacturing things, and getting around.</p>
+        <div class="hero-ctas"><a href="/climatechanges/effects.html" class="btn btn-primary">Next: the effects →</a></div>
+      </div>
+      <div class="hero-media reveal"><img src="/static/images/photos/Factory_Emitting_Smoke-960.jpg" alt="Industrial smokestacks emitting smoke into the sky"><span class="credit">Industrial emissions · via Wikimedia Commons</span></div>
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Share of emissions: energy & transport</span><span class="ro-value js-counter tone-warm" data-target="73" data-decimals="0" data-prefix="" data-suffix="%+">0</span></div><div class="readout-cell"><span class="ro-label">Share from agriculture & land use</span><span class="ro-value js-counter" data-target="18" data-decimals="0" data-prefix="" data-suffix="%">0</span></div><div class="readout-cell"><span class="ro-label">Years of rapid acceleration</span><span class="ro-value js-counter" data-target="60" data-decimals="0" data-prefix="" data-suffix="+">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Ranked by scale</p>
+      <h2>The big sources, in order of how much they matter</h2>
+      <p class="lede">This list is genuinely a ranking: it follows roughly how much each sector contributes to global human-caused greenhouse gas emissions, based on international energy and climate accounting.</p>
+    </div>
+    <ol class="numbered-list reveal">
+      <li>
+        <h3>Burning fossil fuels for electricity &amp; heat</h3>
+        <p>Coal, oil and natural gas power plants are the single largest source. Every kilowatt-hour generated this way releases CO2 that took millions of years to lock underground.</p>
+      </li>
+      <li>
+        <h3>Transport</h3>
+        <p>Petrol and diesel cars, motorcycles, trucks, ships and planes all burn fossil fuel directly. Road transport alone is a major and fast-growing slice of this.</p>
+      </li>
+      <li>
+        <h3>Industry &amp; manufacturing</h3>
+        <p>Making cement, steel, plastics and chemicals both burns fuel for heat and, in some processes (like cement), releases CO2 as a direct by-product of the chemistry itself.</p>
+      </li>
+      <li>
+        <h3>Agriculture &amp; land use</h3>
+        <p>Clearing forests removes carbon-storing trees and often releases the carbon stored in soil. Livestock farming adds methane; fertiliser use adds nitrous oxide, both far more potent than CO2 molecule-for-molecule.</p>
+      </li>
+      <li>
+        <h3>Waste</h3>
+        <p>Organic waste rotting in landfills without oxygen produces methane. It's a smaller slice of the total, but one of the easiest to shrink quickly through better waste management and recycling.</p>
+      </li>
+    </ol>
+
+    <div class="callout callout--note reveal">
+      <span class="callout-label">A note on speed, not just scale</span>
+      <p>It isn't only how much we emit; it's how fast. Natural processes (plants, oceans, rock weathering) absorb CO2 over centuries to millennia. Humans have added a comparable amount in a little over a century, which is why concentrations have climbed roughly 100 times faster than at the end of the last ice age.</p>
+    </div>
+
+    <div class="fact-strip reveal">
+      <div class="fact"><div class="fv">424.6</div><div class="fl">Mauna Loa annual CO2 average, 2024 (ppm)</div></div>
+      <div class="fact"><div class="fv">430.5</div><div class="fl">Record monthly peak, May 2025 (ppm)</div></div>
+      <div class="fact"><div class="fv">2.6</div><div class="fl">Average annual ppm increase, 2015 to 2024</div></div>
+    </div>
+    <div class="topic-pager"><a class="pager-link prev" href="/climatechanges/what-is-global-warming.html"><span class="pl-dir">← Previous</span><div class="pl-title">What Is Global Warming?</div></a><a class="pager-link next" href="/climatechanges/effects.html"><span class="pl-dir">Next →</span><div class="pl-title">Effects, Worldwide and at Home</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

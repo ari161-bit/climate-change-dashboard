@@ -1,0 +1,74 @@
+{% extends 'climatechanges/console/base.html' %}
+{% load es_tags %}
+{% block title %}Anomaly Detection{% endblock %}
+{% block heading %}Anomaly detection &amp; correlations{% endblock %}
+{% block head %}<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>{% endblock %}
+{% block content %}
+<form class="card filters" method="get">
+  <div class="f"><label for="z">z-score threshold</label><input id="z" type="number" name="z" step="0.1" min="1.5" max="5" value="{{ z }}" style="width:110px"></div>
+  <button class="btn btn-primary" type="submit">Re-run detection</button>
+  <p class="muted" style="margin:0 0 0 auto;max-width:560px">{{ an.method }}.</p>
+</form>
+
+<div class="grid g4">
+  <div class="card kpi hero"><div class="label">Anomalies found</div><div class="value">{{ an.anomalies|length }}</div><div class="sub">{{ an.n_points }} data points scanned</div></div>
+  <div class="card kpi"><div class="label">Temperature anomalies</div><div class="value">{{ temp_anoms|length }}</div><div class="sub">countries with |z| ≥ {{ z }} in the last 3 years · real</div></div>
+  <div class="card kpi"><div class="label">Station anomalies</div><div class="value">{{ station_anoms|length }}</div><div class="sub">{% if an.isolation_forest %}Isolation Forest flagged {{ an.isolation_forest.flagged }} of {{ an.isolation_forest.readings }}{% else %}needs ≥ 50 readings{% endif %}</div></div>
+  <div class="card kpi"><div class="label">Temperature ↔ disasters</div><div class="value">r = {{ corr.pairs.0.r }}</div><div class="sub">p = {{ corr.pairs.0.p_value }} · {{ corr.pairs.0.years }} · real</div></div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Anomaly map, {{ chart.map.year }}</h3><p>How unusual each country's {{ chart.map.year }} temperature was compared with its own 1961-{{ chart.map.year }} history (z-score)</p></div><span class="badge b-real">real (FAO)</span></div>
+  <div id="m-z" class="map"></div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Temperature anomalies (real)</h3><p>Sorted by z-score</p></div></div>
+    <div class="table-wrap" style="max-height:380px;overflow:auto"><table class="t"><thead><tr><th>Country</th><th>Year</th><th class="num">Change</th><th class="num">z</th></tr></thead>
+      <tbody>{% for a in temp_anoms %}<tr><td><b>{{ a.location }}</b></td><td>{{ a.year }}</td><td class="num">{{ a.value|floatformat:2 }} °C</td><td class="num"><span class="badge {% if a.score >= 3 %}b-critical{% else %}b-warning{% endif %}">{{ a.score }}</span></td></tr>
+      {% empty %}<tr><td colspan="4"><div class="empty"><b>None at this threshold</b></div></td></tr>{% endfor %}</tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Station anomalies</h3><p>Isolation Forest on standardised temperature, rainfall and humidity</p></div>{% if station_anoms %}<span class="badge {{ station_anoms.0.source|databadge }}">{{ station_anoms.0.source }}</span>{% endif %}</div>
+    <div class="table-wrap" style="max-height:380px;overflow:auto"><table class="t"><thead><tr><th>Station</th><th>Date</th><th class="num">Temp</th><th class="num">Rain</th><th class="num">Hum.</th><th class="num">Score</th></tr></thead>
+      <tbody>{% for a in station_anoms %}<tr><td><b>{{ a.location }}</b></td><td>{{ a.date }}</td><td class="num">{{ a.value }}</td><td class="num">{{ a.rainfall }}</td><td class="num">{{ a.humidity }}</td><td class="num">{{ a.score }}</td></tr>
+      {% empty %}<tr><td colspan="6"><div class="empty"><b>No station anomalies</b></div></td></tr>{% endfor %}</tbody></table></div>
+  </div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <div class="card-h"><div><h3>Global temperature vs climate disasters</h3><p>One point per year ({{ corr.pairs.0.years }}), Pearson r = {{ corr.pairs.0.r }}</p></div><span class="badge b-real">real (FAO + EM-DAT)</span></div>
+    <div class="chart"><canvas id="c-sc"></canvas></div>
+    <p class="note" style="margin-top:10px">Correlation is not causation: disaster counts also rise because reporting improved over time.</p>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Variable correlation matrix</h3><p>Pearson r between station variables</p></div>{% if chart.matrix %}<span class="badge {{ chart.matrix.label|databadge }}">{{ chart.matrix.label }}</span>{% endif %}</div>
+    {% if chart.matrix %}
+    <div class="table-wrap"><table class="t heat"><thead><tr><th></th>{% for v in chart.matrix.variables %}<th>{{ v }}</th>{% endfor %}</tr></thead>
+      <tbody>{% for row in chart.matrix.values %}<tr><th style="text-align:left">{% for v in chart.matrix.variables %}{% if forloop.counter0 == forloop.parentloop.counter0 %}{{ v }}{% endif %}{% endfor %}</th>
+        {% for c in row %}<td class="corr" data-v="{{ c }}">{{ c|floatformat:2 }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+    {% else %}<div class="empty"><b>Not enough station data</b></div>{% endif %}
+    <div class="table-wrap" style="margin-top:14px"><table class="t"><thead><tr><th>A</th><th>B</th><th class="num">r</th><th class="num">n</th></tr></thead>
+      <tbody>{% for p in corr.pairs %}<tr><td>{{ p.a }}</td><td>{{ p.b }}</td><td class="num"><b>{{ p.r }}</b></td><td class="num">{{ p.n }}</td></tr>{% endfor %}</tbody></table></div>
+  </div>
+</div>
+{{ chart|json_script:"d-an" }}
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var d = ES.data("d-an");
+  ES.map("m-z", d.map.iso3, d.map.z, d.map.names, { unit: "z", label: "z-score", zmid: 0, zmin: -3, zmax: 3,
+    colorscale: [[0, "#1d4ed8"], [0.35, "#bfdbfe"], [0.5, "#f7f7f2"], [0.7, "#fdba74"], [0.85, "#ef4444"], [1, "#7f1d1d"]] });
+  var pts = d.scatter.temp.map(function(t, i){ return { x: t, y: d.scatter.disasters[i] }; });
+  ES.scatter("c-sc", pts, { label: "years", x: "Global temperature change (°C)", y: "Climate disasters" });
+  document.querySelectorAll("td.corr").forEach(function(td){
+    var v = parseFloat(td.dataset.v), a = Math.min(1, Math.abs(v));
+    td.style.background = v >= 0 ? "rgba(22,163,74," + (a * .55) + ")" : "rgba(37,99,235," + (a * .55) + ")";
+    if (a > .6) td.style.color = "#fff";
+  });
+})();
+</script>
+{% endblock %}

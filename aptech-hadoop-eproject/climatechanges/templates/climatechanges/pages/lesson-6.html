@@ -1,0 +1,73 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Lesson 6: Reduce, Reuse, Recycle · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Guided Course · Lesson 6 of 8</p>
+        <h1>Reduce, Reuse, Recycle</h1>
+        <p class="lede">Apply the three Rs, in priority order, to real examples.</p>
+        <div class="hero-ctas"><a href="/climatechanges/recycle.html" class="btn btn-ghost">Read the full page →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Estimated time</span><span class="ro-value js-counter" data-target="15" data-decimals="0" data-prefix="" data-suffix=" min">0</span></div><div class="readout-cell"><span class="ro-label">Lesson</span><span class="ro-value js-counter tone-cool" data-target="6" data-decimals="0" data-prefix="" data-suffix=" of 8">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap" style="max-width:780px;">
+    <div class="objective-box reveal">
+      <span class="ob-ico">🎯</span>
+      <div><span class="ob-label">Learning objective</span><p>Apply the three Rs, in priority order, to real examples.</p></div>
+    </div>
+    <div class="prose reveal"><p>The three Rs are a priority order, not interchangeable options: reducing what you use beats reusing it, which beats recycling it, which still beats throwing it away. Recycling works because reprocessing used material almost always takes far less energy than starting from raw ore, oil or trees.</p></div>
+
+    <div class="complete-box reveal">
+      <button class="btn btn-primary" id="mark-complete-btn" data-lesson="6">Mark this lesson complete</button>
+      <span id="complete-status"></span>
+    </div>
+
+    <div class="worksheet reveal">
+      <h3>📝 Worksheet, Lesson 6</h3>
+
+        <div class="ws-q">
+          <label>1. Sort these into the right column: plastic bottle, school exercise book, banana peel, old phone, glass jar, plastic bag</label>
+          <table>
+            <tr><th>Reduce</th><th>Reuse</th><th>Recycle</th></tr>
+            <tr><td style="height:60px;"></td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="ws-q">
+          <label>2. Short answer</label>
+          <p>Why does recycling aluminium use so much less energy than making it from raw ore?</p>
+          <div class="ws-line"></div>
+        </div>
+    </div>
+
+    <div class="callout callout--note reveal print-btn" style="text-align:center;">
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Print this lesson + worksheet</button>
+    </div>
+    <div class="lesson-pager"><a class="pager-link prev" href="/climatechanges/lesson-5.html"><span class="pl-dir">← Previous</span><div class="pl-title">Lesson 5</div></a><a class="pager-link next" href="/climatechanges/lesson-7.html"><span class="pl-dir">Next →</span><div class="pl-title">Lesson 7</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/progress.js"></script>
+{% endblock %}

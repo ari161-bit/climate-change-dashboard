@@ -1,0 +1,77 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Alerts{% endblock %}
+{% block heading %}Alerts &amp; notifications{% endblock %}
+{% block top_actions %}
+<form method="post" class="btn-row">{% csrf_token %}
+  <button class="btn btn-ghost btn-sm" name="action" value="mark_all">Mark all read</button>
+  <button class="btn btn-primary btn-sm" name="action" value="evaluate">Evaluate rules now</button>
+</form>
+{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <div class="card kpi hero"><div class="label">Unread</div><div class="value">{{ unread_alerts }}</div><div class="sub">of {{ counts.total }} alerts</div></div>
+  <div class="card kpi"><div class="label"><span class="sev critical"></span>Critical</div><div class="value">{{ counts.critical }}</div></div>
+  <div class="card kpi"><div class="label"><span class="sev warning"></span>Warning</div><div class="value">{{ counts.warning }}</div></div>
+  <div class="card kpi"><div class="label"><span class="sev info"></span>Info</div><div class="value">{{ counts.info }}</div></div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Alert history</h3><p>Newest first · unread rows are highlighted</p></div>
+    <div class="tabs">
+      <a href="?" class="{% if not sev and not state and not cat %}on{% endif %}">All</a>
+      <a href="?state=unread" class="{% if state == 'unread' %}on{% endif %}">Unread</a>
+      <a href="?state=read" class="{% if state == 'read' %}on{% endif %}">Read</a>
+      {% for k, l in severities %}<a href="?severity={{ k }}" class="{% if sev == k %}on{% endif %}">{{ l }}</a>{% endfor %}
+      <a href="?category=temperature" class="{% if cat == 'temperature' %}on{% endif %}">Temperature</a>
+      <a href="?category=rainfall" class="{% if cat == 'rainfall' %}on{% endif %}">Rainfall</a>
+      <a href="?category=anomaly" class="{% if cat == 'anomaly' %}on{% endif %}">Anomaly</a>
+    </div></div>
+  <div class="table-wrap"><table class="t">
+    <thead><tr><th>Severity</th><th>Alert</th><th>Location</th><th class="num">Value</th><th>Raised</th><th></th></tr></thead>
+    <tbody>{% for a in page %}
+      <tr class="{% if a.id not in read_ids %}unread{% endif %}">
+        <td><span class="badge b-{{ a.severity }}">{{ a.get_severity_display }}</span></td>
+        <td><b>{{ a.title }}</b><br><small>{{ a.message }}</small></td>
+        <td>{{ a.location|default:"-" }}</td><td class="num">{{ a.value|floatformat:2|default:"-" }}</td>
+        <td><small>{{ a.created|date:"d M Y H:i" }}</small></td>
+        <td><form method="post">{% csrf_token %}<input type="hidden" name="id" value="{{ a.id }}">
+          {% if a.id in read_ids %}<button class="btn btn-ghost btn-sm" name="action" value="unread">Mark unread</button>
+          {% else %}<button class="btn btn-ghost btn-sm" name="action" value="read">Mark read</button>{% endif %}</form></td></tr>
+    {% empty %}<tr><td colspan="6"><div class="empty"><b>No alerts</b>Nothing matches this view.</div></td></tr>{% endfor %}</tbody>
+  </table></div>
+  <div class="pager">{% if page.has_previous %}<a class="btn btn-ghost btn-sm" href="?page={{ page.previous_page_number }}{% if state %}&state={{ state }}{% endif %}{% if sev %}&severity={{ sev }}{% endif %}{% if cat %}&category={{ cat }}{% endif %}">← Prev</a>{% endif %}
+    <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-ghost btn-sm" href="?page={{ page.next_page_number }}{% if state %}&state={{ state }}{% endif %}{% if sev %}&severity={{ sev }}{% endif %}{% if cat %}&category={{ cat }}{% endif %}">Next →</a>{% endif %}</div>
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Alert rules &amp; thresholds</h3><p>Rules run on every new reading (real-time) and in batch evaluations{% if not is_admin %} · only administrators can edit{% endif %}</p></div></div>
+  <div class="table-wrap"><table class="t">
+    <thead><tr><th>Rule</th><th>Condition</th><th>Severity</th><th>Active</th>{% if is_admin %}<th>Edit</th>{% endif %}</tr></thead>
+    <tbody>{% for r in rules %}<tr>
+      {% if is_admin %}
+        <td><form method="post" id="rule-{{ r.id }}">{% csrf_token %}<input type="hidden" name="rule_id" value="{{ r.id }}"></form>
+          <input form="rule-{{ r.id }}" name="name" value="{{ r.name }}" style="width:100%" aria-label="rule name"></td>
+        <td style="white-space:nowrap"><select form="rule-{{ r.id }}" name="variable" aria-label="variable">{% for k, l in r.VARIABLES %}<option value="{{ k }}" {% if k == r.variable %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+          <select form="rule-{{ r.id }}" name="operator" aria-label="operator">{% for k, l in r.OPERATORS %}<option value="{{ k }}" {% if k == r.operator %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+          <input form="rule-{{ r.id }}" name="threshold" type="number" step="any" value="{{ r.threshold }}" style="width:90px" aria-label="threshold"></td>
+        <td><select form="rule-{{ r.id }}" name="severity" aria-label="severity">{% for k, l in r.SEVERITIES %}<option value="{{ k }}" {% if k == r.severity %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></td>
+        <td><input form="rule-{{ r.id }}" type="checkbox" name="active" {% if r.active %}checked{% endif %} aria-label="active"></td>
+        <td style="white-space:nowrap"><button form="rule-{{ r.id }}" class="btn btn-primary btn-sm" name="action" value="save_rule">Save</button>
+          <button form="rule-{{ r.id }}" class="btn btn-danger btn-sm" name="action" value="delete_rule" data-confirm="Delete this rule?">Delete</button></td>
+      {% else %}
+        <td><b>{{ r.name }}</b></td><td>{{ r.get_variable_display }} {{ r.get_operator_display }} {{ r.threshold }}</td>
+        <td><span class="badge b-{{ r.severity }}">{{ r.get_severity_display }}</span></td><td>{% if r.active %}✓{% else %}-{% endif %}</td>
+      {% endif %}
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% if is_admin %}
+  <details style="margin-top:14px"><summary>+ Add a new rule</summary>
+    <form method="post" class="form-grid" style="margin-top:12px">{% csrf_token %}<input type="hidden" name="action" value="save_rule">
+      {% for field in rule_form %}<div class="fg"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>{% endfor %}
+      <div class="full"><button class="btn btn-primary">Create rule</button></div>
+    </form>
+  </details>
+  {% endif %}
+</div>
+{% endblock %}

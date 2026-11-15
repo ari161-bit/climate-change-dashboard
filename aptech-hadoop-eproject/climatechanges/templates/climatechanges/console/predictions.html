@@ -1,0 +1,105 @@
+{% extends 'climatechanges/console/base.html' %}
+{% load es_tags %}
+{% block title %}Predictions{% endblock %}
+{% block heading %}Predictions &amp; model evaluation{% endblock %}
+{% block top_actions %}<form method="post">{% csrf_token %}<button class="btn btn-primary btn-sm">Retrain models</button></form>{% endblock %}
+{% block content %}
+<form class="card filters" method="get">
+  <div class="f"><label for="p-country">Temperature series</label>
+    <select id="p-country" name="country" onchange="this.form.submit()"><option>World</option>
+      {% for r in opts.regions %}<option {% if r == country %}selected{% endif %}>{{ r }}</option>{% endfor %}
+      {% for c, iso in opts.fao_countries %}<option {% if c == country %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></div>
+  <p class="muted" style="margin:0 0 0 auto;max-width:520px">All metrics below are measured on data the models did not train on. Temperature: the last 10 years are held out. Rainfall: a random 20% of readings are held out.</p>
+</form>
+
+{% if tt %}
+<div class="grid g4">
+  <div class="card kpi hero"><div class="label">Best temperature model</div><div class="value" style="font-size:20px">{{ tt.best_model }}</div><div class="sub">chosen by lowest test RMSE</div></div>
+  <div class="card kpi"><div class="label">Test RMSE</div><div class="value">{{ tt.best_metrics.RMSE }} <small>°C</small></div><div class="sub">MAE {{ tt.best_metrics.MAE }} °C · R² {{ tt.best_metrics.R2 }}</div></div>
+  <div class="card kpi"><div class="label">Warming rate</div><div class="value">{{ tt.warming_per_decade|floatformat:3 }} <small>°C / decade</small></div><div class="sub">linear trend over {{ tt.years.0 }}-{{ tt.years|last }}</div></div>
+  <div class="card kpi"><div class="label">Forecast {{ tt.future_years|last }}</div><div class="value">{{ tt.forecast|last|floatformat:2 }} <small>°C</small></div><div class="sub">95% band ±{{ tt.forecast_band }} °C</div></div>
+</div>
+
+<div class="grid g3">
+  <div class="card span2">
+    <div class="card-h"><div><h3>Temperature: actual vs predicted ({{ country }})</h3><p>Grey area = held-out test years. Model refit on all years for the forecast.</p></div><span class="badge b-real">real (FAO)</span></div>
+    <div class="chart tall"><canvas id="c-tt"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><h3>Model comparison</h3><p>{{ tt.n_train }} training years · {{ tt.n_test }} test years</p></div></div>
+    <div class="table-wrap"><table class="t"><thead><tr><th>Model</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">R²</th></tr></thead>
+      <tbody>{% for e in tt.evaluation %}<tr {% if e.model == tt.best_model %}style="background:#f0fdf4"{% endif %}><td>{% if e.model == tt.best_model %}<b>{{ e.model }}</b> ✓{% else %}{{ e.model }}{% endif %}</td>
+        <td class="num">{{ e.MAE }}</td><td class="num">{{ e.RMSE }}</td><td class="num">{{ e.R2 }}</td></tr>{% endfor %}</tbody></table></div>
+    <p class="note" style="margin-top:12px">Random forests cannot extrapolate beyond the years they were trained on, which is why they score poorly on future years. R² can be negative when a model does worse than predicting the test-period average.</p>
+  </div>
+</div>
+<div class="card">
+  <div class="card-h"><div><h3>Test-period errors</h3><p>Prediction error per held-out year (best model)</p></div></div>
+  <div class="chart short"><canvas id="c-err"></canvas></div>
+</div>
+{% else %}
+<div class="card"><div class="empty"><b>Not enough data for {{ country }}</b>Pick another series.</div></div>
+{% endif %}
+
+<div class="card">
+  <div class="card-h"><div><h3>Rainfall prediction</h3><p>{% if rf.ready %}{{ rf.algorithm }} · {{ rf.n_train }} train / {{ rf.n_test }} test readings{% endif %}</p></div>
+    {% if rf.ready %}<span class="badge {{ rf.data_label|databadge }}">{{ rf.data_label }}</span>{% endif %}</div>
+  {% if rf.ready %}
+  {% if rf.is_sample_data %}<div class="msg warning" style="margin-bottom:14px">This model is trained on <b>sample (synthetic) station data</b>. The metrics are real measurements of the model on that data, but they say nothing about real-world rainfall skill until real station records are uploaded.</div>{% endif %}
+  <div class="grid g3">
+    <div>
+      <div class="table-wrap"><table class="t"><thead><tr><th>Model</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">R²</th></tr></thead><tbody>
+        <tr><td>Random forest</td><td class="num">{{ rf.metrics.MAE }}</td><td class="num">{{ rf.metrics.RMSE }}</td><td class="num">{{ rf.metrics.R2 }}</td></tr>
+        <tr><td>Seasonal baseline <small>(station-month mean)</small></td><td class="num">{{ rf.baseline_metrics.MAE }}</td><td class="num">{{ rf.baseline_metrics.RMSE }}</td><td class="num">{{ rf.baseline_metrics.R2 }}</td></tr>
+      </tbody></table></div>
+      <p class="note" style="margin-top:12px">{% if rf.metrics.RMSE < rf.baseline_metrics.RMSE %}<b>The random forest beats the seasonal baseline</b> by {{ rf.baseline_metrics.RMSE|floatformat:1 }} → {{ rf.metrics.RMSE|floatformat:1 }} mm RMSE.{% else %}<b>The random forest does not beat the seasonal baseline</b> on this data: rainfall here is mostly explained by station and season, and the extra features add noise. Reported as measured.{% endif %} Errors in mm per reading.</p>
+      <h4 style="margin:16px 0 8px;font-size:14px">Feature importance</h4>
+      {% for f in rf.importances %}<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12.5px"><span>{{ f.feature }}</span><b>{{ f.importance }}</b></div><div class="bar"><i style="width:{{ f.importance|pct:1 }}%"></i></div></div>{% endfor %}
+    </div>
+    <div class="span2"><div class="chart tall"><canvas id="c-rf"></canvas></div></div>
+  </div>
+  {% else %}<div class="empty"><b>Rainfall model not ready</b>{{ rf.reason }}</div>{% endif %}
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Model run history</h3><p>Every training run with its measured metrics</p></div></div>
+  <div class="table-wrap"><table class="t"><thead><tr><th>Trained</th><th>Model</th><th>Algorithm</th><th>Data</th><th class="num">Train</th><th class="num">Test</th><th>Metrics</th></tr></thead>
+    <tbody>{% for r in runs %}<tr><td><small>{{ r.trained_at|date:"d M Y H:i" }}</small></td><td><b>{{ r.name }}</b></td><td>{{ r.algorithm }}</td>
+      <td><span class="badge {% if r.is_sample_data %}b-sample{% else %}b-real{% endif %}">{% if r.is_sample_data %}sample{% else %}real{% endif %}</span> <small>{{ r.data_source|truncatechars:40 }}</small></td>
+      <td class="num">{{ r.n_train }}</td><td class="num">{{ r.n_test }}</td><td><small>{% for k, v in r.metrics.items %}{{ k }} {{ v }}{% if not forloop.last %} · {% endif %}{% endfor %}</small></td></tr>
+    {% empty %}<tr><td colspan="7"><div class="empty"><b>No runs yet</b>Click “Retrain models”.</div></td></tr>{% endfor %}</tbody></table></div>
+</div>
+{{ chart|json_script:"d-pred" }}
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var d = ES.data("d-pred");
+  if (d.tt) {
+    var t = d.tt, labels = t.years.concat(t.future_years), pad = t.future_years.map(function(){ return null; });
+    var testPred = t.years.map(function(y){ var i = t.test_years.indexOf(y); return i < 0 ? null : null; });
+    var best = t.evaluation.filter(function(e){ return e.model === t.best_model; })[0];
+    var tp = t.years.map(function(y){ var i = t.test_years.indexOf(y); return i < 0 ? null : best.test_pred[i]; });
+    var fc = t.years.map(function(){ return null; }); fc[fc.length-1] = t.fitted[t.fitted.length-1];
+    var firstTest = t.years.indexOf(t.test_years[0]);
+    var shade = { id: "testShade", beforeDraw: function(c){ var x = c.scales.x, a = c.chartArea; if (firstTest < 0) return;
+      var x0 = x.getPixelForValue(firstTest), x1 = x.getPixelForValue(t.years.length - 1);
+      c.ctx.save(); c.ctx.fillStyle = "rgba(15,42,31,.05)"; c.ctx.fillRect(x0, a.top, x1 - x0, a.bottom - a.top); c.ctx.restore(); } };
+    var ch = ES.line("c-tt", labels, [
+      { label: "Actual", data: t.actual.concat(pad), borderColor: ES.colors.green, pointRadius: 2 },
+      { label: "Predicted on test years (" + t.best_model + ")", data: tp.concat(pad), borderColor: ES.colors.blue, pointRadius: 3, borderWidth: 2 },
+      { label: "Forecast", data: fc.concat(t.forecast), borderColor: ES.colors.pink, borderDash: [6,5] }
+    ], { y: "°C vs 1951-1980" });
+    if (ch) { ch.config.plugins = [shade]; ch.update(); }
+    ES.bar("c-err", t.test_years, [{ label: "Prediction error (°C)",
+      data: t.test_years.map(function(y, i){ return +(best.test_pred[i] - t.actual[t.years.indexOf(y)]).toFixed(3); }),
+      backgroundColor: t.test_years.map(function(y, i){ return best.test_pred[i] - t.actual[t.years.indexOf(y)] >= 0 ? "rgba(219,39,119,.6)" : "rgba(37,99,235,.6)"; }) }], { y: "°C" });
+  }
+  if (d.rf) {
+    var pts = d.rf.actual.map(function(a, i){ return { x: a, y: d.rf.predicted[i] }; });
+    var mx = Math.max.apply(null, d.rf.actual.concat(d.rf.predicted));
+    ES.scatter("c-rf", pts, { label: "test readings", x: "Actual rainfall (mm)", y: "Predicted rainfall (mm)", diagonal: [{ x: 0, y: 0 }, { x: mx, y: mx }] });
+  }
+})();
+</script>
+{% endblock %}
