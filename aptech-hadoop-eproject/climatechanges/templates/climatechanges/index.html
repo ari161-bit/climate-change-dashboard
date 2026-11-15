@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}">
+<link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}?v=2">
 {% endblock %}
 
 {% block body %}
@@ -40,9 +40,10 @@
           <a href="{% url 'about' %}" class="eco-btn eco-btn-line">Discover our mission</a>
         </div>
         <ul class="eco-trust">
-          <li><b>{{ land_total }}</b> recorded disasters</li>
+          <li><b class="js-fmt">{{ land_total }}</b> recorded disasters</li>
           <li><b>{{ land_country_count }}</b> reporting countries</li>
           <li><b>{{ land_first_year }}–{{ land_last_year }}</b> annual coverage</li>
+          <li><b>+{{ land_slope }}</b> more disasters each year</li>
         </ul>
       </div>
 
@@ -83,9 +84,9 @@
             <circle cx="40" cy="240" r="6" fill="#86efac"/>
           </g>
         </svg>
-        <div class="eco-float f1"><span>◷</span><div><b>{{ land_first_year }}–{{ land_last_year }}</b><small>observed disaster record</small></div></div>
-        <div class="eco-float f2"><span>◎</span><div><b>{{ land_country_count }} countries</b><small>country-level coverage</small></div></div>
-        <div class="eco-float f3"><span>↗</span><div><b>Evidence-led</b><small>trends &amp; projections</small></div></div>
+        <div class="eco-float f1"><span>◉</span><div><b>Live weather</b><small>streamed from Open-Meteo</small></div></div>
+        <div class="eco-float f2"><span>⛁</span><div><b>Hadoop + MapReduce</b><small>distributed data pipeline</small></div></div>
+        <div class="eco-float f3"><span>↗</span><div><b>Forecast to {{ land_forecast_year }}</b><small>machine-learning trend</small></div></div>
       </div>
     </div>
 
@@ -149,15 +150,6 @@
     </div>
   </section>
 
-  <!-- ============ DATA COVERAGE ============ -->
-  <section class="eco-stats">
-    <div class="wrap eco-stats-grid">
-      <div class="eco-stat"><span class="eco-num js-counter" data-target="{{ land_total }}">0</span><small>recorded disasters in the source dataset</small></div>
-      <div class="eco-stat"><span class="eco-num js-counter" data-target="{{ land_country_count }}">0</span><small>countries with reported records</small></div>
-      <div class="eco-stat"><span class="eco-num">{{ land_first_year }}–{{ land_last_year }}</span><small>historical annual coverage</small></div>
-    </div>
-  </section>
-
   <!-- ============ HOW IT WORKS ============ -->
   <section class="eco-section">
     <div class="wrap">
@@ -188,13 +180,24 @@
           <div class="eco-ico">📊</div>
           <h3>Climate Intelligence Dashboard</h3>
           <p>Disasters per year, five-year forecast, anomaly alerts, forest carbon and the countries most at risk, read straight from Hadoop.</p>
+          <div class="eco-card-preview" aria-hidden="true">
+            <div class="eco-card-kpis">
+              <div><small>{{ land_last_year }}</small><b>{{ land_latest }}</b></div>
+              <div><small>{{ land_forecast_year }} est.</small><b>{{ land_forecast }}</b></div>
+              <div><small>Trend</small><b>+{{ land_slope }}/yr</b></div>
+            </div>
+            <svg viewBox="0 0 600 180" preserveAspectRatio="none">
+              <polygon points="{{ spark_area }}" class="area"/>
+              <polyline points="{{ spark_recorded }}" class="rec"/>
+              <polyline points="{{ spark_forecast }}" class="fc"/>
+            </svg>
+          </div>
           <span class="eco-more">Open dashboard →</span>
         </a>
         <a class="eco-card" href="/climatechanges/data-explorer.html"><div class="eco-ico">🌦️</div><h3>Live Data Explorer</h3><p>Real-time weather plus CO₂, temperature and renewables charts.</p><span class="eco-more">Explore →</span></a>
         <a class="eco-card" href="/climatechanges/simulator.html"><div class="eco-ico">🧪</div><h3>Climate Simulator</h3><p>Slide CO₂ up and down and watch the planet respond.</p><span class="eco-more">Try it →</span></a>
         <a class="eco-card" href="/climatechanges/course.html"><div class="eco-ico">🎓</div><h3>8-Lesson Course</h3><p>From the greenhouse effect to taking action, with a certificate.</p><span class="eco-more">Start →</span></a>
         <a class="eco-card" href="/climatechanges/carbon-footprint.html"><div class="eco-ico">👣</div><h3>Carbon Footprint</h3><p>Estimate your own footprint in two minutes.</p><span class="eco-more">Calculate →</span></a>
-        <a class="eco-card" href="{% url 'support' %}"><div class="eco-ico">💬</div><h3>Support &amp; Feedback</h3><p>Ask for help, report an issue or share an idea.</p><span class="eco-more">Contact →</span></a>
       </div>
     </div>
   </section>
@@ -205,7 +208,7 @@
       <div class="eco-cta">
         <div>
           <h2>Every degree counts. Every tree counts.</h2>
-          <p>Join EarthScape and turn climate data into climate action.</p>
+          <p>Join EarthScape and turn climate data into climate action. Questions? <a href="{% url 'support' %}">Talk to us</a>.</p>
         </div>
         <div class="eco-ctas">
           {% if user.is_authenticated %}
@@ -238,6 +241,7 @@
     }).catch(function(){ $('w-upd').textContent = 'Live feed unavailable (offline?)'; });
   }
   document.querySelectorAll('.eco-w-cities button').forEach(function(b){ b.addEventListener('click', function(){ load(b); }); });
+  document.querySelectorAll('.js-fmt').forEach(function(el){ var n = Number(el.textContent); if (!isNaN(n)) el.textContent = n.toLocaleString('en-US'); });
   var first = document.querySelector('.eco-w-cities button.on');
   if (first){ load(first); setInterval(function(){ load(document.querySelector('.eco-w-cities button.on')); }, 300000); }
 })();
