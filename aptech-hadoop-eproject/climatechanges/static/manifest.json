@@ -1,0 +1,43 @@
+{
+  "name": "Global Warming Explorer",
+  "short_name": "GW Explorer",
+  "description": "27-page interactive climate-science learning site: an 8-lesson guided course, live weather, a CO2/temperature data explorer and a quiz.",
+  "id": "/",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "orientation": "any",
+  "background_color": "#F6F4EE",
+  "theme_color": "#0B5560",
+  "lang": "en",
+  "categories": ["education", "reference"],
+  "icons": [
+    { "src": "images/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "images/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "images/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Data Explorer",
+      "short_name": "Data",
+      "description": "Live weather plus the latest CO2 and temperature data",
+      "url": "data-explorer.html",
+      "icons": [{ "src": "images/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Climate Simulator",
+      "short_name": "Simulator",
+      "description": "Drag the CO2 slider and see the greenhouse effect happen",
+      "url": "simulator.html",
+      "icons": [{ "src": "images/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Take the Quiz",
+      "short_name": "Quiz",
+      "description": "Ten questions testing what you have learned",
+      "url": "quiz.html",
+      "icons": [{ "src": "images/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

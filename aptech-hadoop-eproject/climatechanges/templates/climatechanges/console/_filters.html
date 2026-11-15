@@ -1,0 +1,16 @@
+<form class="card filters" method="get" aria-label="Filters">
+  <div class="f"><label for="f-start">From</label><input type="date" id="f-start" name="start" value="{{ f.start }}"></div>
+  <div class="f"><label for="f-end">To</label><input type="date" id="f-end" name="end" value="{{ f.end }}"></div>
+  <div class="f"><label for="f-region">Region</label>
+    <select id="f-region" name="region"><option value="">All regions</option>
+      {% for r in opts.regions %}<option {% if r == f.region %}selected{% endif %}>{{ r }}</option>{% endfor %}</select></div>
+  <div class="f"><label for="f-country">Country</label>
+    <select id="f-country" name="country"><option value="">All countries</option>
+      {% for c in opts.reading_countries %}<option {% if c == f.country %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></div>
+  <div class="f"><label for="f-var">Climate variable</label>
+    <select id="f-var" name="variable">{% for v, l in opts.variables %}<option value="{{ v }}" {% if v == f.variable %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  {% if show_fao %}<div class="f"><label for="f-fao">Temperature series</label>
+    <select id="f-fao" name="fao_country"><option>World</option>{% for r in opts.regions %}<option {% if r == fao_country %}selected{% endif %}>{{ r }}</option>{% endfor %}
+      {% for c, iso in opts.fao_countries %}<option {% if c == fao_country %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></div>{% endif %}
+  <div class="actions"><a class="btn btn-ghost" href="?">Reset</a><button class="btn btn-primary" type="submit">Apply filters</button></div>
+</form>

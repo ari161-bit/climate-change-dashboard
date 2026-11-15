@@ -1,0 +1,32 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Job #{{ job.pk }}{% endblock %}
+{% block crumb %}<a href="{% url 'console_processing' %}">Data processing</a> / job #{{ job.pk }}{% endblock %}
+{% block heading %}{{ job.get_job_type_display }}{% endblock %}
+{% block top_actions %}<span class="badge b-{{ job.status }}">{{ job.status }}</span>{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <div class="card kpi"><div class="label">Engine</div><div class="value" style="font-size:18px">{{ job.engine }}</div><div class="sub">{% if job.engine == "local-mapreduce" %}built-in MapReduce engine{% elif job.engine == "hadoop-streaming" %}real Hadoop job, output read from HDFS{% else %}Python analytics{% endif %}</div></div>
+  <div class="card kpi"><div class="label">Records in → out</div><div class="value">{{ job.records_in }} → {{ job.records_out }}</div><div class="sub">{{ job.skipped_records }} incomplete records skipped</div></div>
+  <div class="card kpi"><div class="label">Parallel map tasks</div><div class="value">{{ job.map_tasks|default:"-" }}</div><div class="sub">input: {{ job.input_path|default:"-" }}</div></div>
+  <div class="card kpi"><div class="label">Duration</div><div class="value">{{ job.duration_ms }} <small>ms</small></div><div class="sub">{{ job.created|date:"d M Y H:i:s" }}</div></div>
+</div>
+{% if job.error %}<div class="msg error">{{ job.error }}</div>{% endif %}
+{% if chart %}
+<div class="card"><div class="card-h"><div><h3>Output</h3><p>Reduced value per key</p></div><span class="badge b-real">real data</span></div><div class="chart"><canvas id="c-out"></canvas></div></div>
+{{ chart|json_script:"d-out" }}
+{% endif %}
+{% if job.result.hadoop_command %}
+<div class="card"><div class="card-h"><div><h3>Run this job on a Hadoop cluster</h3><p>The same logic as Hadoop Streaming (hadoop/mapper.py + reducer.py)</p></div></div>
+<pre class="code">{{ job.result.hadoop_command }}</pre></div>
+{% endif %}
+{% if rows %}
+<div class="card"><div class="card-h"><div><h3>Reducer output</h3><p>{{ rows|length }} keys</p></div></div>
+<div class="table-wrap" style="max-height:420px;overflow:auto"><table class="t"><thead><tr><th>Key</th><th>Value</th></tr></thead>
+<tbody>{% for k, v in rows %}<tr><td><code>{{ k }}</code></td><td>{{ v }}</td></tr>{% endfor %}</tbody></table></div></div>
+{% else %}
+<div class="card"><div class="card-h"><div><h3>Result</h3></div></div><pre class="code">{{ result_json }}</pre></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}{% if chart %}<script>
+var d = ES.data("d-out"); ES.bar("c-out", d.labels, [{ label: "value", data: d.values }]);
+</script>{% endif %}{% endblock %}

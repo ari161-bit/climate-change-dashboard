@@ -1,0 +1,11 @@
+[
+  {
+    "station": "Dakar",
+    "country": "Senegal",
+    "region": "Africa",
+    "timestamp": "2026-11-01T12:00:00Z",
+    "temperature": 31.2,
+    "rainfall": 0.0,
+    "humidity": 61
+  }
+]

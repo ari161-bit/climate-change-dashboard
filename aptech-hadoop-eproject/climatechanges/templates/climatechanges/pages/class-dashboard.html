@@ -1,0 +1,46 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Class Dashboard · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner hero-inner--narrow">
+      <div>
+        <p class="eyebrow">Guided course · Class dashboard</p>
+        <h1>Class Dashboard</h1>
+        <p class="lede">A live view of every student check-in, built automatically by a free GitHub Action that watches the repo's Issues, so you never have to read a raw Issues list by hand.</p>
+        <div class="hero-ctas"><a href="/climatechanges/checkin.html" class="btn btn-ghost">Check In page →</a><a href="/climatechanges/for-teachers.html" class="btn btn-ghost">For teachers →</a></div>
+      </div>
+
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Updates</span><span class="ro-value tone-cool">Auto</span></div><div class="readout-cell"><span class="ro-label">Cost</span><span class="ro-value js-counter" data-target="0" data-decimals="0" data-prefix="₦" data-suffix="">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div id="dashboard-mount" class="reveal"><div class="weather-loading">Loading dashboard&hellip;</div></div>
+    <div class="callout callout--note reveal" style="margin-top:30px;">
+      <span class="callout-label">How this stays up to date</span>
+      <p>Every time a check-in Issue is opened (or every six hours as a fallback), a free GitHub Action reads the repo's Issues, rebuilds <code>roster-data.json</code>, and commits it back, no server, no database, no cost. See <code>.github/workflows/update-dashboard.yml</code> and <code>scripts/build_roster.py</code> in the repo.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

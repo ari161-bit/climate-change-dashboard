@@ -1,0 +1,72 @@
+{% extends 'climatechanges/template.html' %}
+{% block title %}Clean Energy · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="hero">
+    <svg class="isolines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="iso1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#16847A"/><stop offset="100%" stop-color="#EE8C3C"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#iso1)" stroke-width="1.1" opacity=".35">
+        <path d="M-50,80 C200,40 400,120 650,70 C850,30 1050,90 1250,50"/>
+        <path d="M-50,150 C220,110 420,190 660,140 C870,100 1040,160 1250,120"/>
+        <path d="M-50,220 C240,260 440,180 670,230 C880,270 1040,210 1250,250"/>
+        <path d="M-50,300 C260,340 460,270 690,320 C890,360 1050,300 1250,330"/>
+        <path d="M-50,380 C280,420 480,360 710,400 C900,430 1060,390 1250,410"/>
+      </g>
+    </svg>
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">Take Action · Future</p>
+        <h1>Clean energy: the quiet revolution already under way</h1>
+        <p class="lede">Solar panels and wind turbines aren't a future idea anymore, they're the fastest-growing source of new electricity on Earth, and Nigeria has some of the best untapped sunlight on the planet to work with.</p>
+        <div class="hero-ctas"><a href="/climatechanges/action-hub.html" class="btn btn-primary">Next: the Action Hub →</a></div>
+      </div>
+      <div class="hero-media reveal"><img src="/static/images/photos/Solar_panel_installer-960.jpg" alt="A solar panel installer at work in Nigeria"><span class="credit">Solar installation, Nigeria · Wiki Loves Africa, Wikimedia Commons (CC BY-SA 4.0)</span></div>
+    </div>
+    <div class="readout"><div class="readout-inner"><div class="readout-cell"><span class="ro-label">Renewables, world electricity, 2025</span><span class="ro-value js-counter tone-cool" data-target="34" data-decimals="0" data-prefix="" data-suffix="%">0</span></div><div class="readout-cell"><span class="ro-label">...a decade earlier</span><span class="ro-value js-counter" data-target="23" data-decimals="0" data-prefix="" data-suffix="%">0</span></div><div class="readout-cell"><span class="ro-label">Solar + wind, 2025 share</span><span class="ro-value js-counter tone-cool" data-target="17" data-decimals="0" data-prefix="" data-suffix="%">0</span></div></div></div>
+  </section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid grid-3 reveal">
+      <div class="card"><div class="ico">☀️</div><h3>Solar</h3><p>Photovoltaic panels turn sunlight directly into electricity. Costs have fallen so far, so fast, that solar is now the cheapest new electricity source in much of the world, including across Africa.</p></div>
+      <div class="card"><div class="ico">🌬️</div><h3>Wind</h3><p>Turbines convert moving air into electricity with no fuel and no emissions during operation. Onshore and offshore wind together now supply a meaningful slice of global power.</p></div>
+      <div class="card"><div class="ico">💧</div><h3>Hydro, geothermal &amp; biomass</h3><p>Flowing water, underground heat, and organic material round out the renewable mix, each suited to different geographies and grids.</p></div>
+    </div>
+
+    <div class="reveal" style="margin:36px 0;">
+      <img src="/static/images/photos/Wind_turbines_Adair_Wind_Farm_Iowa_USA_3_48916255452-1280.jpg" alt="Rows of wind turbines at a wind farm" style="border-radius:var(--radius);border:1px solid var(--line-soft);">
+      <p class="muted" style="font-size:.8rem;margin-top:8px;">Wind turbines at a wind farm · via Wikimedia Commons</p>
+    </div>
+
+    <div class="layout-2col">
+      <div class="prose reveal">
+        <h2>Why this matters for the climate fight</h2>
+        <p>Electricity generation is the single largest source of human greenhouse gas emissions (see Causes). Swapping fossil-fuelled generation for solar, wind and other renewables is the most direct lever available for cutting that number, and it's already happening faster than most people realise: renewables supplied about 34% of the world's electricity in 2025, up from roughly 23% just a decade earlier. Coal-fired generation, long the largest single source, is now being overtaken.</p>
+        <h2 style="margin-top:1.4em;">Nigeria's particular opportunity</h2>
+        <p>Nigeria sits in one of the sunniest belts on Earth, and millions of homes and businesses already rely on diesel generators for power that's expensive, noisy and polluting. Off-grid and mini-grid solar, sometimes paired with battery storage, is increasingly filling that gap directly, skipping the need for a country-spanning grid to reach communities that need power now.</p>
+        <div class="callout callout--try">
+          <span class="callout-label">Try this</span>
+          <p>Next time the power goes out, time how long it takes for a solar lantern or solar phone charger to top back up the next sunny day. It's a small, very concrete demonstration of energy that costs nothing to "refuel."</p>
+        </div>
+      </div>
+      <aside class="side-card">
+        <h4>Worth knowing</h4>
+        <div class="fact-strip" style="flex-direction:column;">
+          <div class="fact"><div class="fv">700GW+</div><div class="fl">Renewable capacity added worldwide in 2024 alone</div></div>
+          <div class="fact"><div class="fv">22</div><div class="fl">Consecutive years of record renewable capacity growth</div></div>
+        </div>
+      </aside>
+    </div>
+    <div class="topic-pager"><a class="pager-link prev" href="/climatechanges/recycle.html"><span class="pl-dir">← Previous</span><div class="pl-title">Reduce, Reuse, Recycle</div></a><a class="pager-link next" href="/climatechanges/action-hub.html"><span class="pl-dir">Next →</span><div class="pl-title">Action Hub</div></a></div>
+  </div>
+</section>
+
+</main>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

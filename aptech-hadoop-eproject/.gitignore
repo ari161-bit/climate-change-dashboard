@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+media/
+logs/
+backups/
+data/hdfs_staging/
+data/co2_cache.json
+keys/
+*.key
+staticfiles/

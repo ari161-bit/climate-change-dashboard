@@ -1,0 +1,62 @@
+{% extends './template.html' %}
+{% block title %}My profile · EarthScape{% endblock %}
+{% block body %}
+<main id="main">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">My account</p>
+      <h2>Hello, {{ customer.full_name|default:user.username }}</h2>
+      <p class="lede">Signed in as <b>{{ user.username }}</b> · role: <span class="tag">{{ role }}</span></p>
+    </div>
+
+    <div class="pf-grid">
+      <aside class="side-card pf-side">
+        <div class="pf-avatar">{{ user.username|first|upper }}</div>
+        <h3>{{ customer.full_name|default:user.username }}</h3>
+        <p class="muted">{{ customer.email|default:"No email yet" }}</p>
+        <ul class="pf-links">
+          <li><a href="{% url 'dataset' %}">📊 Climate dashboard</a></li>
+          <li><a href="{% url 'support' %}">💬 Support &amp; feedback</a></li>
+          {% if user.is_staff %}<li><a href="/admin/">🛡️ Admin panel</a></li>{% endif %}
+          <li><a href="{% url 'logout' %}">↩ Log out</a></li>
+        </ul>
+      </aside>
+
+      <div class="login-card pf-form">
+        {% for message in messages %}<div class="form-message {% if message.tags != 'error' %}ok{% endif %}">{{ message }}</div>{% endfor %}
+        <form method="POST">
+          {% csrf_token %}
+          <div class="pf-fields">
+            {% for field in form %}
+              <div class="form-group {% if field.name == 'address' %}full{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+              </div>
+            {% endfor %}
+          </div>
+          <button class="btn btn-primary" type="submit" style="border:0;cursor:pointer;margin-top:20px;">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<style>
+.pf-grid{ display:grid; grid-template-columns: 300px 1fr; gap:22px; align-items:start; }
+.pf-side{ padding:28px; text-align:center; }
+.pf-avatar{ width:84px; height:84px; margin:0 auto 12px; border-radius:50%; display:grid; place-items:center; font-size:2.2rem; font-weight:800; color:#fff; background: var(--eco-grad, linear-gradient(120deg,#15803d,#22c55e)); box-shadow:0 12px 26px rgba(22,163,74,.35); }
+.pf-side h3{ margin:0; }
+.pf-links{ list-style:none; padding:0; margin:18px 0 0; display:grid; gap:8px; text-align:left; }
+.pf-links a{ display:block; padding:10px 14px; border-radius:12px; background:#f0fdf4; text-decoration:none; font-weight:600; }
+.pf-links a:hover{ background:#dcfce7; }
+.pf-form{ padding:30px; }
+.pf-fields{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.pf-fields .full{ grid-column:1/-1; }
+.pf-fields .form-group{ display:flex; flex-direction:column; gap:6px; }
+.pf-fields input{ width:100%; box-sizing:border-box; padding:12px 14px; font:inherit; }
+.form-message{ padding:12px 15px; border-radius:10px; margin-bottom:14px; }
+@media (max-width:800px){ .pf-grid{ grid-template-columns:1fr; } .pf-fields{ grid-template-columns:1fr; } }
+</style>
+{% endblock %}

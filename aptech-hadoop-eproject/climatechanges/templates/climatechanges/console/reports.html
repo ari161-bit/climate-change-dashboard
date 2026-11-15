@@ -1,0 +1,45 @@
+{% extends 'climatechanges/console/base.html' %}
+{% block title %}Reports{% endblock %}
+{% block heading %}Reports{% endblock %}
+{% block content %}
+<form class="card filters" method="get">
+  <div class="f"><label for="r-kind">Report</label><select id="r-kind" name="kind">{% for k, l in report_types.items %}<option value="{{ k }}" {% if k == kind %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="f"><label for="r-country">Temperature scope</label><select id="r-country" name="country"><option>World</option>
+    {% for r in opts.regions %}<option {% if r == country %}selected{% endif %}>{{ r }}</option>{% endfor %}
+    {% for c, iso in opts.fao_countries %}<option {% if c == country %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></div>
+  <div class="actions">
+    <button class="btn btn-ghost" type="submit">Preview</button>
+    <button class="btn btn-ghost" type="submit" name="format" value="csv">⬇ CSV</button>
+    <button class="btn btn-primary" type="submit" name="format" value="pdf">⬇ PDF</button>
+  </div>
+</form>
+
+<div class="grid g3">
+  {% for k, l in report_types.items %}
+  <div class="card">
+    <div class="card-h"><div><h3>{{ l }}</h3><p>{% if k == 'summary' %}Key temperature, rainfall, anomaly and regional figures in one document{% elif k == 'temperature' %}Full observed series, model fit and model evaluation{% elif k == 'rainfall' %}Rainfall model metrics vs baseline and per-station statistics{% elif k == 'anomalies' %}Every detected anomaly plus correlation results{% elif k == 'predictions' %}Temperature forecast with uncertainty and rainfall model results{% else %}Decade-by-decade warming for every continent{% endif %}</p></div></div>
+    <div class="btn-row"><a class="btn btn-ghost btn-sm" href="?kind={{ k }}&country={{ country|urlencode }}">Preview</a>
+      <a class="btn btn-ghost btn-sm" href="?kind={{ k }}&country={{ country|urlencode }}&format=csv">CSV</a>
+      <a class="btn btn-primary btn-sm" href="?kind={{ k }}&country={{ country|urlencode }}&format=pdf">PDF</a></div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-h"><div><h3>Tableau / BI extract</h3><p>Tidy CSV tables (temperature, disasters, readings, alerts, countries) in one ZIP, ready to connect in Tableau, Power BI or Excel. Units and ISO codes included.</p></div>
+    <a class="btn btn-dark" href="?kind=tableau">⬇ Download extract (.zip)</a></div>
+  <p class="note">Guide: <code>docs/TABLEAU_GUIDE.md</code>. Real and sample rows are marked in the <code>source</code> column of <code>fact_readings.csv</code>.</p>
+</div>
+
+{% if preview %}
+<div class="card">
+  <div class="card-h"><div><h3>{{ preview.title }}</h3><p>{{ preview.subtitle }}</p></div></div>
+  {% for s in preview.sections %}
+    <h4 style="margin:18px 0 4px;font-size:15px;color:var(--forest-2)">{{ s.heading }}</h4>
+    {% if s.note %}<p class="muted" style="margin:0 0 8px;font-size:12.5px">{{ s.note }}</p>{% endif %}
+    <div class="table-wrap" style="max-height:340px;overflow:auto"><table class="t"><thead><tr>{% for c in s.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+      <tbody>{% for r in s.rows %}<tr>{% for v in r %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
