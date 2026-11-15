@@ -20,10 +20,12 @@ DEMO_USERS = [
 
 def _create_demo_users(roles):
     """Recreate the README demo accounts in the fresh serverless database."""
+    from django.contrib.auth.hashers import make_password
     from django.contrib.auth.models import Group, User
     for username, password, role, staff in DEMO_USERS:
         user, _ = User.objects.get_or_create(username=username)
-        user.set_password(password)
+        # fixed salt: same hash on every serverless copy, so logins stay valid between them
+        user.password = make_password(password, salt="earthscapedemo" + username.split("_")[0])
         user.is_staff = user.is_superuser = staff
         user.save()
         user.groups.add(Group.objects.get_or_create(name=getattr(roles, role))[0])

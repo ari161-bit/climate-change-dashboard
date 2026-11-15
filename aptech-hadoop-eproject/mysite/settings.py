@@ -25,7 +25,7 @@ RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("EARTHSCAPE_SECRET_KEY", os.environ.get("DJANGO_SECRET_KEY", secrets.token_urlsafe(48) if ON_VERCEL else 'django-insecure-n)yr^gtup9(zw0s+%c)6o26+ky@9y^#busi%=)z73+*s2o#x)c'))
+SECRET_KEY = os.environ.get("EARTHSCAPE_SECRET_KEY", os.environ.get("DJANGO_SECRET_KEY", "earthscape-vercel-demo-key-set-EARTHSCAPE_SECRET_KEY-in-vercel-env-9f3a1c7e" if ON_VERCEL else 'django-insecure-n)yr^gtup9(zw0s+%c)6o26+ky@9y^#busi%=)z73+*s2o#x)c'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not ON_VERCEL
@@ -167,6 +167,10 @@ CSRF_COOKIE_HTTPONLY = False
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_AGE = 60 * 60 * 8
+if ON_VERCEL:
+    # each serverless copy has its own /tmp database, so keep the session in a signed cookie
+    SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+    MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 8}},
