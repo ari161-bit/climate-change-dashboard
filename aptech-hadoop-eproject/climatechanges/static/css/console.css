@@ -221,3 +221,44 @@ details summary{ cursor:pointer; font-weight:600; color:var(--ink-2); }
 }
 @media (max-width:560px){ .g4{ grid-template-columns:1fr; } .form-grid{ grid-template-columns:1fr; } .es-pop{ width:calc(100vw - 32px); right:-60px; } }
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+
+/* ===== Spacious "Purple"-style refresh (overrides above) ===== */
+:root{ --bg:#f4f1fa; --line:#ebe6f5; --line-2:#f3f0f9; --radius:20px; --sidebar:270px;
+  --shadow:0 2px 6px rgba(60,30,110,.04), 0 12px 32px rgba(60,30,110,.06); }
+body{ font-size:15px; line-height:1.65; }
+.es-top{ padding:20px 40px; background:rgba(255,255,255,.85); }
+.es-top h1{ font-size:22px; }
+.es-content{ padding:36px 40px 64px; gap:32px; max-width:1440px; margin:0 auto; }
+.grid{ gap:28px; }
+.card{ padding:28px 30px; border-color:transparent; }
+.card-h{ margin-bottom:22px; }
+.card-h h3{ font-size:17px; }
+.chart{ height:320px; } .chart.tall{ height:400px; } .chart.short{ height:240px; }
+.es-side{ padding:24px 16px; gap:4px; }
+.es-nav a{ padding:11px 14px; margin:2px 0; }
+.es-nav-label{ padding:20px 14px 8px; }
+
+/* KPI: gradient tiles with soft circles */
+.kpi{ padding:30px 30px 28px; color:#fff; border:0; min-height:160px; }
+.kpi::before,.kpi::after{ content:""; position:absolute; border-radius:50%; background:rgba(255,255,255,.14); pointer-events:none; }
+.kpi::before{ width:200px; height:200px; right:-60px; top:-80px; }
+.kpi::after{ width:160px; height:160px; right:-20px; bottom:-90px; }
+.kpi .label,.kpi .sub,.kpi .value small{ color:rgba(255,255,255,.88); }
+.kpi .value{ color:#fff; font-size:32px; margin:14px 0 10px; }
+.kpi .ic{ background:rgba(255,255,255,.2); color:#fff; }
+.kpi .up,.kpi .down{ color:#fff; }
+.grid > .kpi:nth-child(4n+1){ background:linear-gradient(135deg,#ffbf96,#fe7096); }
+.grid > .kpi:nth-child(4n+2){ background:linear-gradient(135deg,#90caf9,#047edf); }
+.grid > .kpi:nth-child(4n+3){ background:linear-gradient(135deg,#84d9d2,#07cdae); }
+.grid > .kpi:nth-child(4n+4){ background:linear-gradient(135deg,#da8cff,#9a55ff); }
+.kpi.hero{ background:linear-gradient(135deg,#da8cff,#9a55ff); }
+
+/* tables/rows breathe more */
+.t th{ padding:14px 16px; } .t td{ padding:14px 16px; }
+.alert-row{ padding:16px 6px; gap:16px; }
+.stat-list{ gap:14px; }
+.filters{ padding:20px 24px; gap:16px; }
+.btn-primary{ background:linear-gradient(135deg,#da8cff,#9a55ff); box-shadow:0 6px 16px rgba(154,85,255,.3); }
+.es-nav a.on{ background:rgba(218,140,255,.18); box-shadow:inset 3px 0 0 #da8cff; }
+
+@media (max-width:980px){ .es-content{ padding:24px 16px 48px; gap:24px; } .es-top{ padding:14px 16px; } .grid{ gap:20px; } }
