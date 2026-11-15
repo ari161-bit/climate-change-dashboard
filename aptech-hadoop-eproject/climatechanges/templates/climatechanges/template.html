@@ -29,7 +29,7 @@
 (function(){
   try{
     var saved = localStorage.getItem("gw-theme");
-    var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    var theme = saved || "dark";
     if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
   }catch(e){}
 })();
@@ -42,7 +42,7 @@
 <link rel="stylesheet" href="{% static 'css/brand.css' %}">
 <link rel="stylesheet" href="{% static 'css/wow.css' %}?v=galaxy4">
 <link rel="stylesheet" href="{% static 'css/greenery.css' %}?v=4">
-<link rel="stylesheet" href="{% static 'css/eco-site.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'css/eco-site.css' %}?v=4">
 {% block extra_css %}{% endblock %}
 <link rel="manifest" href="/static/manifest.json">
 <meta name="theme-color" content="#0b3d2e" media="(prefers-color-scheme: light)">

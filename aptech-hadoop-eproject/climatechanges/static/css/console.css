@@ -262,3 +262,29 @@ body{ font-size:15px; line-height:1.65; }
 .es-nav a.on{ background:rgba(218,140,255,.18); box-shadow:inset 3px 0 0 #da8cff; }
 
 @media (max-width:980px){ .es-content{ padding:24px 16px 48px; gap:24px; } .es-top{ padding:14px 16px; } .grid{ gap:20px; } }
+
+/* ===== Dark purple theme (Landzy / Staradmin inspired) ===== */
+:root{ --bg:#09070f; --panel:#14101f; --panel-2:#1a1428; --line:rgba(181,123,255,.16); --line-2:rgba(181,123,255,.09);
+  --ink:#f1ecfb; --ink-2:#c9bfe0; --ink-3:#8f84aa; --mint:rgba(181,123,255,.16); --mint-2:rgba(181,123,255,.08); --forest:#7b2ff7;
+  --shadow:0 20px 50px -24px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04); --shadow-lg:0 24px 60px rgba(0,0,0,.6); }
+html,body{ background:#09070f radial-gradient(900px 500px at 85% -10%,rgba(154,85,255,.18),transparent 60%) no-repeat fixed; }
+.es-side{ background:#0c0915; border-right:1px solid var(--line); color:#c9bfe0; }
+.es-logo{ background:linear-gradient(135deg,#da8cff,#7b2ff7); color:#fff; box-shadow:0 6px 18px rgba(154,85,255,.4); }
+.es-nav a{ color:#b9aed2; }
+.es-nav a.on{ background:linear-gradient(135deg,rgba(154,85,255,.35),rgba(123,47,247,.18)); box-shadow:inset 0 0 0 1px rgba(181,123,255,.3); color:#fff; }
+.es-nav-label,.es-brand small,.es-side-foot{ color:#7d7299; }
+.es-top{ background:rgba(9,7,15,.78); }
+.card{ background:linear-gradient(160deg,rgba(36,24,60,.7),rgba(20,16,31,.95)); border:1px solid var(--line); }
+.kpi,.grid > .kpi:nth-child(n),.kpi.hero{ background:linear-gradient(160deg,rgba(60,32,100,.75),rgba(20,16,31,.95)); border:1px solid rgba(181,123,255,.22); }
+.kpi::before{ background:radial-gradient(circle,rgba(181,123,255,.35),transparent 70%); }
+.kpi::after{ background:radial-gradient(circle,rgba(254,112,150,.18),transparent 70%); }
+.kpi .ic{ background:rgba(181,123,255,.2); color:#e3cfff; }
+.es-icon-btn,.es-user,.btn-ghost,.tabs a,.es-pop,input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{
+  background:#120e1c; border-color:var(--line); color:var(--ink); }
+.es-pop a.item{ color:var(--ink); }
+.tabs a.on,.tabs a:hover{ background:#7b2ff7; border-color:#7b2ff7; }
+.t tr:hover td,.t tr.unread td{ background:rgba(181,123,255,.06); }
+.es-avatar{ background:linear-gradient(135deg,#da8cff,#7b2ff7); }
+code{ background:rgba(181,123,255,.12); color:#e3cfff; }
+.note,.msg{ background:var(--panel-2); border-color:var(--line); }
+a{ color:#c79bff; }
