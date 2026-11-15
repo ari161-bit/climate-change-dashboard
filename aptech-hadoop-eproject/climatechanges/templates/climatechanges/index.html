@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}?v=3">
 {% endblock %}
 
 {% block body %}
@@ -58,7 +58,7 @@
               <stop offset="0%" stop-color="#bef264"/><stop offset="100%" stop-color="#16a34a"/>
             </linearGradient>
             <linearGradient id="g-leaf" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#86efac"/><stop offset="100%" stop-color="#15803d"/>
+              <stop offset="0%" stop-color="#d8b4fe"/><stop offset="100%" stop-color="#15803d"/>
             </linearGradient>
             <clipPath id="clip-globe"><circle cx="240" cy="240" r="150"/></clipPath>
           </defs>
@@ -80,8 +80,8 @@
           </g>
           <!-- orbiting data satellites -->
           <g class="eco-orbit">
-            <circle cx="440" cy="240" r="9" fill="#fde047"/>
-            <circle cx="40" cy="240" r="6" fill="#86efac"/>
+            <circle cx="440" cy="240" r="9" fill="#fe7096"/>
+            <circle cx="40" cy="240" r="6" fill="#d8b4fe"/>
           </g>
         </svg>
         <div class="eco-float f1"><span>◉</span><div><b>Live weather</b><small>streamed from Open-Meteo</small></div></div>
@@ -134,7 +134,7 @@
             <span class="eco-pill">+{{ land_slope }} / year</span>
           </div>
           <svg viewBox="0 0 600 180" class="eco-spark" preserveAspectRatio="none" role="img" aria-label="Recorded annual disaster totals and five-year linear trend estimate">
-            <defs><linearGradient id="sp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity=".35"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>
+            <defs><linearGradient id="sp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a855f7" stop-opacity=".35"/><stop offset="100%" stop-color="#a855f7" stop-opacity="0"/></linearGradient></defs>
             <line x1="0" y1="60" x2="600" y2="60" class="g"/><line x1="0" y1="120" x2="600" y2="120" class="g"/>
             <polygon points="{{ spark_area }}" fill="url(#sp-fill)"/>
             <polyline points="{{ spark_recorded }}" class="rec"/>

@@ -123,7 +123,7 @@
   function setTheme(theme){
     if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
-    try{ localStorage.setItem("gw-theme", theme); }catch(e){}
+    try{ localStorage.setItem("gw-theme-v2", theme); }catch(e){}
     if (themeBtn) themeBtn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
   }
   if (themeBtn){
