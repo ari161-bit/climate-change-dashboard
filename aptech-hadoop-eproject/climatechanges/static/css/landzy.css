@@ -1,0 +1,73 @@
+/* Landzy-style dark glass theme: loaded last on every page */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+:root,[data-theme="dark"]{
+  --lz-bg:#070709; --lz-side:#0b0a0e; --lz-card:#121016; --lz-card-2:#0d0b10; --lz-line:#241f2c; --lz-line-2:#1a1620;
+  --lz-ink:#f4f1f8; --lz-ink-2:#b8b0c6; --lz-ink-3:#7c7489; --lz-p:#a35cff; --lz-p2:#7b3fe4;
+  --lz-up:#4ade80; --lz-down:#f87171;
+}
+html,body{ background:var(--lz-bg) !important; color:var(--lz-ink); font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif !important; }
+h1,h2,h3,h4,.kpi .value{ font-family:"Plus Jakarta Sans",sans-serif !important; letter-spacing:-.02em; }
+
+/* ----- console shell ----- */
+.es-side{ background:var(--lz-side) !important; border-right:1px solid var(--lz-line); padding:22px 14px !important; }
+.es-brand b{ font-weight:800; letter-spacing:-.02em; }
+.es-logo{ border-radius:10px !important; background:#fff !important; color:#000 !important; box-shadow:none !important; }
+.es-nav-label{ color:var(--lz-ink-3) !important; font-size:11px !important; letter-spacing:.08em; padding:18px 12px 8px !important; }
+.es-nav a{ color:var(--lz-ink-2) !important; border-radius:12px !important; padding:11px 12px !important; font-weight:500; }
+.es-nav a:hover{ background:#16131b !important; color:#fff !important; }
+.es-nav a.on{ color:#fff !important; background:linear-gradient(180deg,#5a2d8f,#3a1d60) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 0 0 1px rgba(163,92,255,.35), 0 8px 24px -8px rgba(163,92,255,.6) !important; }
+.es-nav .num{ background:var(--lz-p) !important; }
+.es-side-foot{ border-top-color:var(--lz-line) !important; color:var(--lz-ink-3) !important; }
+.es-top{ background:rgba(7,7,9,.8) !important; border-bottom:1px solid var(--lz-line) !important; }
+.es-icon-btn,.es-user{ background:var(--lz-card) !important; border-color:var(--lz-line) !important; color:var(--lz-ink-2) !important; }
+.es-avatar{ background:linear-gradient(135deg,var(--lz-p),var(--lz-p2)) !important; }
+
+/* cards */
+.card,.kpi,.grid > .kpi:nth-child(n),.kpi.hero,.es-pop,.overview-filters,.signal-card{
+  background:linear-gradient(180deg,var(--lz-card),var(--lz-card-2)) !important; border:1px solid var(--lz-line) !important;
+  border-radius:18px !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.04) !important; color:var(--lz-ink); }
+.kpi::before{ width:220px !important; height:220px !important; right:-90px !important; top:-110px !important;
+  background:radial-gradient(circle,rgba(163,92,255,.28),transparent 65%) !important; }
+.kpi::after{ display:none !important; }
+.kpi .label{ color:var(--lz-ink-2) !important; font-weight:600; }
+.kpi .value{ color:#fff !important; font-weight:800 !important; }
+.kpi .sub,.card-h p,.muted{ color:var(--lz-ink-3) !important; }
+.kpi .ic{ border-radius:50% !important; background:linear-gradient(180deg,#5a2d8f,#3a1d60) !important; color:#e9d8ff !important;
+  box-shadow:0 0 0 1px rgba(163,92,255,.35) !important; }
+.card-h h3{ color:#fff; font-weight:700; }
+.kpi .down{ color:var(--lz-up) !important; } .kpi .up{ color:var(--lz-down) !important; }
+
+/* overview hero becomes a glowing Landzy "Overview" card */
+.observatory-hero{ background:radial-gradient(600px 300px at 85% 0%,rgba(163,92,255,.35),transparent 60%),
+  linear-gradient(160deg,#2a1546,#120c1c 60%) !important; border:1px solid rgba(163,92,255,.35) !important; border-radius:22px !important; }
+.observatory-hero::before,.observatory-hero::after{ opacity:.25 !important; }
+.observatory-hero h2,.observatory-hero h2 em{ color:#fff !important; }
+.observatory-eyebrow,.section-kicker{ color:#cfa8ff !important; }
+.observatory-pulse{ background:var(--lz-p) !important; }
+.observatory-primary{ background:#fff !important; color:#000 !important; box-shadow:none !important; border-radius:12px !important; }
+.observatory-secondary{ color:#e9d8ff !important; border-color:rgba(163,92,255,.4) !important; border-radius:12px !important; }
+.section-heading h2{ color:#fff !important; }
+
+/* controls */
+.btn-primary,.login-button,.signup-button{ background:linear-gradient(180deg,#8a4ae8,#5a2d8f) !important; color:#fff !important; border:0 !important;
+  border-radius:12px !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 10px 24px -10px rgba(163,92,255,.8) !important; }
+.btn-ghost,.tabs a{ background:var(--lz-card) !important; border-color:var(--lz-line) !important; color:var(--lz-ink-2) !important; }
+.tabs a.on,.tabs a:hover{ background:#5a2d8f !important; color:#fff !important; border-color:#5a2d8f !important; }
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{
+  background:#0e0c12 !important; border:1px solid var(--lz-line) !important; color:var(--lz-ink) !important; border-radius:12px !important; }
+input:focus,select:focus,textarea:focus{ border-color:var(--lz-p) !important; box-shadow:0 0 0 3px rgba(163,92,255,.2) !important; }
+.t th{ background:transparent !important; color:var(--lz-ink-3) !important; border-bottom-color:var(--lz-line) !important; }
+.t td{ border-bottom-color:var(--lz-line-2) !important; }
+.bar i{ background:linear-gradient(90deg,var(--lz-p2),var(--lz-p)) !important; }
+.dot-live{ background:var(--lz-up) !important; }
+
+/* ----- public site ----- */
+.site-header{ background:rgba(7,7,9,.8) !important; border-bottom:1px solid var(--lz-line) !important; }
+.brand .mark{ background:#fff !important; color:#000 !important; border-radius:10px !important; box-shadow:none !important; }
+.nav-desktop .nav-link{ color:var(--lz-ink-2) !important; }
+.nav-desktop .nav-link.is-active{ color:#fff !important; background:linear-gradient(180deg,#5a2d8f,#3a1d60) !important; box-shadow:0 0 0 1px rgba(163,92,255,.35) !important; }
+.login-card,.signup-card{ background:linear-gradient(180deg,var(--lz-card),var(--lz-card-2)) !important; border:1px solid var(--lz-line) !important; border-radius:22px !important; }
+.login-card::before,.signup-card::before{ height:1px !important; background:linear-gradient(90deg,transparent,var(--lz-p),transparent) !important; }
+.section-head h1,.section-head h2{ background-image:linear-gradient(180deg,#fff,#cfa8ff) !important; }
+.eyebrow{ background:rgba(163,92,255,.1) !important; color:#cfa8ff !important; border-color:rgba(163,92,255,.3) !important; }

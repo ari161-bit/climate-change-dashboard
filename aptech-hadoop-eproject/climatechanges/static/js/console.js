@@ -2,8 +2,8 @@
 (function () {
   "use strict";
 
-  var C = { green: "#45dbc5", green2: "#72ead5", forest: "#112b42", lime: "#b792ff", mint: "rgba(69,219,197,.16)",
-            pink: "#ff718b", amber: "#ffbc68", blue: "#60b8ff", violet: "#ba91ff", teal: "#43d3d7", grid: "rgba(170,198,230,.12)" };
+  var C = { green: "#a35cff", green2: "#cfa8ff", forest: "#112b42", lime: "#b792ff", mint: "rgba(163,92,255,.18)",
+            pink: "#ff718b", amber: "#ffbc68", blue: "#e879f9", violet: "#ba91ff", teal: "#7b3fe4", grid: "rgba(170,198,230,.12)" };
   var PALETTE = [C.green, C.blue, C.violet, C.amber, C.teal, C.pink, "#8ea6c7", C.lime];
   window.ES = { colors: C, palette: PALETTE };
 
