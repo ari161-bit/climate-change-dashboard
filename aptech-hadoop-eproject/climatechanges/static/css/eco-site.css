@@ -215,3 +215,36 @@ body.eco .eco-num{ font-variant-numeric:tabular-nums; }
 @media(prefers-reduced-motion:reduce){
   body.eco .eco-globe{ transition:none; }
 }
+
+/* ===== Polish: matches the purple dashboard ===== */
+.site-header{ backdrop-filter:blur(14px); background:rgba(255,255,255,.78); border-bottom:1px solid rgba(154,85,255,.12); }
+.nav-desktop{ gap:6px; }
+.nav-desktop .nav-link{ padding:8px 16px; border-radius:999px; transition:background .2s,color .2s; }
+.nav-desktop .nav-link:hover{ background:rgba(154,85,255,.08); text-decoration:none; }
+.nav-desktop .nav-link.is-active{ background:linear-gradient(135deg,#da8cff,#9a55ff); color:#fff; }
+.brand .mark{ background:linear-gradient(135deg,#da8cff,#9a55ff) !important; color:#fff !important; box-shadow:0 6px 18px rgba(154,85,255,.35); }
+
+.section{ padding-top:clamp(48px,7vw,96px); padding-bottom:clamp(48px,7vw,96px); }
+.section-head{ margin-bottom:40px; }
+.section-head h1,.section-head h2{ background:linear-gradient(135deg,#7b2ff7,#da8cff 60%,#fe7096); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.eyebrow{ background:rgba(154,85,255,.08) !important; color:#7b2ff7 !important; border-color:rgba(154,85,255,.2) !important; }
+.lede{ max-width:62ch; }
+
+.login-card,.signup-card{ position:relative; overflow:hidden; border:0 !important; border-radius:28px !important;
+  padding:clamp(28px,4vw,48px) !important; background:rgba(255,255,255,.92) !important;
+  box-shadow:0 30px 80px -20px rgba(110,40,200,.25), 0 2px 8px rgba(110,40,200,.06) !important; }
+.login-card::before,.signup-card::before{ content:""; position:absolute; inset:0 0 auto 0; height:6px;
+  background:linear-gradient(90deg,#ffbf96,#fe7096,#da8cff,#9a55ff,#47c6f0); }
+.login-row,.form-grid{ gap:20px !important; }
+.form-group input,.form-group select,.form-group textarea{ border-radius:14px !important; padding:14px 16px !important;
+  border:1.5px solid #e6e0f3 !important; background:#fbf9ff !important; transition:border-color .2s, box-shadow .2s; }
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{ outline:none; border-color:#9a55ff !important; box-shadow:0 0 0 4px rgba(154,85,255,.15) !important; background:#fff !important; }
+.btn-primary,.login-button,.signup-button{ background:linear-gradient(135deg,#da8cff,#9a55ff) !important; border:0 !important; color:#fff !important;
+  border-radius:14px !important; box-shadow:0 10px 24px -6px rgba(154,85,255,.5) !important; transition:transform .15s, box-shadow .2s; }
+.btn-primary:hover,.login-button:hover,.signup-button:hover{ transform:translateY(-2px); box-shadow:0 14px 30px -6px rgba(154,85,255,.6) !important; }
+.form-message{ border-radius:14px; }
+.login-text a{ color:#7b2ff7; font-weight:600; }
+
+.card{ border-radius:22px; transition:transform .2s, box-shadow .2s; }
+.card:hover{ transform:translateY(-4px); box-shadow:0 20px 40px -12px rgba(110,40,200,.2); }
+@media (prefers-reduced-motion:reduce){ .card:hover,.btn-primary:hover{ transform:none; } }
