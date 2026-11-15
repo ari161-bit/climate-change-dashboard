@@ -2,6 +2,8 @@
 
 # 🌍 EarthScape Climate Agency
 
+> **Required eProject deployment:** this repository's Vercel entrypoint now serves the Aptech Hadoop eProject in [`aptech-hadoop-eproject/`](aptech-hadoop-eproject/). The nested project README and full project documentation are the implementation guide. Vercel creates a preview deployment for pushed branches when this repository is connected to a Vercel project.
+
 ### Climate-change monitoring, analytics and alerting platform
 
 **Eleven public datasets · a partitioned data lake · MapReduce-style processing · four ML models · real-time city feed · NASA satellite imagery · role-based access**

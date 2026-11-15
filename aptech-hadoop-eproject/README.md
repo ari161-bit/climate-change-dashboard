@@ -29,6 +29,10 @@ Open:
 
 New sign-ups get the **Climate Analyst** role. A superuser counts as **Administrator**, and administrators can promote other users under *User Management*.
 
+## Vercel preview
+
+The repository root is configured to build and serve this Django project through `api/index.py`. Pushes to a Git-connected Vercel project create preview deployments. The serverless demo stores its SQLite database, uploaded files, logs and encryption key under `/tmp/earthscape`; these are temporary and can reset between instances. For persistent accounts and uploads, configure a hosted database and object storage before production use. Hadoop/HDFS requires a reachable external WebHDFS cluster; without one, the app reports that it is using local staging (also temporary on Vercel).
+
 ## Hadoop (optional but supported)
 
 ```bash
