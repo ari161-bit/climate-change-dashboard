@@ -282,3 +282,5 @@ body.eco-home a:focus-visible,body.eco-home button:focus-visible{outline:2px sol
   body.eco-home .eco-trust li + li{padding-left:0;border-left:0}
   .eco-card-kpis b{font-size:1.05rem}
 }
+/* 4th hero stat only when it fits on one row */
+@media (max-width:1439px){ body.eco-home .eco-trust li:nth-child(4){display:none} }
