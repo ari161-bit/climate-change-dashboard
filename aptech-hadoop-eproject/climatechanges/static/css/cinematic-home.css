@@ -212,3 +212,73 @@ body.eco-home .eco-mono{font:inherit;color:var(--cin-mint)}
   body.eco-home .eco-hero-copy{animation:none}
   body.eco-home .eco-art{transform:none!important;transition:none}
 }
+
+/* ===== Landing polish (v2) ===== */
+/* Keep the nav dark + readable once scrolled (greenery.css forces a cream bar) */
+html body.eco-home .site-header,
+html body.eco-home .site-header.is-scrolled{
+  background:rgba(3,11,9,.86)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.35)!important;
+}
+body.eco-home .site-footer .mark{
+  display:inline-grid;place-items:center;border-radius:8px;
+  background:var(--cin-green)!important;color:var(--cin-bg)!important;font-weight:800;
+}
+
+/* Hero: tighter bottom, tabular stats, larger readable buttons */
+body.eco-home .eco-hero{padding-bottom:96px}
+body.eco-home .eco-btn{font-size:.82rem;padding:1.05rem 1.5rem}
+body.eco-home .eco-trust{margin-top:38px}
+body.eco-home .eco-trust li{font-size:.86rem;line-height:1.35}
+body.eco-home .eco-trust b{font-variant-numeric:tabular-nums;margin-bottom:2px}
+body.eco-home .eco-trust li + li{padding-left:clamp(18px,3vw,40px);border-left:1px solid var(--cin-line)}
+
+/* Section rhythm: less dead space between blocks */
+body.eco-home .eco-section{padding:clamp(56px,6.5vw,88px) 0}
+body.eco-home .eco-live-sec{padding-top:clamp(28px,4vw,56px)}
+body.eco-home .eco-head{margin-bottom:36px}
+body.eco-home .eco-head h2{line-height:1.02}
+
+/* Forecast + weather side by side, equal height */
+body.eco-home .eco-live{align-items:stretch}
+
+/* How it works: 5 across only when there is room */
+body.eco-home .eco-flow p{font-size:.9rem;line-height:1.55}
+@media (max-width:1280px) and (min-width:901px){
+  body.eco-home .eco-flow{grid-template-columns:repeat(6,1fr)}
+  body.eco-home .eco-flow li{grid-column:span 2}
+  body.eco-home .eco-flow li:nth-child(n+4){grid-column:span 3}
+  body.eco-home .eco-flow li::after{display:none}
+}
+body.eco-home .eco-flow li::after{background:var(--cin-green);color:var(--cin-bg)}
+
+/* Feature cards: big card gets a live mini-chart instead of empty space */
+body.eco-home .eco-card.big{
+  background:radial-gradient(110% 70% at 100% 0%,rgba(184,255,92,.16),transparent 60%),linear-gradient(160deg,#123a29,#07170f);
+  border:1px solid rgba(184,255,92,.22);
+}
+body.eco-home .eco-card.big p{flex:0 0 auto;color:#a6c1b2}
+.eco-card-preview{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;
+  margin:10px 0 6px;padding:16px;border-radius:14px;
+  background:rgba(3,11,9,.45);border:1px solid var(--cin-line);
+}
+.eco-card-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.eco-card-kpis small{display:block;color:var(--cin-muted);font:500 .68rem "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+.eco-card-kpis b{font:600 1.25rem "Space Grotesk",sans-serif;color:var(--cin-white);font-variant-numeric:tabular-nums}
+.eco-card-kpis div:nth-child(2) b{color:var(--cin-green)}
+.eco-card-preview svg{width:100%;height:110px;display:block}
+.eco-card-preview .area{fill:rgba(99,245,189,.12)}
+.eco-card-preview .rec{fill:none;stroke:var(--cin-mint);stroke-width:2.5;vector-effect:non-scaling-stroke}
+.eco-card-preview .fc{fill:none;stroke:var(--cin-green);stroke-width:2.5;stroke-dasharray:6 6;vector-effect:non-scaling-stroke}
+
+/* CTA */
+body.eco-home .eco-cta-wrap{padding-bottom:72px}
+body.eco-home .eco-cta p a{color:var(--cin-green);text-decoration:underline;text-underline-offset:3px}
+
+/* Visible keyboard focus on the dark theme */
+body.eco-home a:focus-visible,body.eco-home button:focus-visible{outline:2px solid var(--cin-green);outline-offset:3px}
+@media (max-width:700px){
+  body.eco-home .eco-trust li + li{padding-left:0;border-left:0}
+  .eco-card-kpis b{font-size:1.05rem}
+}
