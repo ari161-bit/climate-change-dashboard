@@ -65,28 +65,8 @@
       </a>
       <div class="nav-desktop">
         <a class="nav-link is-active" href="/climatechanges/">Home</a>
-        <a class="nav-link" href="/climatechanges/course.html">Course</a>
-        <div class="nav-group">
-          <a class="nav-link" href="/climatechanges/what-is-global-warming.html" aria-haspopup="true">Learn</a>
-          <div class="nav-pop"><a href="/climatechanges/what-is-global-warming.html">What Is Global Warming?</a>
-<a href="/climatechanges/causes.html">Causes</a>
-<a href="/climatechanges/effects.html">Effects</a>
-<a href="/climatechanges/why-care.html">Why Should We Care?</a></div>
-        </div>
-        <div class="nav-group">
-          <a class="nav-link" href="/climatechanges/action-hub.html" aria-haspopup="true">Take Action</a>
-          <div class="nav-pop"><a href="/climatechanges/carbon-footprint.html">Carbon Footprint Calculator</a>
-<a href="/climatechanges/recycle.html">Reduce, Reuse, Recycle</a>
-<a href="/climatechanges/clean-energy.html">Clean Energy</a>
-<a href="/climatechanges/action-hub.html">Action Hub</a></div>
-        </div>
-        <a class="nav-link" href="/climatechanges/data-explorer.html">Data Explorer</a>
-<a class="nav-link" href="/climatechanges/simulator.html">Simulator</a>
-<a class="nav-link" href="/climatechanges/quiz.html">Quiz</a>
-<a class="nav-link" href="/climatechanges/glossary.html">Glossary</a>
-<a class="nav-link" href="{% url 'console_overview' %}">Console</a>
-<a class="nav-link" href="{% url 'support' %}">Support</a>
 {% if user.is_authenticated %}
+<a class="nav-link" href="{% url 'console_overview' %}">Dashboard</a>
 <a class="nav-link" href="{% url 'profile' %}">&#128100; {{ user.username }}</a>
 <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
 {% else %}
