@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}?v=3">
 <link rel="stylesheet" href="{% static 'css/landzy.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'css/aurora.css' %}?v=5">
 {% endblock %}
 
 {% block body %}
@@ -48,42 +49,47 @@
         </ul>
       </div>
 
-      <!-- Animated globe with data orbit -->
+      <!-- Orb in metallic rings -->
       <div class="eco-art" aria-hidden="true">
-        <svg viewBox="0 0 480 480" class="eco-globe">
+        <svg viewBox="0 0 480 480" class="eco-globe orb">
           <defs>
-            <radialGradient id="g-sea" cx="40%" cy="35%" r="70%">
-              <stop offset="0%" stop-color="#5eead4"/><stop offset="60%" stop-color="#0f766e"/><stop offset="100%" stop-color="#064e3b"/>
+            <radialGradient id="o-sphere" cx="38%" cy="32%" r="75%">
+              <stop offset="0%" stop-color="#ead9ff"/><stop offset="38%" stop-color="#9d6bff"/><stop offset="100%" stop-color="#2b1465"/>
             </radialGradient>
-            <linearGradient id="g-land" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#bef264"/><stop offset="100%" stop-color="#16a34a"/>
+            <linearGradient id="o-gold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f7e7bd"/><stop offset="45%" stop-color="#b8935a"/><stop offset="100%" stop-color="#f2dca6"/>
             </linearGradient>
-            <linearGradient id="g-leaf" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#d8b4fe"/><stop offset="100%" stop-color="#15803d"/>
+            <linearGradient id="o-silver" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#8f88a3"/><stop offset="100%" stop-color="#e3deef"/>
             </linearGradient>
-            <clipPath id="clip-globe"><circle cx="240" cy="240" r="150"/></clipPath>
+            <radialGradient id="o-pearl" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#fff"/><stop offset="60%" stop-color="#b9b2c9"/><stop offset="100%" stop-color="#5c5470"/>
+            </radialGradient>
+            <radialGradient id="o-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#8b5cf6" stop-opacity=".45"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="o-plinth" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3a3040"/><stop offset="100%" stop-color="#16111c"/>
+            </linearGradient>
           </defs>
-          <circle cx="240" cy="240" r="200" class="eco-ring r1"/>
-          <circle cx="240" cy="240" r="225" class="eco-ring r2"/>
-          <circle cx="240" cy="240" r="150" fill="url(#g-sea)"/>
-          <g clip-path="url(#clip-globe)" class="eco-continents">
-            <path d="M120 170 C150 130 210 140 220 175 C230 210 190 215 185 245 C180 275 140 280 120 250 C100 225 100 195 120 170Z" fill="url(#g-land)"/>
-            <path d="M260 120 C300 110 350 135 355 170 C360 200 330 205 320 230 C305 265 270 250 265 220 C258 185 235 140 260 120Z" fill="url(#g-land)"/>
-            <path d="M230 290 C260 280 300 295 310 325 C320 355 290 380 255 375 C220 370 205 340 210 315 C212 300 218 294 230 290Z" fill="url(#g-land)"/>
-            <path d="M400 230 C420 240 430 280 410 300 C395 315 375 300 380 275 C384 255 385 225 400 230Z" fill="url(#g-land)"/>
+          <circle cx="240" cy="226" r="226" fill="none" stroke="rgba(167,139,250,.35)" stroke-width="1.5"/>
+          <circle cx="240" cy="226" r="208" fill="url(#o-glow)"/>
+          <ellipse cx="240" cy="424" rx="168" ry="30" fill="#0d0a14"/>
+          <path d="M72 410 L72 424 A168 30 0 0 0 408 424 L408 410 A168 30 0 0 1 72 410Z" fill="url(#o-plinth)"/>
+          <ellipse cx="240" cy="410" rx="168" ry="30" fill="#2a2132"/>
+          <ellipse cx="240" cy="408" rx="120" ry="20" fill="#1b1522"/>
+          <circle cx="240" cy="226" r="74" fill="url(#o-sphere)"/>
+          <circle cx="218" cy="200" r="18" fill="#fff" opacity=".18"/>
+          <g class="spin-a">
+            <ellipse cx="240" cy="226" rx="176" ry="62" transform="rotate(-24 240 226)" fill="none" stroke="url(#o-silver)" stroke-width="11"/>
+            <ellipse cx="240" cy="226" rx="176" ry="62" transform="rotate(-24 240 226)" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="2" stroke-dasharray="2 6"/>
           </g>
-          <circle cx="240" cy="240" r="150" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
-          <!-- sprout on top of the planet -->
-          <g class="eco-sprout">
-            <path d="M240 92 C240 70 240 55 240 40" stroke="#166534" stroke-width="5" stroke-linecap="round" fill="none"/>
-            <path d="M240 62 C210 60 192 40 190 18 C215 18 236 34 240 62Z" fill="url(#g-leaf)"/>
-            <path d="M240 50 C268 46 285 26 286 4 C262 6 243 22 240 50Z" fill="url(#g-leaf)"/>
+          <g class="spin-b">
+            <ellipse cx="240" cy="226" rx="150" ry="150" transform="rotate(0 240 226)" fill="none" stroke="url(#o-gold)" stroke-width="9" stroke-dasharray="520 430"/>
+            <ellipse cx="240" cy="226" rx="132" ry="52" transform="rotate(38 240 226)" fill="none" stroke="url(#o-gold)" stroke-width="8"/>
           </g>
-          <!-- orbiting data satellites -->
-          <g class="eco-orbit">
-            <circle cx="440" cy="240" r="9" fill="#fe7096"/>
-            <circle cx="40" cy="240" r="6" fill="#d8b4fe"/>
-          </g>
+          <circle class="pearl" cx="406" cy="226" r="10" fill="url(#o-pearl)"/>
+          <circle cx="62" cy="300" r="7" fill="url(#o-gold)"/>
         </svg>
         <div class="eco-float f1"><span>◉</span><div><b>Live weather</b><small>streamed from Open-Meteo</small></div></div>
         <div class="eco-float f2"><span>⛁</span><div><b>Hadoop + MapReduce</b><small>distributed data pipeline</small></div></div>

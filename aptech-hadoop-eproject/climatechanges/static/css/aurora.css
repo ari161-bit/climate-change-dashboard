@@ -1,0 +1,128 @@
+/* EarthScape "aurora" theme: calm plum-black canvas, lilac light, italic serif accents. Loaded last on public pages. */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+
+body.eco{
+  --paper:#0a0810; --paper-raised:#141021; --ink:#f3effa; --ink-soft:#c3bad6; --ink-faint:#8f85a3;
+  --teal-900:#efe3ff; --teal-700:#cfb3ff; --teal-500:#a98bff; --teal-200:#35254f; --teal-100:#1b1430;
+  --amber-600:#e8cf9b; --amber-500:#e9c98a; --amber-200:#2c2418;
+  --coral-600:#f08fb0; --coral-100:#2d1623;
+  --line:#2b2339; --line-soft:#201a2d; --header-bg:rgba(10,8,16,.8);
+  --panel-ink:#0b0911; --teal-deep:#4a27a3;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); --shadow-lg:0 4px 12px rgba(0,0,0,.45),0 30px 60px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+html,body.eco{ background:#0a0810 !important; color:var(--ink); }
+body.eco{
+  background:
+    radial-gradient(900px 520px at 85% -8%, rgba(139,92,246,.20), transparent 60%),
+    radial-gradient(700px 480px at -8% 12%, rgba(233,201,138,.07), transparent 55%),
+    #0a0810 !important;
+  background-attachment:fixed !important;
+}
+body.eco h1,body.eco h2,body.eco h3{ color:#f6f1ff; }
+body.eco a{ color:#c4a8ff; }
+body.eco .section,body.eco main,body.eco .eco-main{ background:transparent !important; }
+
+/* header + footer */
+body.eco .site-header{ background:rgba(10,8,16,.78) !important; border-bottom:1px solid var(--line-soft) !important; backdrop-filter:blur(14px); }
+body.eco .site-footer{ background:#07050c !important; border-top:1px solid var(--line-soft) !important; color:var(--ink-soft); }
+body.eco .site-footer a{ color:#cdb8ff; }
+body.eco .footer-bottom{ border-top:1px solid var(--line-soft) !important; color:var(--ink-faint); }
+
+/* surfaces */
+body.eco .card,body.eco .login-card,body.eco .signup-card,body.eco .ds-card,body.eco .gloss-item,body.eco .worksheet,body.eco .tool-panel,body.eco .quiz-card,body.eco .side-card{
+  background:linear-gradient(180deg,rgba(26,20,42,.92),rgba(16,12,28,.92)) !important; border:1px solid rgba(167,139,250,.18) !important;
+  color:var(--ink) !important; box-shadow:0 24px 60px -24px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05) !important; }
+body.eco .login-card::before,body.eco .signup-card::before{ background:linear-gradient(90deg,#8b5cf6,#e9c98a) !important; height:3px !important; }
+body.eco .login-card::after,body.eco .signup-card::after{ background:radial-gradient(circle,rgba(139,92,246,.25),transparent 65%) !important; }
+
+/* forms and buttons */
+body.eco input,body.eco select,body.eco textarea,body.eco .form-group input{
+  background:rgba(255,255,255,.05) !important; color:var(--ink) !important; border:1px solid rgba(167,139,250,.28) !important; border-radius:12px; }
+body.eco input::placeholder,body.eco textarea::placeholder{ color:#8a809c !important; }
+body.eco input:focus,body.eco select:focus,body.eco textarea:focus{ outline:2px solid #a98bff !important; outline-offset:1px; }
+body.eco label,body.eco .form-group label{ color:var(--ink-soft) !important; }
+body.eco .btn-primary,body.eco .login-button,body.eco .signup-button{
+  background:linear-gradient(135deg,#b79bff,#7c4dee) !important; color:#fff !important; border:0 !important; border-radius:999px !important;
+  box-shadow:0 14px 30px -10px rgba(124,77,238,.7) !important; }
+body.eco .btn-ghost{ background:transparent !important; color:var(--ink) !important; border:1px solid rgba(167,139,250,.4) !important; border-radius:999px; }
+body.eco .login-text,body.eco .login-text a{ color:var(--ink-soft) !important; } body.eco .login-text a{ color:#c9aaff !important; font-weight:600; }
+body.eco .form-message{ background:rgba(139,92,246,.14) !important; color:#e5d6ff !important; border:1px solid rgba(167,139,250,.3); }
+body.eco .form-message.ok{ background:rgba(233,201,138,.1) !important; color:#f0dcae !important; border-color:rgba(233,201,138,.3); }
+body.eco .eyebrow,body.eco .eco-chip{ color:#d9c6ff !important; letter-spacing:.16em; text-transform:uppercase; }
+body.eco .section-head h2::after,body.eco .section-head h1::after{ background:linear-gradient(90deg,#8b5cf6,#e9c98a) !important; }
+body.eco .nav-link.is-active,body.eco .nav-link:hover{ background:rgba(167,139,250,.16) !important; color:#fff !important; }
+body.eco .mark{ background:linear-gradient(135deg,#b79bff,#6d3fe0) !important; color:#fff !important; }
+
+/* ---------- landing hero ---------- */
+body.eco-home .eco-hero{
+  background:
+    radial-gradient(820px 560px at 72% 40%, rgba(124,77,238,.30), transparent 62%),
+    radial-gradient(520px 380px at 10% 85%, rgba(233,201,138,.07), transparent 60%),
+    #0a0810 !important; }
+body.eco-home .eco-hero::before,body.eco-home .eco-hero::after{ opacity:.35; }
+body.eco-home .eco-hero h1{ font-weight:500 !important; letter-spacing:-.035em; color:#f6f1ff !important;
+  background:none !important; -webkit-text-fill-color:#f6f1ff !important; }
+body.eco-home .eco-hero h1 em{ font-family:"Instrument Serif",Georgia,serif !important; font-style:italic !important; font-weight:400 !important;
+  background:none !important; -webkit-text-fill-color:#c9aaff !important; color:#c9aaff !important; font-size:1.08em; letter-spacing:-.01em; }
+body.eco-home .eco-chip{ background:rgba(167,139,250,.1) !important; border:1px solid rgba(167,139,250,.35) !important; }
+body.eco-home .eco-lede{ color:var(--ink-soft) !important; max-width:46ch; }
+body.eco-home .eco-btn{ border-radius:999px !important; padding:13px 22px !important; }
+body.eco-home .eco-btn-solid{ background:#f3effa !important; color:#14102a !important; border:0 !important; }
+body.eco-home .eco-btn-solid span{ display:inline-grid; place-items:center; width:26px; height:26px; margin-left:10px; border-radius:50%; background:#14102a; color:#f3effa; }
+body.eco-home .eco-btn-line{ border:1px solid rgba(167,139,250,.45) !important; color:#efe6ff !important; background:transparent !important; }
+body.eco-home .eco-trust b{ color:#fff !important; } body.eco-home .eco-trust li{ color:var(--ink-faint) !important; }
+body.eco-home .eco-hills{ display:none; }
+body.eco-home .eco-float{ background:rgba(20,15,34,.78) !important; border:1px solid rgba(167,139,250,.28) !important; backdrop-filter:blur(10px); color:#fff; }
+body.eco-home .eco-float span{ background:rgba(167,139,250,.18) !important; color:#d9c6ff !important; }
+
+/* orb */
+.eco-art .orb{ width:100%; height:auto; overflow:visible; filter:drop-shadow(0 40px 70px rgba(0,0,0,.6)); }
+.orb .spin-a{ transform-origin:240px 226px; animation:orb-a 26s linear infinite; }
+.orb .spin-b{ transform-origin:240px 226px; animation:orb-b 34s linear infinite; }
+.orb .pearl{ transform-origin:240px 226px; animation:orb-a 18s linear infinite; }
+@keyframes orb-a{ to{ transform:rotate(360deg); } }
+@keyframes orb-b{ to{ transform:rotate(-360deg); } }
+@media (prefers-reduced-motion:reduce){ .orb .spin-a,.orb .spin-b,.orb .pearl{ animation:none; } }
+
+/* other dark-green sections on inner pages */
+body.eco .eco-cta,body.eco .cta-band,body.eco [class*="band"]{ background-color:transparent; }
+
+body.eco .eco-mono,body.eco-home .eco-chip .eco-mono{ color:#e9c98a !important; }
+body.eco .eco-dot{ background:#b79bff !important; box-shadow:0 0 0 4px rgba(167,139,250,.25) !important; }
+
+/* ---------- second pass: remaining green on inner pages ---------- */
+body.eco .brand, body.eco .brand span, body.eco .brand small{ color:#f3effa !important; }
+body.eco .brand small{ color:#a99fbd !important; }
+body.eco .brand .mark{ background:linear-gradient(135deg,#b79bff,#6d3fe0) !important; color:#fff !important; }
+body.eco h1,body.eco h2,body.eco h3,body.eco h4,body.eco .section-head h2,body.eco .section-head h1{ color:#f6f1ff !important; }
+body.eco p,body.eco li{ color:var(--ink-soft); }
+body.eco .login-card input,body.eco .signup-card input,body.eco .signup-card select,body.eco .signup-card textarea,body.eco .form-group input,body.eco .form-group select{
+  background-color:rgba(255,255,255,.06) !important; color:#f3effa !important; border:1px solid rgba(167,139,250,.3) !important; }
+body.eco .hero{
+  background:radial-gradient(70% 90% at 100% 0%, rgba(139,92,246,.35), transparent 60%),
+             radial-gradient(60% 80% at 0% 100%, rgba(233,201,138,.10), transparent 60%),
+             linear-gradient(135deg,#1b1236,#0e0a1c) !important;
+  border:1px solid rgba(167,139,250,.22) !important; box-shadow:0 30px 70px -30px rgba(0,0,0,.8) !important; }
+body.eco .hero h1,body.eco .hero h2{ color:#fff !important; }
+body.eco .hero [class*="stat"],body.eco .hero [class*="chip"],body.eco .hero [class*="pill"]{ background:rgba(167,139,250,.10) !important; border-color:rgba(167,139,250,.25) !important; }
+body.eco .hero [class*="stat"] b,body.eco .hero [class*="stat"] strong,body.eco .hero [class*="num"],body.eco .hero .big{ color:#e9c98a !important; }
+body.eco .hero .btn,body.eco .hero a.btn{ background:#f3effa !important; color:#14102a !important; border-radius:999px; }
+body.eco :is(.callout,.note,.tip,.fact,.stat-card,.gloss-item,.resource,.feature){ background:rgba(26,20,42,.85) !important; border-color:rgba(167,139,250,.2) !important; color:var(--ink) !important; }
+
+/* third pass: beat the legacy input rule's specificity; recolour lime accents */
+body.eco input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="submit"]),
+body.eco select,body.eco textarea,[data-theme="dark"] body.eco .form-group input,body.eco .form-group input,body.eco .form-group select,body.eco .form-group textarea{
+  background:rgba(255,255,255,.06) !important; background-color:rgba(255,255,255,.06) !important; color:#f3effa !important;
+  border:1px solid rgba(167,139,250,.3) !important; }
+body.eco .ro-value,body.eco .js-counter,body.eco .hero h5,body.eco h5,body.eco .fv,body.eco .pl-dir{ color:#e9c98a !important; }
+body.eco .ro-label,body.eco .callout-label{ color:#cdb8ff !important; }
+body.eco .hero h1 em,body.eco .hero h1 span,body.eco .hero h1 mark,body.eco h1 em,body.eco h2 em{ color:#c9aaff !important; -webkit-text-fill-color:#c9aaff !important; background:none !important; font-family:"Instrument Serif",Georgia,serif; font-style:italic; font-weight:400; }
+body.eco .back-to-top{ background:linear-gradient(135deg,#b79bff,#6d3fe0) !important; color:#fff !important; }
+body.eco .scroll-progress-bar{ background:linear-gradient(90deg,#8b5cf6,#e9c98a) !important; }
+
+/* fourth pass: home page variables and gradient-clipped titles */
+body.eco-home, body.eco{ --cin-bg:#0a0810; --cin-mint:#e9c98a; --cin-green:#c09bff; }
+body.eco-home .eco-section,body.eco-home .eco-live-sec{ background:transparent !important; }
+body.eco .hero h1,body.eco .hero h2{ background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important; -webkit-text-fill-color:#fff !important; color:#fff !important; }
+body.eco .hero h1 em{ -webkit-text-fill-color:#c9aaff !important; }
