@@ -34,16 +34,19 @@ def application(environ, start_response):
     """Initialize the ephemeral demo database once per serverless instance."""
     global _bootstrapped
     if not _bootstrapped:
+        import shutil
+        from django.conf import settings
         from django.core.management import call_command
         from climatechanges import alerts, roles
+        db = Path(settings.DATABASES["default"]["NAME"])
+        seed = PROJECT_ROOT / "seed_demo.sqlite3"  # built by vercel_build.py
+        if seed.exists() and not db.exists():
+            db.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(seed, db)
         call_command("migrate", interactive=False, verbosity=0)
         roles.ensure_groups()
         alerts.seed_default_rules()
         _create_demo_users(roles)
-        try:
-            call_command("seed_sample_data", verbosity=0)
-        except Exception:
-            pass
         _bootstrapped = True
     return django_app(environ, start_response)
 

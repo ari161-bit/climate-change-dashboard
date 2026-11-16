@@ -14,3 +14,6 @@ db.sqlite3
 *.sqlite3-journal
 backups/
 /file
+
+# built during the Vercel build
+aptech-hadoop-eproject/seed_demo.sqlite3
