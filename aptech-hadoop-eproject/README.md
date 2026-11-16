@@ -53,6 +53,11 @@ hadoop\run_mapreduce.cmd    # runs the disasters-per-year job with Hadoop Stream
 When HDFS is running, the console shows **HDFS online**, "Store in HDFS" writes real files through WebHDFS, and the job *"Climate disasters per year on Hadoop"* runs a real Hadoop Streaming job and reads its output back from HDFS.
 When HDFS is **not** running, the app says so, stores files in `data/hdfs_staging/` (same folder layout), and runs MapReduce jobs on its built-in local engine. It never claims Hadoop ran when it didn't.
 
+### HDFS troubleshooting
+
+- **"Safe mode is ON" never clears / DataNode exits with "Storage directory ... does not exist":** the DataNode folder (`C:\hadoop\hadoop-2.9.2\data\datanode`) belongs to an older NameNode format. Stop HDFS, rename that folder (e.g. `datanode.old`), create an empty `datanode` folder, start HDFS, run `hdfs dfsadmin -safemode leave`, delete any `CORRUPT` entries with `hdfs dfs -rm -r /climate`, then run `hadoop\start_hdfs.cmd` to re-upload the CSVs.
+- **Console says "MongoDB not reachable":** `pip install pymongo==4.10.1` and make sure the MongoDB service is running, then `python manage.py sync_mongodb`.
+
 ## The console (sidebar)
 
 1. **Overview**: KPIs (global temperature change, average temperature, rainfall, humidity, CO₂, anomalies, processing stats), trend + forecast, recent alerts, filters (date range, country, region, variable)

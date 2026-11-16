@@ -240,7 +240,7 @@ def import_readings(ds, source="upload"):
                                   latitude=num("latitude"), longitude=num("longitude"), timestamp=ts[i].to_pydatetime(),
                                   temperature=num("temperature"), rainfall=num("rainfall"), humidity=num("humidity"),
                                   co2=num("co2"), source=source, dataset=ds))
-    SensorReading.objects.bulk_create(objs, batch_size=1000)
+    SensorReading.objects.bulk_create(objs, batch_size=200)
     rules = alerts._reading_rules()
     new_alerts = sum(alerts.check_reading(r, rules) for r in objs)
     ds.status = "imported"

@@ -57,5 +57,5 @@ class Command(BaseCommand):
                         timestamp=datetime(year, month, 15, 12, tzinfo=timezone.utc),
                         temperature=round(temp, 1), rainfall=round(rain, 1), humidity=round(humid, 1),
                         co2=round(co2, 2), source="sample"))
-        SensorReading.objects.bulk_create(objs, batch_size=1000)
+        SensorReading.objects.bulk_create(objs, batch_size=200)
         self.stdout.write(self.style.SUCCESS(f"Created {len(objs)} SAMPLE readings for {len(STATIONS)} stations."))
