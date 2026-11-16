@@ -8,6 +8,7 @@
 </form>
 {% endblock %}
 {% block content %}
+<div class="card" style="margin-bottom:16px"><div class="card-h"><div><h3>Ask the EarthScape Assistant</h3><p>Get a plain-language explanation of an alert, a threshold or a severity level.</p></div><button type="button" class="btn" data-chat-ask="">Open assistant</button></div><div><button type="button" class="btn ghost" style="margin:4px 6px 0 0" data-chat-ask="What do the alert severities mean?">What do the alert severities mean?</button><button type="button" class="btn ghost" style="margin:4px 6px 0 0" data-chat-ask="How are alert thresholds set?">How are alert thresholds set?</button><button type="button" class="btn ghost" style="margin:4px 6px 0 0" data-chat-ask="Why did I get a critical alert?">Why did I get a critical alert?</button></div></div>
 <div class="grid g4">
   <div class="card kpi hero"><div class="label">Unread</div><div class="value">{{ unread_alerts }}</div><div class="sub">of {{ counts.total }} alerts</div></div>
   <div class="card kpi"><div class="label"><span class="sev critical"></span>Critical</div><div class="value">{{ counts.critical }}</div></div>
