@@ -29,6 +29,16 @@ Open:
 
 New sign-ups get the **Climate Analyst** role. A superuser counts as **Administrator**, and administrators can promote other users under *User Management*.
 
+## EarthScape Assistant (chatbot)
+
+A floating chat widget on every page (public site and console). It answers questions about climate change and the site using a live snapshot of the app's own data (temperature anomaly, recorded disasters, forecast).
+
+- Backend: `climatechanges/chatbot.py`, endpoint `POST /climatechanges/api/chat/`. The browser never sees the API key.
+- Provider: [Groq](https://groq.com) (model `openai/gpt-oss-20b`). Set **`GROQ_API_KEY`** as an environment variable (locally in a git-ignored `.env`; on Vercel under Project Settings -> Environment Variables). Optional: `GROQ_MODEL`, `CHAT_DAILY_LIMIT` (default 400 messages/day per server instance).
+- Cost controls: short replies (max 600 tokens), last 6 messages of history, 600 characters per message, 15 messages per visitor per 10 minutes, a daily cap, and a one-hour cache for repeated first questions.
+- Without a key, or if Groq is unreachable, it falls back to local answers built from the site's data, so the widget never breaks.
+- Tests: `python manage.py test climatechanges.tests_chatbot` (no network or API credits used).
+
 ## Vercel preview
 
 The repository root is configured to build and serve this Django project through `api/index.py`. Pushes to a Git-connected Vercel project create preview deployments. The serverless demo stores its SQLite database, uploaded files, logs and encryption key under `/tmp/earthscape`; these are temporary and can reset between instances. For persistent accounts and uploads, configure a hosted database and object storage before production use. Hadoop/HDFS requires a reachable external WebHDFS cluster; without one, the app reports that it is using local staging (also temporary on Vercel).

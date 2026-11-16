@@ -47,6 +47,7 @@ urlpatterns = [
     path("api/series/", cv.api_series, name="api_series"),
     path("api/ingest/", cv.api_ingest, name="api_ingest"),
     path("api/health/", cv.api_health, name="api_health"),
+    path("api/chat/", views.chat_api, name="api_chat"),
 
     path("<slug:name>.html", views.page, name="page"),
 

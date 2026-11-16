@@ -1,0 +1,34 @@
+/* EarthScape: chatbot widget and footer credits */
+.esc-chat-launch{position:fixed;right:24px;bottom:24px;z-index:900;width:56px;height:56px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(135deg,#8b5cf6,#6d3fe0);color:#fff;cursor:pointer;display:grid;place-items:center;box-shadow:0 10px 30px rgba(109,63,224,.5);transition:transform .15s}
+body.eco .esc-chat-launch{bottom:96px}
+.esc-chat-launch:hover{transform:scale(1.07)} .esc-chat-launch:focus-visible{outline:3px solid #c4b5fd;outline-offset:3px}
+.esc-chat{position:fixed;right:24px;bottom:24px;z-index:901;width:min(380px,calc(100vw - 32px));height:min(540px,calc(100vh - 48px));display:flex;flex-direction:column;
+  background:rgba(14,12,26,.97);color:#ece8ff;border:1px solid rgba(167,139,250,.35);border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.6);overflow:hidden;font:14px/1.5 Inter,system-ui,sans-serif}
+.esc-chat[hidden]{display:none}
+.esc-chat-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:linear-gradient(135deg,#5b34c2,#3a1f8f)}
+.esc-chat-title strong{display:block;font-size:15px;color:#fff} .esc-chat-status{font-size:12px;color:#d8ccff}
+.esc-chat-close{background:none;border:0;color:#fff;font-size:26px;line-height:1;cursor:pointer;padding:0 4px}
+.esc-chat-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.esc-msg{max-width:88%;padding:9px 12px;border-radius:14px;white-space:pre-wrap;word-wrap:break-word}
+.esc-bot{align-self:flex-start;background:rgba(255,255,255,.08);border-bottom-left-radius:4px}
+.esc-user{align-self:flex-end;background:#7c4dee;color:#fff;border-bottom-right-radius:4px}
+.esc-wait{opacity:.6;font-style:italic} .esc-msg a{color:#c4b5fd;text-decoration:underline}
+.esc-chat-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px} .esc-chat-chips[hidden]{display:none}
+.esc-chip{background:rgba(167,139,250,.14);border:1px solid rgba(167,139,250,.4);color:#e5dcff;border-radius:999px;padding:6px 11px;font-size:12.5px;cursor:pointer}
+.esc-chip:hover{background:rgba(167,139,250,.28)}
+.esc-chat-form{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,.1)}
+.esc-chat-form input{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:10px;color:#fff;padding:10px 12px;font:inherit}
+.esc-chat-form input:focus{outline:2px solid #a78bfa;outline-offset:0}
+.esc-chat-form button{background:#8b5cf6;border:0;border-radius:10px;color:#fff;font-weight:600;padding:0 16px;cursor:pointer} .esc-chat-form button:hover{background:#7c4dee}
+@media(max-width:480px){.esc-chat{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100vh - 16px)}}
+
+/* footer credits */
+.footer-credits{max-width:1180px;margin:34px auto 0;padding:26px 24px 0;border-top:1px solid rgba(255,255,255,.1);display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+.footer-credits h5{margin:0 0 8px;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#a78bfa}
+.site-footer .footer-credits p{margin:0 0 4px;color:#d8d2f0}
+.site-footer .footer-credits p strong{color:#fff}
+.site-footer .footer-credits address{font-style:normal;color:#d8d2f0;line-height:1.6}
+.footer-credits a{color:#c4b5fd}
+.credit-badge{display:inline-flex;gap:8px;align-items:center;margin-top:10px;padding:6px 12px;border:1px solid rgba(167,139,250,.4);border-radius:999px;font-size:.82rem;background:rgba(167,139,250,.1)}
+@media(max-width:760px){.footer-credits{grid-template-columns:1fr}}

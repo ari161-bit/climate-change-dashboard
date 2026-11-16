@@ -317,3 +317,32 @@ def support(request):
             Feedback.objects.create(name=name, email=email, kind=kind, message=message)
             sent = True
     return render(request, "climatechanges/support.html", {"sent": sent, "types": Feedback.TYPES})
+
+
+# ---------------------------------------------------------------------------
+# EarthScape Assistant (chatbot)
+# ---------------------------------------------------------------------------
+import json as _json
+
+from django.http import JsonResponse as _JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie as _ensure_csrf
+from django.views.decorators.http import require_http_methods as _require_methods
+
+
+@_ensure_csrf
+@_require_methods(["GET", "POST"])
+def chat_api(request):
+    """GET: widget bootstrap (sets the CSRF cookie). POST: {"messages": [{"role", "content"}, ...]} -> {"reply"}."""
+    from . import chatbot
+    if request.method == "GET":
+        return _JsonResponse({"ai": chatbot.enabled()})
+    if len(request.body) > 8000:
+        return _JsonResponse({"error": "Message too long."}, status=413)
+    try:
+        payload = _json.loads(request.body or b"{}")
+    except ValueError:
+        return _JsonResponse({"error": "Invalid request."}, status=400)
+    forwarded = request.META.get("X-FORWARDED-FOR", request.META.get("HTTP_X_FORWARDED_FOR", ""))
+    visitor = (forwarded.split(",")[0].strip() or request.META.get("REMOTE_ADDR", "?"))[:45]
+    text, source = chatbot.reply(payload.get("messages"), visitor)
+    return _JsonResponse({"reply": text, "source": source})

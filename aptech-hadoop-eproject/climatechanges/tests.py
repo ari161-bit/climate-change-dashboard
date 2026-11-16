@@ -362,7 +362,7 @@ class ReportAndDashboardTests(EarthScapeTestCase):
         self.assertContains(response, "cinematic-home.css")
         self.assertContains(response, "cinematic-home.js")
         self.assertGreater(response.context["land_country_count"], 0)
-        self.assertContains(response, str(response.context["land_country_count"]) + " countries")
+        self.assertContains(response, "<b>" + str(response.context["land_country_count"]) + "</b> reporting countries")
 
     def test_every_report_in_pdf_and_csv(self):
         for kind in reports.REPORTS:

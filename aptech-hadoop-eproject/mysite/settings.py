@@ -16,6 +16,15 @@ import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Load KEY=value pairs from an optional, git-ignored .env file (local development only).
+for _env in (BASE_DIR / ".env", BASE_DIR.parent / ".env"):
+    if _env.exists():
+        for _line in _env.read_text(encoding="utf-8").splitlines():
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
+
 ON_VERCEL = bool(os.environ.get("VERCEL"))
 RUNTIME_DIR = Path(os.environ.get("EARTHSCAPE_RUNTIME_DIR", "/tmp/earthscape" if ON_VERCEL else BASE_DIR))
 RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
