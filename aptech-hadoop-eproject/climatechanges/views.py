@@ -344,5 +344,6 @@ def chat_api(request):
         return _JsonResponse({"error": "Invalid request."}, status=400)
     forwarded = request.META.get("X-FORWARDED-FOR", request.META.get("HTTP_X_FORWARDED_FOR", ""))
     visitor = (forwarded.split(",")[0].strip() or request.META.get("REMOTE_ADDR", "?"))[:45]
-    text, source = chatbot.reply(payload.get("messages"), visitor)
+    page = payload.get("page") if payload.get("page") in chatbot.PAGE_HINTS else ""
+    text, source = chatbot.reply(payload.get("messages"), visitor, page)
     return _JsonResponse({"reply": text, "source": source})

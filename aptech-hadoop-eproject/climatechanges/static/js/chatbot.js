@@ -45,7 +45,7 @@
     busy = true; chips.hidden = true; input.value = '';
     addMsg('user', text); history.push({ role: 'user', content: text });
     var wait = addMsg('bot', 'Thinking…'); wait.classList.add('esc-wait');
-    fetch(API, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf() }, body: JSON.stringify({ messages: history.slice(-6) }) })
+    fetch(API, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf() }, body: JSON.stringify({ messages: history.slice(-6), page: /\/alerts\//.test(location.pathname) ? 'alerts' : (/support/.test(location.pathname) ? 'support' : '') }) })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (r) {
         wait.remove();
@@ -60,6 +60,11 @@
     panel.hidden = !open; launch.classList.toggle('esc-on', open);
     if (open) { input.focus(); if (!log.children.length) addMsg('bot', 'Hi! I’m the EarthScape Assistant. Ask me about global warming, our data, or how to use this site.'); }
   }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-chat-ask]');
+    if (!t) return;
+    e.preventDefault(); toggle(true); var q = t.getAttribute('data-chat-ask'); if (q) send(q);
+  });
   launch.addEventListener('click', function () { toggle(panel.hidden); });
   close.addEventListener('click', function () { toggle(false); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) toggle(false); });

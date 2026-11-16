@@ -32,3 +32,5 @@ body.eco .esc-chat-launch{bottom:96px}
 .footer-credits a{color:#c4b5fd}
 .credit-badge{display:inline-flex;gap:8px;align-items:center;margin-top:10px;padding:6px 12px;border:1px solid rgba(167,139,250,.4);border-radius:999px;font-size:.82rem;background:rgba(167,139,250,.1)}
 @media(max-width:760px){.footer-credits{grid-template-columns:1fr}}
+
+.site-footer .footer-inner{grid-template-columns:minmax(0,640px)}
