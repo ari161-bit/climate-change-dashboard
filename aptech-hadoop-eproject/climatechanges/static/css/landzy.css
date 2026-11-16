@@ -71,3 +71,61 @@ input:focus,select:focus,textarea:focus{ border-color:var(--lz-p) !important; bo
 .login-card::before,.signup-card::before{ height:1px !important; background:linear-gradient(90deg,transparent,var(--lz-p),transparent) !important; }
 .section-head h1,.section-head h2{ background-image:linear-gradient(180deg,#fff,#cfa8ff) !important; }
 .eyebrow{ background:rgba(163,92,255,.1) !important; color:#cfa8ff !important; border-color:rgba(163,92,255,.3) !important; }
+
+/* ----- polish pass ----- */
+::selection{ background:rgba(163,92,255,.4); color:#fff; }
+*{ scrollbar-width:thin; scrollbar-color:#2c2536 transparent; }
+::-webkit-scrollbar{ width:8px; height:8px; } ::-webkit-scrollbar-thumb{ background:#2c2536; border-radius:8px; }
+
+/* cards lift and glow on hover */
+.card,.kpi{ transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease !important; }
+.card:hover,.kpi:hover{ transform:translateY(-3px); border-color:rgba(163,92,255,.45) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 18px 40px -18px rgba(163,92,255,.45) !important; }
+
+/* KPI: Landzy-style faint bar texture at the bottom right */
+.kpi{ overflow:hidden; }
+.kpi .sub{ position:relative; z-index:1; }
+.kpi .value{ font-size:34px !important; text-shadow:0 0 24px rgba(163,92,255,.25); }
+
+/* hero: sparkles + slow shimmering border */
+.observatory-hero{ position:relative; isolation:isolate; }
+.observatory-hero .observatory-copy::before{ content:"✦  ·  ✧    ·  ✦"; position:absolute; top:18px; right:28px;
+  color:rgba(233,216,255,.55); letter-spacing:.4em; font-size:12px; pointer-events:none; }
+@property --lz-a{ syntax:"<angle>"; inherits:false; initial-value:0deg; }
+.observatory-hero::after{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; opacity:1 !important; z-index:-1;
+  background:conic-gradient(from var(--lz-a),transparent 0 70%,rgba(163,92,255,.9) 85%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:lz-spin 6s linear infinite; }
+@keyframes lz-spin{ to{ --lz-a:360deg; } }
+
+/* badges as soft pills (like Landzy's +1.37%) */
+.badge{ border-radius:8px !important; padding:4px 10px !important; border:1px solid rgba(255,255,255,.06); }
+.b-warning,.b-in_progress,.b-running{ background:rgba(251,191,36,.12) !important; color:#fcd34d !important; }
+.b-critical,.b-failed,.b-invalid{ background:rgba(248,113,113,.12) !important; color:#fca5a5 !important; }
+.b-info,.b-open,.b-queued,.b-validated{ background:rgba(163,92,255,.14) !important; color:#d8b4fe !important; }
+
+/* tables and lists */
+.t tr{ transition:background .15s; }
+.t tr:hover td{ background:rgba(163,92,255,.06) !important; }
+.alert-row{ border-bottom-color:var(--lz-line-2) !important; border-radius:12px; }
+.alert-row:hover{ background:rgba(163,92,255,.05); }
+.stat-list div{ border-bottom-color:var(--lz-line) !important; }
+.note,.msg{ background:#100d15 !important; border-color:var(--lz-line) !important; color:var(--lz-ink-2) !important; }
+pre.code{ background:#0b0910 !important; border:1px solid var(--lz-line); color:#e9d8ff !important; }
+
+/* sidebar: icons glow on the active item, dot for "live" */
+.es-nav a.on svg{ filter:drop-shadow(0 0 6px rgba(207,168,255,.8)); }
+.es-nav a{ transition:background .2s, color .2s, transform .2s !important; }
+.es-nav a:hover{ transform:translateX(2px); }
+
+/* page entrance */
+.es-content > *{ animation:lz-in .5s cubic-bezier(.2,.7,.2,1) both; }
+.es-content > *:nth-child(2){ animation-delay:.05s } .es-content > *:nth-child(3){ animation-delay:.1s }
+.es-content > *:nth-child(4){ animation-delay:.15s } .es-content > *:nth-child(5){ animation-delay:.2s }
+@keyframes lz-in{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+
+/* public site touches */
+.login-card,.signup-card{ backdrop-filter:blur(10px); }
+.btn-primary:hover,.login-button:hover,.signup-button:hover{ filter:brightness(1.12); transform:translateY(-1px); }
+
+@media (prefers-reduced-motion:reduce){ .observatory-hero::after,.es-content > *{ animation:none !important; } .card:hover,.kpi:hover,.es-nav a:hover{ transform:none; } }
