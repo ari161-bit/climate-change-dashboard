@@ -29,12 +29,17 @@ shutil.copytree(settings.STATIC_ROOT, public_static, dirs_exist_ok=True)
 
 # Pre-build the demo database once here, so a cold serverless start only copies
 # a file instead of spending ~45s migrating and generating sample readings.
-from climatechanges import alerts, roles
-call_command("migrate", interactive=False, verbosity=0)
-roles.ensure_groups()
-alerts.seed_default_rules()
-call_command("seed_sample_data", verbosity=0)
-from django.db import connection
-connection.close()
-shutil.copyfile(settings.DATABASES["default"]["NAME"], project / "seed_demo.sqlite3")
-print("Pre-built demo database:", project / "seed_demo.sqlite3")
+try:
+    from climatechanges import alerts, roles
+    call_command("migrate", interactive=False, verbosity=0)
+    roles.ensure_groups()
+    alerts.seed_default_rules()
+    call_command("seed_sample_data", verbosity=0)
+    from django.db import connection
+    connection.close()
+    shutil.copyfile(settings.DATABASES["default"]["NAME"], project / "seed_demo.sqlite3")
+    print("Pre-built demo database:", project / "seed_demo.sqlite3")
+except Exception as exc:  # never fail the deploy over demo data
+    import traceback
+    traceback.print_exc()
+    print("Skipped pre-building the demo database:", exc)
