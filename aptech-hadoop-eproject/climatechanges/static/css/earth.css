@@ -47,7 +47,9 @@ body.eco-home .eco-btn-solid span{ background:#141a14 !important; color:var(--mi
 body.eco-home .eco-btn-line{ border-color:rgba(159,191,154,.55) !important; }
 body.eco-home .eco-float span{ background:rgba(159,191,154,.18) !important; color:var(--mint) !important; }
 /* orb: lavender sphere with sage-green and champagne rings, like the balloon palette */
-.orb #o-sphere stop:nth-child(1){ stop-color:#efeaff; } .orb #o-sphere stop:nth-child(2){ stop-color:#b4a7e0; } .orb #o-sphere stop:nth-child(3){ stop-color:#4b3a85; }
+.orb #o-sphere stop:nth-child(1){ stop-color:#d6dcff; } .orb #o-sphere stop:nth-child(2){ stop-color:#7f86d6; } .orb #o-sphere stop:nth-child(3){ stop-color:#2a2563; }
+.orb .earth-land{ animation:earth-drift 40s linear infinite alternate; } @keyframes earth-drift{ to{ transform:translateX(-22px); } }
+.orb .earth-thermo{ filter:drop-shadow(0 6px 12px rgba(229,83,61,.35)); }
 .orb #o-gold stop:nth-child(1){ stop-color:#d9f2d6; } .orb #o-gold stop:nth-child(2){ stop-color:#7fa67d; } .orb #o-gold stop:nth-child(3){ stop-color:#c4e3c0; }
 .orb #o-silver stop:nth-child(1){ stop-color:#fffaf0; } .orb #o-silver stop:nth-child(2){ stop-color:#d8c79c; } .orb #o-silver stop:nth-child(3){ stop-color:#f3e8cc; }
 .orb #o-glow stop{ stop-color:#b4a7e0; }
