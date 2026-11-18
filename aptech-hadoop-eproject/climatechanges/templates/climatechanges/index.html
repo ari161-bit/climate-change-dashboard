@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="{% static 'css/cinematic-home.css' %}?v=3">
 <link rel="stylesheet" href="{% static 'css/landzy.css' %}?v=2">
 <link rel="stylesheet" href="{% static 'css/aurora.css' %}?v=5">
-<link rel="stylesheet" href="{% static 'css/earth.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'css/earth.css' %}?v=4">
 {% endblock %}
 
 {% block body %}
@@ -52,68 +52,12 @@
 
       <!-- Orb in metallic rings -->
       <div class="eco-art" aria-hidden="true">
-        <svg viewBox="0 0 480 480" class="eco-globe orb">
-          <defs>
-            <radialGradient id="o-sphere" cx="38%" cy="32%" r="75%">
-              <stop offset="0%" stop-color="#ead9ff"/><stop offset="38%" stop-color="#9d6bff"/><stop offset="100%" stop-color="#2b1465"/>
-            </radialGradient>
-            <linearGradient id="o-gold" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#f7e7bd"/><stop offset="45%" stop-color="#b8935a"/><stop offset="100%" stop-color="#f2dca6"/>
-            </linearGradient>
-            <linearGradient id="o-silver" x1="1" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#8f88a3"/><stop offset="100%" stop-color="#e3deef"/>
-            </linearGradient>
-            <radialGradient id="o-pearl" cx="35%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#fff"/><stop offset="60%" stop-color="#b9b2c9"/><stop offset="100%" stop-color="#5c5470"/>
-            </radialGradient>
-            <radialGradient id="o-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#8b5cf6" stop-opacity=".45"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
-            </radialGradient>
-            <linearGradient id="o-plinth" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#3a3040"/><stop offset="100%" stop-color="#16111c"/>
-            </linearGradient>
-          </defs>
-          <circle cx="240" cy="226" r="226" fill="none" stroke="rgba(167,139,250,.35)" stroke-width="1.5"/>
-          <circle cx="240" cy="226" r="208" fill="url(#o-glow)"/>
-          <ellipse cx="240" cy="424" rx="168" ry="30" fill="#0d0a14"/>
-          <path d="M72 410 L72 424 A168 30 0 0 0 408 424 L408 410 A168 30 0 0 1 72 410Z" fill="url(#o-plinth)"/>
-          <ellipse cx="240" cy="410" rx="168" ry="30" fill="#2a2132"/>
-          <ellipse cx="240" cy="408" rx="120" ry="20" fill="#1b1522"/>
-          <circle cx="240" cy="226" r="74" fill="url(#o-sphere)"/>
-          <clipPath id="o-earth"><circle cx="240" cy="226" r="74"/></clipPath>
-          <g clip-path="url(#o-earth)">
-            <g class="earth-land" fill="#9fbf9a" stroke="#6f9a72" stroke-width="1.2">
-              <path d="M178 182 C190 168 214 170 222 184 C230 198 214 206 214 220 C214 234 200 242 190 232 C180 222 170 214 172 200 C173 192 174 187 178 182Z"/>
-              <path d="M196 246 C206 240 220 246 222 260 C224 276 214 292 204 298 C196 286 190 270 192 258 C193 252 194 249 196 246Z"/>
-              <path d="M244 170 C262 162 286 168 296 182 C306 196 298 204 288 206 C276 208 270 218 258 216 C246 214 240 202 242 192 C243 182 240 176 244 170Z"/>
-              <path d="M254 222 C266 218 280 226 282 240 C284 256 276 272 264 276 C252 280 246 266 248 252 C249 240 246 228 254 222Z"/>
-              <path d="M290 250 C300 248 310 256 308 266 C306 276 296 280 288 274 C282 268 284 254 290 250Z"/>
-            </g>
-            <g fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1">
-              <ellipse cx="240" cy="226" rx="74" ry="24"/><ellipse cx="240" cy="226" rx="74" ry="52"/>
-              <ellipse cx="240" cy="226" rx="26" ry="74"/><ellipse cx="240" cy="226" rx="54" ry="74"/>
-            </g>
-            <circle cx="240" cy="226" r="74" fill="url(#o-heat)"/>
-          </g>
-          <radialGradient id="o-heat" cx="70%" cy="30%" r="80%"><stop offset="0%" stop-color="#ffb37a" stop-opacity=".45"/><stop offset="55%" stop-color="#ff8a5c" stop-opacity=".08"/><stop offset="100%" stop-color="#000" stop-opacity=".35"/></radialGradient>
-          <g class="earth-thermo" transform="translate(318 120)">
-            <rect x="-7" y="0" width="14" height="70" rx="7" fill="#f3f0fa" stroke="#cfc8e2" stroke-width="2"/>
-            <rect x="-3" y="22" width="6" height="46" rx="3" fill="#e5533d"/>
-            <circle cx="0" cy="76" r="12" fill="#e5533d" stroke="#f3f0fa" stroke-width="3"/>
-            <path d="M10 10 h8 M10 24 h6 M10 38 h8 M10 52 h6" stroke="#cfc8e2" stroke-width="2"/>
-          </g>
-          <circle cx="218" cy="200" r="18" fill="#fff" opacity=".18"/>
-          <g class="spin-a">
-            <ellipse cx="240" cy="226" rx="176" ry="62" transform="rotate(-24 240 226)" fill="none" stroke="url(#o-silver)" stroke-width="11"/>
-            <ellipse cx="240" cy="226" rx="176" ry="62" transform="rotate(-24 240 226)" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="2" stroke-dasharray="2 6"/>
-          </g>
-          <g class="spin-b">
-            <ellipse cx="240" cy="226" rx="150" ry="150" transform="rotate(0 240 226)" fill="none" stroke="url(#o-gold)" stroke-width="9" stroke-dasharray="520 430"/>
-            <ellipse cx="240" cy="226" rx="132" ry="52" transform="rotate(38 240 226)" fill="none" stroke="url(#o-gold)" stroke-width="8"/>
-          </g>
-          <circle class="pearl" cx="406" cy="226" r="10" fill="url(#o-pearl)"/>
-          <circle cx="62" cy="300" r="7" fill="url(#o-gold)"/>
-        </svg>
+        <div class="earth-wrap">
+          <div class="earth-atmo"></div>
+          <img class="earth-photo" src="{% static 'images/photos/The_Blue_Marble-960.jpg' %}" alt="">
+          <div class="earth-shade"></div>
+          <div class="earth-orbit"><span></span></div>
+        </div>
         <div class="eco-float f1"><span>◉</span><div><b>Live weather</b><small>streamed from Open-Meteo</small></div></div>
         <div class="eco-float f2"><span>⛁</span><div><b>Hadoop + MapReduce</b><small>distributed data pipeline</small></div></div>
         <div class="eco-float f3"><span>↗</span><div><b>Forecast to {{ land_forecast_year }}</b><small>machine-learning trend</small></div></div>

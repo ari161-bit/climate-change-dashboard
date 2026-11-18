@@ -68,3 +68,21 @@ body:not(.eco) .kpi .ic{ background:linear-gradient(180deg,#4f7a55,#2f4d35) !imp
 body:not(.eco) .es-nav .num{ background:var(--sage-d) !important; }
 body:not(.eco) .card [data-chat-ask],body:not(.eco) .card .btn:not(.ghost){ background:linear-gradient(135deg,var(--sage),var(--sage-d)) !important; color:#10140f !important; border:0 !important; }
 body:not(.eco) .kpi .down{ color:var(--mint) !important; }
+
+
+/* ================= hero Earth (real NASA Blue Marble photo) ================= */
+.eco-art{ position:relative; }
+.earth-wrap{ position:relative; width:min(440px,80vw); aspect-ratio:1; margin:0 auto; }
+.earth-atmo{ position:absolute; inset:-14%; border-radius:50%;
+  background:radial-gradient(circle, rgba(180,167,224,.35) 38%, rgba(159,191,154,.18) 52%, transparent 68%); filter:blur(6px); }
+.earth-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; transform:scale(1.18);
+  clip-path:circle(42.4% at 50% 50%); animation:earth-spin 60s linear infinite; }
+.earth-shade{ position:absolute; inset:7.6%; border-radius:50%;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.18), transparent 38%), radial-gradient(circle at 75% 78%, rgba(18,13,28,.55), transparent 55%);
+  box-shadow:0 0 0 1px rgba(214,208,238,.25), 0 0 60px 6px rgba(180,167,224,.35), inset -18px -24px 60px rgba(18,13,28,.55); }
+.earth-orbit{ position:absolute; inset:-4% -10%; border:1.5px solid rgba(159,191,154,.55); border-radius:50%; transform:rotate(-18deg) scaleY(.32);
+  animation:orbit-turn 14s linear infinite; }
+.earth-orbit span{ position:absolute; top:-6px; left:50%; width:12px; height:12px; border-radius:50%; background:#c9f2d3; box-shadow:0 0 14px #9fbf9a; }
+@keyframes earth-spin{ to{ transform:scale(1.18) rotate(360deg); } }
+@keyframes orbit-turn{ to{ transform:rotate(342deg) scaleY(.32); } }
+@media (prefers-reduced-motion:reduce){ .earth-photo,.earth-orbit{ animation:none; } }
