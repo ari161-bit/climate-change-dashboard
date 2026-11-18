@@ -1,0 +1,68 @@
+/* EarthScape palette: dark purple base, sage/mint green and lavender accents, a touch of champagne gold.
+   Loaded last; only colours change, layout and features stay as they are. */
+:root{ --p-bg:#120d1c; --p-bg-2:#1a1329; --p-card:#211836; --p-line:#352a4f;
+  --lav:#b4a7e0; --lav-2:#d6d0ee; --peri:#c5c8eb; --sage:#9fbf9a; --sage-d:#6f9a72; --mint:#c9f2d3; --mint-2:#e3f9e3; --gold:#e3cfa0;
+  --ink:#f3f0fa; --ink-2:#cfc8e2; --ink-3:#9a91b3; }
+
+/* ================= public site ================= */
+body.eco{ --paper:var(--p-bg); --paper-raised:var(--p-card); --ink:#f3f0fa; --ink-soft:var(--ink-2); --ink-faint:var(--ink-3);
+  --teal-900:var(--mint-2); --teal-700:var(--sage); --teal-500:var(--sage); --teal-200:#2f4a36; --teal-100:#1d2a22;
+  --amber-600:var(--gold); --amber-500:var(--gold); --line:var(--p-line); --line-soft:#2a2140; }
+html:has(body.eco),body.eco{ background:var(--p-bg) !important; }
+body.eco{ background:radial-gradient(900px 520px at 85% -8%, rgba(180,167,224,.20), transparent 60%),
+                    radial-gradient(800px 520px at -10% 30%, rgba(159,191,154,.14), transparent 60%), var(--p-bg) !important; }
+body.eco a{ color:var(--sage) !important; }
+body.eco .site-header a:hover,body.eco .nav-link.is-active,body.eco .nav-link:hover{ background:rgba(159,191,154,.16) !important; color:#fff !important; }
+body.eco .brand .mark,body.eco .mark{ background:linear-gradient(135deg,var(--lav),var(--sage-d)) !important; color:#120d1c !important; }
+body.eco .site-footer{ background:#0d0915 !important; }
+body.eco .site-footer h5,body.eco .footer-credits h5{ color:var(--sage) !important; }
+body.eco .site-footer a{ color:var(--mint) !important; }
+body.eco .credit-badge{ border-color:rgba(159,191,154,.45) !important; background:rgba(159,191,154,.10) !important; }
+
+body.eco .login-card::before,body.eco .signup-card::before{ background:linear-gradient(90deg,var(--lav),var(--sage)) !important; }
+body.eco .hero{ background:radial-gradient(70% 90% at 100% 0%, rgba(180,167,224,.30), transparent 60%),
+                           radial-gradient(60% 80% at 0% 100%, rgba(159,191,154,.22), transparent 60%),
+                           linear-gradient(135deg,#21173a,#141020) !important; }
+body.eco .hero [class*="stat"] b,body.eco .ro-value,body.eco .js-counter,body.eco h5,body.eco .fv,body.eco .pl-dir{ color:var(--mint) !important; }
+body.eco .ro-label,body.eco .callout-label{ color:var(--lav) !important; }
+body.eco h1 em,body.eco h2 em,body.eco .hero h1 em{ color:var(--sage) !important; -webkit-text-fill-color:var(--sage) !important; }
+body.eco input:focus,body.eco select:focus,body.eco textarea:focus{ outline:2px solid var(--sage) !important; }
+body.eco .btn-primary,body.eco .login-button,body.eco .signup-button{
+  background:linear-gradient(135deg,var(--sage),var(--sage-d)) !important; color:#10140f !important; border:0 !important; border-radius:999px !important;
+  box-shadow:0 12px 28px -12px rgba(111,154,114,.8) !important; font-weight:700; }
+body.eco .eyebrow,body.eco .eco-chip{ color:var(--mint) !important; background:rgba(159,191,154,.10) !important; border-color:rgba(159,191,154,.35) !important; }
+body.eco .eco-mono{ color:var(--lav) !important; } body.eco .eco-dot{ background:var(--sage) !important; box-shadow:0 0 0 4px rgba(159,191,154,.25) !important; }
+body.eco .section-head h2::after,body.eco .section-head h1::after,body.eco .scroll-progress-bar{ background:linear-gradient(90deg,var(--lav),var(--sage)) !important; }
+body.eco .back-to-top{ background:linear-gradient(135deg,var(--sage),var(--sage-d)) !important; color:#10140f !important; }
+body.eco .form-message.ok{ background:rgba(159,191,154,.12) !important; color:var(--mint) !important; border-color:rgba(159,191,154,.35) !important; }
+
+/* ================= landing page ================= */
+body.eco-home{ --cin-mint:var(--sage); --cin-green:var(--lav); }
+body.eco-home .eco-hero{ background:radial-gradient(820px 560px at 72% 42%, rgba(180,167,224,.28), transparent 62%),
+                                    radial-gradient(520px 380px at 88% 80%, rgba(159,191,154,.20), transparent 60%),
+                                    radial-gradient(480px 360px at 8% 90%, rgba(201,242,211,.07), transparent 60%), var(--p-bg) !important; }
+body.eco-home .eco-hero h1 em{ color:var(--sage) !important; -webkit-text-fill-color:var(--sage) !important; }
+body.eco-home .eco-btn-solid{ background:var(--mint-2) !important; color:#141a14 !important; }
+body.eco-home .eco-btn-solid span{ background:#141a14 !important; color:var(--mint) !important; }
+body.eco-home .eco-btn-line{ border-color:rgba(159,191,154,.55) !important; }
+body.eco-home .eco-float span{ background:rgba(159,191,154,.18) !important; color:var(--mint) !important; }
+/* orb: lavender sphere with sage-green and champagne rings, like the balloon palette */
+.orb #o-sphere stop:nth-child(1){ stop-color:#efeaff; } .orb #o-sphere stop:nth-child(2){ stop-color:#b4a7e0; } .orb #o-sphere stop:nth-child(3){ stop-color:#4b3a85; }
+.orb #o-gold stop:nth-child(1){ stop-color:#d9f2d6; } .orb #o-gold stop:nth-child(2){ stop-color:#7fa67d; } .orb #o-gold stop:nth-child(3){ stop-color:#c4e3c0; }
+.orb #o-silver stop:nth-child(1){ stop-color:#fffaf0; } .orb #o-silver stop:nth-child(2){ stop-color:#d8c79c; } .orb #o-silver stop:nth-child(3){ stop-color:#f3e8cc; }
+.orb #o-glow stop{ stop-color:#b4a7e0; }
+.orb circle[stroke="rgba(167,139,250,.35)"]{ stroke:rgba(159,191,154,.40); }
+
+/* ================= chat widget ================= */
+.esc-chat-launch{ background:linear-gradient(135deg,var(--sage),var(--sage-d)) !important; color:#10140f !important; box-shadow:0 10px 26px rgba(111,154,114,.5) !important; }
+.esc-chat-head{ background:linear-gradient(135deg,#4b3a85,#2f2458) !important; }
+.esc-user{ background:var(--sage-d) !important; color:#fff !important; }
+.esc-chip{ background:rgba(159,191,154,.14) !important; border-color:rgba(159,191,154,.45) !important; color:var(--mint) !important; }
+.esc-chat-form button{ background:var(--sage-d) !important; }
+.esc-msg a{ color:var(--mint) !important; }
+
+/* ================= console: keep dark purple, add green ================= */
+body:not(.eco) .kpi .ic{ background:linear-gradient(180deg,#4f7a55,#2f4d35) !important; color:var(--mint) !important; box-shadow:0 0 0 1px rgba(159,191,154,.35) !important; }
+body:not(.eco) .es-nav .num{ background:var(--sage-d) !important; }
+body:not(.eco) .card [data-chat-ask],body:not(.eco) .card .btn:not(.ghost){ background:linear-gradient(135deg,var(--sage),var(--sage-d)) !important; color:#10140f !important; border:0 !important; }
+body:not(.eco) .kpi .down{ color:var(--mint) !important; }
