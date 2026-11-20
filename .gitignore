@@ -6,7 +6,6 @@ venv/
 .claude/
 .vercel/
 staticfiles/
-myshop/staticfiles/
 *.rar
 readme.txt
 staticfiles/

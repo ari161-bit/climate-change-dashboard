@@ -7,7 +7,7 @@ Aptech eProject · Django 6 · Python 3.12 · Hadoop HDFS + MapReduce · scikit-
 
 ### [Live demo → climate-change-dashboard-eight.vercel.app](https://climate-change-dashboard-eight.vercel.app/climatechanges/)
 
-[Download everything (v1.0)](https://github.com/ari161-bit/climate-change-dashboard/releases/tag/v1.0) · [Project documentation (PDF)](docs/EarthScape_Project_Documentation.pdf) · [Presentation script](docs/PRESENTATION_SCRIPT.md) · [Architecture](docs/ARCHITECTURE.md) · [Install](docs/INSTALL.md) · [Testing](docs/TESTING.md)
+[Download everything (v1.0)](https://github.com/ari161-bit/climate-change-dashboard/releases/tag/v1.0) · [Project documentation (PDF)](docs/EarthScape_Project_Documentation.pdf) · [Presentation script](docs/PRESENTATION_SCRIPT.md) · [Full documentation](aptech-hadoop-eproject/docs/PROJECT_DOCUMENTATION.md) · [Demo video](https://www.mediafire.com/folder/3fdju2yi001y1)
 
 </div>
 
