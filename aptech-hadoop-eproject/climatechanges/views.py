@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
+from django.views.decorators.cache import never_cache
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -63,6 +64,7 @@ def signup(request):
     return render(request, "climatechanges/signup.html", context)
 
 
+@never_cache
 def login_view(request):
     """Log in with Django's authenticate()."""
     if request.user.is_authenticated:

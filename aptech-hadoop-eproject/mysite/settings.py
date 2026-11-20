@@ -173,6 +173,7 @@ INGEST_API_TOKEN = os.environ.get("EARTHSCAPE_INGEST_TOKEN", "" if ON_VERCEL els
 # Security hardening that is safe in development too
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False
+CSRF_FAILURE_VIEW = "climatechanges.csrf.csrf_failure"
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_AGE = 60 * 60 * 8
